@@ -1,3 +1,5 @@
+// 1920×1200
+
 var robot = {};
 
 var enableClassButtons = function(className, enabled) {

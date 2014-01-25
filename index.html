@@ -1,21 +1,19 @@
 <!doctype html>
 <html>
 <head>
-<script src="scout.js" type="text/javascript"></script>
-<link href="scout.css" type="text/css" rel="stylesheet" />
-<title>Scout UI</title>
+<title>shit.html</title>
+<link rel="stylesheet" href="scout.css" type="text/css" />
+<script type="text/javascript" src="scout.js"></script>
 </head>
 <body>
 <h1>Do you have the ball?  <span id="ball-status">Nope</span></h1>
 <div id="buttons">
-
 <div id="collect">
 <input type="button" class="scout collect bad" id="missedCatch" value="Robot missed a catch" />
 <input type="button" class="scout collect" id="collectedBall" value="Robot picked up a ball" />
 <input type="button" class="scout collect" id="caughtBall" value="Robot caught a thrown ball" />
 <input type="button" class="scout collect" id="caughtTruss" value="Robot caught a ball thrown over the truss" />
 </div>
-
 <div id="eject">
 <input type="button" class="scout eject bad" id="jammedBall" value="Ball got stuck in robot" />
 <input type="button" class="scout eject" id="droppedBall" value="Robot dropped the ball" />
@@ -24,15 +22,12 @@
 <input type="button" class="scout eject" id="scoredHigh" value="Robot scored in the high goal" />
 <input type="button" class="scout eject" id="scoredLow" value="Robot scored in the low goal" />
 </div>
-
-<div id="cycle">
+<div id="cycles">
 <input type="button" class="scout cycle always-on" id="madeAssist" value="Robot got credit for assist" />
 <input type="button" class="scout cycle always-on" id="teamCompletedCycle" value="Robot's alliance finished a cycle" />
 </div>
-
-<div id="submit">
+<div id="scouting">
 <input type="button" class="scout done always-on" id="done" value="Match is over" />
-</div>
 </div>
 </body>
 </html>

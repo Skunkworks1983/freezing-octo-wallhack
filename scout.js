@@ -1,19 +1,30 @@
-var data = {};
+var robot = {};
 
 var enableClassButtons = function(className, enabled) {
-    var buttons = document.querySelectorAll(".scout:not(#done)." + className);
+    var buttons = document.querySelectorAll(".scout." + className);
     for (var i = 0; i < buttons.length; i++) {
-        var button = buttons[i];
-        if (!button.classList.contains("always-on")) {
-            button.disabled = !enabled;
+        if (!buttons[i].classList.contains("always-on")) {
+            buttons[i].disabled = !enabled;
         }
     }
 }
 
 var processData = function(robotData) {
-    var copy = JSON.parse(JSON.stringify(robotData));
+    var copy = dupe(robotData);
     console.log(copy); // or do other thing
 }
+
+var dupe = function() {
+    var obj = {};
+    [].slice.call(arguments, 0).forEach(function(source) {
+        if (source) {
+            for (var prop in source) {
+                obj[prop] = source[prop];
+            }
+        }
+    });
+    return obj;
+};
 
 window.addEventListener("load", function() {
     var buttons = document.querySelectorAll(".scout:not(#done)");
@@ -22,19 +33,19 @@ window.addEventListener("load", function() {
         button.dataset.originalValue = button.value;
         enableClassButtons("eject", false);
 
-        data[button.id] = 0;
-        button.value = button.dataset.originalValue + ": " + data[button.id];
+        robot[button.id] = 0;
+        button.value = button.dataset.originalValue + ": " + robot[button.id];
         button.addEventListener("click", function() {
-            data[this.id] += 1;
-            this.value = this.dataset.originalValue + ": " + data[this.id];
-            var ballStateChanged = (this.classList.contains("collect") || this.classList.contains("eject")) && !this.classList.contains("bad");
+            robot[this.id] += 1;
+            this.value = this.dataset.originalValue + ": " + robot[this.id];
+            var gotBall = this.classList.contains("collect") ? true : false;
+            var ballStateChanged = !this.classList.contains("bad") && !this.classList.contains("always-on");
             if (ballStateChanged) {
-                if (this.classList.contains("collect")) {
-                    document.getElementById("ball-status").innerHTML = "Yup";
+                document.getElementById("ball-status").innerHTML = (gotBall ? "Yup" : "Nope");
+                if (gotBall) {
                     enableClassButtons("collect", false);
                     enableClassButtons("eject", true);
                 } else {
-                    document.getElementById("ball-status").innerHTML = "Nope";
                     enableClassButtons("collect", true);
                     enableClassButtons("eject", false);
                 }
@@ -42,15 +53,15 @@ window.addEventListener("load", function() {
         });
     }
     document.getElementById("done").addEventListener("click", function() {
-        processData(data);
-        var buttons = document.querySelectorAll(".scout:not(#done)");
+        processData(robot);
+        var buttons = document.querySelectorAll(".scout");
         for (var i = 0; i < buttons.length; i++) {
             var button = buttons[i];
-            data[button.id] = 0;
-            button.value = button.dataset.originalValue + ": " + data[button.id];
-            document.getElementById("ball-status").innerHTML = "Nope";
-            enableClassButtons("collect", true);
-            enableClassButtons("eject", false);
+            robot[button.id] = 0;
+            button.value = button.dataset.originalValue + ": " + robot[button.id];
         }
+        enableClassButtons("collect", true);
+        enableClassButtons("eject", false);
+        document.getElementById("ball-status").innerHTML = "Nope";
     });
 });

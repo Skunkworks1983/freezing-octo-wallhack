@@ -86,6 +86,14 @@ span.red {
     float: right;
 }
 
+#auto-buttons, #teleop-buttons {
+    display: none;
+}
+
+#auto-buttons.active, #teleop-buttons.active {
+    display: block;
+}
+
 #little-robot {
     position: absolute;
     width: 50px;
@@ -94,7 +102,7 @@ span.red {
 }
 
 input[type=button].scout {
-    height: 50px;
+    height: 40px;
     width: 200px;
     display: block;
 }

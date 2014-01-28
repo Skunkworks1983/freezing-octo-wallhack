@@ -34,7 +34,22 @@ match number: <span id="match-number">1</span><br>
 </div>
 <div id="side-buttons">
 
-<div id="teleop-buttons">
+<div id="auto-buttons" class="active">
+<input type="button" class="scout auto position" id="initialPosition" value="Set start position" />
+<input type="button" class="scout auto position" id="shootPosition" value="Set shoot position" />
+<input type="button" class="scout auto position" id="finalPosition" value="Set final position" />
+
+<input type="button" class="scout auto hot" id="hotGoal" value="Robot hit hot goal" />
+
+<input type="button" class="scout auto status" id="upperGoal" value="Upper goal" />
+<input type="button" class="scout auto status" id="lowerGoal" value="Lower goal" />
+<input type="button" class="scout auto status" id="missed" value="Missed" />
+<input type="button" class="scout auto status" id="noAuto" value="Nothing" />
+
+<input type="button" class="scout auto next" id="auto-next" value="NEXT PLS" />
+</div>
+
+<div id="teleop-buttons" class="not-active">
 <div id="collect">
 <input type="button" class="scout collect bad" id="missedCatch" value="Robot missed a catch" />
 <input type="button" class="scout collect" id="collectedBall" value="Robot picked up a ball" />
@@ -51,7 +66,6 @@ match number: <span id="match-number">1</span><br>
 <input type="button" class="scout eject" id="scoredLow" value="Robot scored in the low goal" />
 </div>
 <div id="cycles">
-<input type="button" class="scout cycle always-on" id="madeAssist" value="Robot got credit for assist" />
 <input type="button" class="scout cycle always-on" id="teamCompletedCycle" value="Robot's alliance finished a cycle" />
 </div>
 </div>

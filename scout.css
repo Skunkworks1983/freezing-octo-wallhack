@@ -23,7 +23,7 @@ span.red {
     color: red;
 }
 
-#initial-overlay, #autonomous {
+#initial-overlay, #data-mode {
     display: none;
     position: fixed;
     background-color: #cccfd4;
@@ -31,7 +31,7 @@ span.red {
     height: 100%;
 }
 
-#initial-overlay.active, #autonomous.active {
+#initial-overlay.active, #data-mode.active {
     display: block;
 }
 
@@ -81,7 +81,7 @@ span.red {
     float: left;
 }
 
-.side-buttons {
+#side-buttons {
     padding: 9px;
     float: right;
 }
@@ -96,4 +96,9 @@ span.red {
 input[type=button].scout {
     height: 50px;
     width: 200px;
+    display: block;
+}
+
+input[type=button].scout.disabled {
+    display: none;
 }

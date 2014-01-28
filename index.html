@@ -12,7 +12,7 @@
 <body>
 
 
-<div id="initial-overlay" class="not-active">
+<div id="initial-overlay" class="active">
 <div id="titles">
 <h1>scoutapp</h1>
 <h2>welcome <span id="scout-name">unknown</span></h2>
@@ -25,17 +25,37 @@ match number: <span id="match-number">1</span><br>
 <img id="robot-image" src="robot.jpg" />
 </div>
 <div id="lets-go">
-<input id="start" type="button" class="scout red" value="Let's go" />
+<input id="start" type="button" class="scout" value="Let's go" />
 </div>
 </div>
 
-<div id="autonomous" class="active">
+<div id="data-mode" class="not-active">
 <div id="field-container">
 </div>
-<div id="auto-buttons" class="side-buttons">
-<input type="button" class="scout" value="wow" /><br />
-<input type="button" class="scout" value="wow" /><br />
-<input type="button" class="scout" value="wow" />
+<div id="side-buttons">
+
+<div id="teleop-buttons">
+<div id="collect">
+<input type="button" class="scout collect bad" id="missedCatch" value="Robot missed a catch" />
+<input type="button" class="scout collect" id="collectedBall" value="Robot picked up a ball" />
+<input type="button" class="scout collect" id="caughtBall" value="Robot caught a thrown ball" />
+<input type="button" class="scout collect" id="wasGivenBall" value="Robot was passed a ball" />
+<input type="button" class="scout collect" id="caughtTruss" value="Robot caught a ball thrown over the truss" />
+</div>
+<div id="eject">
+<input type="button" class="scout eject bad" id="jammedBall" value="Ball got stuck in robot" />
+<input type="button" class="scout eject" id="droppedBall" value="Robot dropped the ball" />
+<input type="button" class="scout eject" id="passedBall" value="Robot passed the ball" />
+<input type="button" class="scout eject" id="threwTruss" value="Robot threw over the truss" />
+<input type="button" class="scout eject" id="scoredHigh" value="Robot scored in the high goal" />
+<input type="button" class="scout eject" id="scoredLow" value="Robot scored in the low goal" />
+</div>
+<div id="cycles">
+<input type="button" class="scout cycle always-on" id="madeAssist" value="Robot got credit for assist" />
+<input type="button" class="scout cycle always-on" id="teamCompletedCycle" value="Robot's alliance finished a cycle" />
+</div>
+</div>
+
 </div>
 </div>
 

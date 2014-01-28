@@ -10,7 +10,9 @@
 <link rel="stylesheet" href="scout.css" type="text/css" />
 </head>
 <body>
-<div id="initial-overlay">
+
+
+<div id="initial-overlay" class="not-active">
 <div id="titles">
 <h1>scoutapp</h1>
 <h2>welcome <span id="scout-name">unknown</span></h2>
@@ -23,7 +25,19 @@ match number: <span id="match-number">1</span><br>
 <img id="robot-image" src="robot.jpg" />
 </div>
 <div id="lets-go">
+<input id="start" type="button" class="scout red" value="Let's go" />
 </div>
 </div>
+
+<div id="autonomous" class="active">
+<div id="field-container">
+</div>
+<div id="auto-buttons" class="side-buttons">
+<input type="button" class="scout" value="wow" /><br />
+<input type="button" class="scout" value="wow" /><br />
+<input type="button" class="scout" value="wow" />
+</div>
+</div>
+
 </body>
 </html>

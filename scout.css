@@ -74,16 +74,24 @@ span.red {
     right: 0px;
 }
 
+#magic-container {
+    float: left;
+}
+
 #field-container {
     width: 742px;
     height: 338px;
     background-image: url(field.png);
-    float: left;
 }
 
 #side-buttons {
     padding: 9px;
     float: right;
+    clear: right;
+}
+
+#bottom-buttons {
+    padding: 9px;
 }
 
 #auto-buttons, #teleop-buttons {
@@ -105,6 +113,15 @@ input[type=button].scout {
     height: 40px;
     width: 200px;
     display: block;
+}
+
+input[type=button].scout.half {
+    width: 95px;
+    display: inline-block;
+}
+
+input[type=button].scout:not(:first-child) {
+    margin-top: 9px;
 }
 
 input[type=button].scout.disabled {

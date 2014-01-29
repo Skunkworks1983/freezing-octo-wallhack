@@ -86,12 +86,11 @@ var init = function(e) {
         if (x < 25) x = 25;
         if (y < 25) y = 25;
         littleRobot.style.left = (x - 25) + "px";
-        littleRobot.style.top = (y - 25) + "px";
+        littleRobot.style.top = (y - 25) + "px"; // grid cause grace said so nothx
         littleRobotX = x;
         littleRobotY = y;
     });
     longPress(document.getElementById("field-container"), function(even) {
-        even.preventDefault();
         alert("you're a winner");
     });
     enableClassButtons("eject", false);

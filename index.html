@@ -12,7 +12,7 @@
 <body>
 
 
-<div id="initial-overlay" class="active">
+<div id="initial-overlay" class="not-active">
 <div id="titles">
 <h1>scoutapp</h1>
 <h2>welcome <span id="scout-name">unknown</span></h2>
@@ -29,44 +29,42 @@ match number: <span id="match-number">1</span><br>
 </div>
 </div>
 
-<div id="data-mode" class="not-active">
-<div id="field-container">
+<div id="data-mode" class="active">
+<div id="magic-container"><!-- don't question it -->
+<div id="field-container"><!-- I bet you feel important punk --></div>
+<div id="bottom-buttons">
+<input type="button" class="scout" value="test" id="amzaing" />
+</div>
 </div>
 <div id="side-buttons">
 
 <div id="auto-buttons" class="active">
-<input type="button" class="scout auto position" id="initialPosition" value="Set start position" />
-<input type="button" class="scout auto position" id="shootPosition" value="Set shoot position" />
-<input type="button" class="scout auto position" id="finalPosition" value="Set final position" />
+<input type="button" class="scout auto position" id="initialPosition" value="Start position" />
+<input type="button" class="scout auto position" id="shootPosition" value="Shoot position" />
+<input type="button" class="scout auto position" id="finalPosition" value="Final position" />
 
-<input type="button" class="scout auto hot" id="hotGoal" value="Robot hit hot goal" />
+<input type="button" class="scout auto hot" id="hotGoal" value="Hot goal" />
 
-<input type="button" class="scout auto status" id="upperGoal" value="Upper goal" />
-<input type="button" class="scout auto status" id="lowerGoal" value="Lower goal" />
+<input type="button" class="scout auto status half" id="upperGoal" value="Upper goal" />
+<input type="button" class="scout auto status half" id="lowerGoal" value="Lower goal" />
 <input type="button" class="scout auto status" id="missed" value="Missed" />
-<input type="button" class="scout auto status" id="noAuto" value="Nothing" />
+<input type="button" class="scout auto status" id="jammed" value="Jammed" />
 
-<input type="button" class="scout auto next" id="auto-next" value="NEXT PLS" />
+<input type="button" class="scout auto next" id="auto-next" value="End auto" />
 </div>
 
 <div id="teleop-buttons" class="not-active">
 <div id="collect">
-<input type="button" class="scout collect bad" id="missedCatch" value="Robot missed a catch" />
-<input type="button" class="scout collect" id="collectedBall" value="Robot picked up a ball" />
-<input type="button" class="scout collect" id="caughtBall" value="Robot caught a thrown ball" />
-<input type="button" class="scout collect" id="wasGivenBall" value="Robot was passed a ball" />
-<input type="button" class="scout collect" id="caughtTruss" value="Robot caught a ball thrown over the truss" />
+<input type="button" class="scout collect" id="collectedBall" value="Collected" />
+<input type="button" class="scout collect" id="caughtBall" value="Caught" />
 </div>
 <div id="eject">
-<input type="button" class="scout eject bad" id="jammedBall" value="Ball got stuck in robot" />
-<input type="button" class="scout eject" id="droppedBall" value="Robot dropped the ball" />
-<input type="button" class="scout eject" id="passedBall" value="Robot passed the ball" />
-<input type="button" class="scout eject" id="threwTruss" value="Robot threw over the truss" />
-<input type="button" class="scout eject" id="scoredHigh" value="Robot scored in the high goal" />
-<input type="button" class="scout eject" id="scoredLow" value="Robot scored in the low goal" />
-</div>
-<div id="cycles">
-<input type="button" class="scout cycle always-on" id="teamCompletedCycle" value="Robot's alliance finished a cycle" />
+<input type="button" class="scout eject bad" id="jammedBall" value="FATAL JAM" />
+<input type="button" class="scout eject" id="droppedBall" value="Dropped" />
+<input type="button" class="scout eject" id="passedBall" value="Passed" />
+<input type="button" class="scout eject" id="threwTruss" value="Truss'd" />
+<input type="button" class="scout eject" id="scoredHigh" value="High Goal" />
+<input type="button" class="scout eject" id="scoredLow" value="Low Goal" />
 </div>
 </div>
 

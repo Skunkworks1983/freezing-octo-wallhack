@@ -7,8 +7,8 @@ var autoData = {
     "autoStatus": "no data"
 
 }
-var littleRobotX = -1;
-var littleRobotY = -1;
+var littleRobotX = 100;
+var littleRobotY = 169;
 
 var pushData = function(id, value, x, y) {
     dataStack.push({
@@ -66,35 +66,33 @@ var init = function(e) {
         document.getElementById("initial-overlay").classList.toggle("active");
         document.getElementById("data-mode").classList.toggle("active");
     });
+
+    var littleRobot = document.createElement("div");
+    littleRobot.id = "little-robot";
+    littleRobot.style.left = (littleRobotX - 25) + "px";
+    littleRobot.style.top = (littleRobotY - 25) + "px"; // grid cause grace said so nothx
+    document.getElementById("field-container").appendChild(littleRobot);
+
     document.getElementById("field-container").addEventListener("click", function(even) {
-        if (littleRobotX === -1 && littleRobotY === -1) {
-            enableClassButtons("collect", true);
-        }
-        fieldImg = document.getElementById("field");
-        var maxX = 742
-        var maxY = 338
-        littleRobot = document.getElementById("little-robot");
-        if (littleRobot == null) {
-            littleRobot = document.createElement("div");
-            littleRobot.id = "little-robot";
-            this.appendChild(littleRobot);
-        }
+        var maxX = 742;
+        var maxY = 338;
+        var littleRobot = document.getElementById("little-robot");
         var x = even.x;
         var y = even.y;
         if (x + 25 > maxX) x = maxX - 25;
         if (y + 25 > maxY) y = maxY - 25;
         if (x < 25) x = 25;
         if (y < 25) y = 25;
-        littleRobot.style.left = (x - 25) + "px";
-        littleRobot.style.top = (y - 25) + "px"; // grid cause grace said so nothx
         littleRobotX = x;
         littleRobotY = y;
+        littleRobot.style.left = (littleRobotX - 25) + "px";
+        littleRobot.style.top = (littleRobotY - 25) + "px"; // grid cause grace said so nothx
     });
     longPress(document.getElementById("field-container"), function(even) {
         alert("you're a winner");
     });
     enableClassButtons("eject", false);
-    enableClassButtons("collect", false);
+    enableClassButtons("collect", true);
     var buttons = document.querySelectorAll(".scout:not(#start):not(.auto)");
     for (var i = 0; i < buttons.length; i++) {
         var button = buttons[i];

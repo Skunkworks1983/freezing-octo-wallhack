@@ -89,11 +89,11 @@ var init = function(e) {
         littleRobot.style.top = (littleRobotY - 25) + "px"; // grid cause grace said so nothx
     });
     longPress(document.getElementById("field-container"), function(even) {
-        alert("you're a winner");
+        console.log("ur dumb");
     });
     enableClassButtons("eject", false);
     enableClassButtons("collect", true);
-    var buttons = document.querySelectorAll(".scout:not(#start):not(.auto)");
+    var buttons = document.querySelectorAll(".scout:not(#start):not(.auto):not(.toggle)");
     for (var i = 0; i < buttons.length; i++) {
         var button = buttons[i];
 

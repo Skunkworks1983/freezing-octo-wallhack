@@ -67,7 +67,7 @@ span.red {
     padding-left: 1em;
 }
 
-#lets-go {
+.corner {
     position: absolute;
     padding: 9px;
     bottom: 0px;
@@ -118,6 +118,10 @@ input[type=button].scout {
 input[type=button].scout.half {
     width: 95px;
     display: inline-block;
+}
+
+input[type=button].scout.half + input[type=button].scout.half {
+    margin-left: 6px;
 }
 
 input[type=button].scout:not(:first-child) {

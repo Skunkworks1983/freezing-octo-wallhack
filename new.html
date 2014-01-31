@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<title>New new new (tm) scout ui</title>
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<script src="util.js" type="text/javascript"></script>
+<link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="normalize.css" type="text/css" />
+<link rel="stylesheet" href="scout.css" type="text/css" />
+</head>
+<body>
+<div id="container">
+
+<div id="initial-overlay" class="active">
+<div id="titles">
+<h1>scoutapp</h1>
+<h2>welcome <span id="scout-name">unknown</span></h2>
+</div>
+<div id="match-info">
+<h1>match info</h1>
+team number: <span id="robot-number">1983</span><br />
+team color: <span id="robot-color" class="blue">Blue</span><br />
+match number: <span id="match-number">1</span><br>
+<img id="robot-image" src="robot.jpg" />
+</div>
+<div id="lets-go" class="corner">
+<input id="start" type="button" class="scout ui" value="Let's go" />
+</div>
+</div>
+
+<div id="data-mode" class="not-active">
+<div id="magic-container">
+<div id="field-container"></div>
+<div id="bottom-buttons"></div>
+</div>
+</div>
+
+</div>
+<script src="new.js" type="text/javascript"></script>
+</body>
+</html>

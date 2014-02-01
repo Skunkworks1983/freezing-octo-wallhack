@@ -120,6 +120,7 @@ input[type=button].scout.bad {
     display: block;
     width: 50%;
     float: left;
+    font-size: 2em;
 }
 
 #scout-buttons input[type=button].scout.full {

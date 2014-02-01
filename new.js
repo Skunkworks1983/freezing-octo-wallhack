@@ -23,8 +23,8 @@ var data = {
 };
 
 $("#start").on("click", function(e) {
-    enableSelector("#initial-overlay", false);
-    enableSelector("#data-mode", true);
+    activateSelector("#initial-overlay", false);
+    activateSelector("#data-mode", true);
 });
 
 var littleRobot = spawnLittleRobot(data.currentX, data.currentY);
@@ -51,8 +51,8 @@ fieldContainer.on("click", function(e) {
 
 fieldContainer.on("mouseup", function(e) {
     setTimeout(function() {
-        enableSelector("#field-container", false);
-        enableSelector("#scout-buttons", true);
+        activateSelector("#field-container", false);
+        activateSelector("#scout-buttons", true);
     }, 200);
 });
 
@@ -73,8 +73,8 @@ $("#reset").on("click", function(e) {
 
 $(".scout.auto.position").on("click", function(e) {
     data.autoMeta[this.id] = {"x": data.currentX, "y": data.currentY}; // FIX ME
-    enableSelector("#scout-buttons", false);
-    enableSelector("#field-container", true);
+    activateSelector("#scout-buttons", false);
+    activateSelector("#field-container", true);
 });
 
 $(".scout.auto.status").on("click", function(e) {
@@ -88,27 +88,32 @@ $(".scout.auto.status").on("click", function(e) {
 $("#auto-done").on("click", function(e) {
     data.modeTeleop = true;
     data.teleopMeta.deadBot = data.autoMeta.deadBot;
-    enableSelector("#auto", false);
-    enableSelector("#teleop", true);
-    this.classList.add("not-active");
+    activateSelector("#auto", false);
+    activateSelector("#teleop", true);
+    activateSelector("#auto-done", false);
+    activateSelector("#undo-teleop", true);
 });
 
 // teleop
 
 $(".scout.teleop.collect").on("click", function(e) {
     storeAction(this.id, 1, data.currentX, data.currentY); // FIX ME
-    enableSelector("#scout-buttons", false);
-    enableSelector("#field-container", true);
-    enableSelector("#collect", false);
-    enableSelector("#eject", true);
+    activateSelector("#scout-buttons", false);
+    activateSelector("#field-container", true);
+    activateSelector("#collect", false);
+    activateSelector("#eject", true);
 });
 
 $(".scout.teleop.eject").on("click", function(e) {
     storeAction(this.id, 1, data.currentX, data.currentY); // FIX ME
     if (!this.classList.contains("bad")) {
-        enableSelector("#field-container", true);
-        enableSelector("#scout-buttons", false);
-        enableSelector("#eject", false);
-        enableSelector("#collect", true);
+        activateSelector("#field-container", true);
+        activateSelector("#scout-buttons", false);
+        activateSelector("#eject", false);
+        activateSelector("#collect", true);
     }
 });
+
+// $("#undo-teleop").on("click", function(e) { // make me works
+//     undoAction();
+// });

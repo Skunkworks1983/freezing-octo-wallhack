@@ -112,6 +112,10 @@ input[type=button].scout {
     width: 200px;
 }
 
+input[type=button].scout.active {
+    display: inline-block;
+}
+
 input[type=button].scout.bad {
     color: #df4931;
 }

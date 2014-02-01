@@ -27,11 +27,10 @@ NodeList.prototype.each = function(callback) {
     return this;
 };
 
-var enableSelector = function(selector, enabled) {
+var activateSelector = function(selector, activated) {
     $(selector).each(function(element) {
         if (!element.classList.contains("always-on")) {
-            element.disabled = !enabled;
-            if (enabled) {
+            if (activated) {
                 element.classList.add("active");
                 element.classList.remove("not-active");
             } else {

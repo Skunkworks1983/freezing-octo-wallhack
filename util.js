@@ -76,5 +76,5 @@ var storeAction = function(name, value, x, y) {
 };
 
 var undoAction = function() {
-    return dataStack.pop();
+    return data[data.modeTeleop ? "teleop" : "auto"].pop();
 };

@@ -31,8 +31,42 @@ match number: <span id="match-number">1</span><br>
 
 <div id="data-mode" class="not-active">
 <div id="magic-container">
-<div id="field-container"></div>
-<div id="bottom-buttons"></div>
+<div id="field-container" class="not-active"></div>
+<div id="scout-buttons" class="active">
+
+<div id="auto" class="active">
+<input type="button" class="scout auto position quarter" id="startPosition" value="Start position" />
+<input type="button" class="scout auto status quarter" id="upperGoal" value="Upper goal" />
+<input type="button" class="scout auto position quarter" id="shootPosition" value="Shoot position" />
+<input type="button" class="scout auto status quarter" id="lowerGoal" value="Lower goal" />
+<input type="button" class="scout auto position quarter" id="finalPosition" value="Final position" />
+<input type="button" class="scout auto status quarter" id="missed" value="Missed" />
+<input type="button" class="scout auto hot toggle off quarter" id="hotGoal" value="Hot goal" />
+<input type="button" class="scout auto status quarter" id="jammed" value="Jammed" />
+</div>
+
+<div id="teleop" class="not-active">
+<div id="collect" class="active">
+<input type="button" class="scout teleop collect full" id="collectedBall" value="Collected" />
+<input type="button" class="scout teleop collect full" id="caughtBall" value="Caught" />
+</div>
+<div id="eject" class="not-active">
+<input type="button" class="scout teleop eject bad third" id="jammedBall" value="FATAL JAM" />
+<input type="button" class="scout teleop eject third" id="droppedBall" value="Dropped" />
+<input type="button" class="scout teleop eject third" id="passedBall" value="Passed" />
+<input type="button" class="scout teleop eject third" id="threwTruss" value="Truss'd" />
+<input type="button" class="scout teleop eject third" id="scoredLow" value="Low Goal" />
+<input type="button" class="scout teleop eject third" id="scoredHigh" value="High Goal" />
+</div>
+</div>
+
+</div>
+
+<div id="bottom-buttons">
+<input type="button" class="scout toggle off" id="deadBot" value="Dead bot" />
+<input type="button" class="scout auto done" id="auto-done" value="End auto" />
+<input type="button" class="scout reset" id="reset" value="RESET EVERYTHING" />
+</div>
 </div>
 </div>
 

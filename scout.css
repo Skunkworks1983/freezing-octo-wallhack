@@ -23,16 +23,19 @@ span.red {
     color: red;
 }
 
-#initial-overlay, #data-mode {
+.active {
+    display: block;
+}
+
+.not-active {
     display: none;
+}
+
+#initial-overlay, #data-mode {
     position: fixed;
     background-color: #cccfd4;
     width: 100%;
     height: 100%;
-}
-
-#initial-overlay.active, #data-mode.active {
-    display: block;
 }
 
 #initial-overlay #titles {
@@ -78,9 +81,12 @@ span.red {
     float: left;
 }
 
-#field-container {
+#field-container, #scout-buttons {
     width: 742px;
     height: 338px;
+}
+
+#field-container {
     background-image: url(field.png);
 }
 
@@ -94,14 +100,6 @@ span.red {
     padding: 9px;
 }
 
-#auto-buttons, #teleop-buttons {
-    display: none;
-}
-
-#auto-buttons.active, #teleop-buttons.active {
-    display: block;
-}
-
 #little-robot {
     position: absolute;
     width: 50px;
@@ -112,22 +110,42 @@ span.red {
 input[type=button].scout {
     height: 40px;
     width: 200px;
+}
+
+input[type=button].scout.bad {
+    color: #df4931;
+}
+
+#scout-buttons input[type=button].scout {
     display: block;
+    width: 50%;
+    float: left;
 }
 
-input[type=button].scout.half {
-    width: 95px;
-    display: inline-block;
+#scout-buttons input[type=button].scout.full {
+    height: calc(338px / 1);
 }
 
-input[type=button].scout.half + input[type=button].scout.half {
-    margin-left: 6px;
+#scout-buttons input[type=button].scout.half {
+    height: calc(338px / 2);
 }
 
-input[type=button].scout:not(:first-child) {
-    margin-top: 9px;
+#scout-buttons input[type=button].scout.third {
+    height: calc(338px / 3);
 }
 
-input[type=button].scout.disabled {
-    display: none;
+#scout-buttons input[type=button].scout.quarter {
+    height: calc(338px / 4);
+}
+
+.toggle.on {
+    color: #019973;
+}
+
+.toggle.off {
+    color: #df4931;
+}
+
+.status.selected {
+    color: #3498db;
 }

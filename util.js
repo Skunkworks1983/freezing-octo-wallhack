@@ -1,24 +1,30 @@
-/* jquery condensed into 22 lines and 148 times smaller */
+/* jquery condensed into 27 lines */
 var $ = function() {
-    elementList = document.querySelectorAll.apply(document, arguments);
+    var elementList = document.querySelectorAll.apply(document, arguments);
     if (elementList.length === 1) elementList = elementList[0];
-    return elementList
+    return elementList;
 };
-Element.prototype.on = Element.prototype.addEventListener;
+Element.prototype.on = function() {
+    this.addEventListener.apply(this, arguments);
+    return this;
+};
 Element.prototype.each = function(callback) {
     callback(this, 1, [this]);
+    return this;
 };
 NodeList.prototype.on = function() {
     var args = arguments;
-    this.each(function(element, i) {
-        Element.prototype.on.apply(element, args);
+    this.each(function(element) {
+        element.on.apply(element, args);
     });
+    return this;
 };
 NodeList.prototype.each = function(callback) {
     for (var i = 0; i < this.length; ++i) {
         var element = this[i];
         callback(element, i, this);
     }
+    return this;
 };
 
 var enableSelector = function(selector, enabled) {
@@ -57,7 +63,7 @@ var spawnLittleRobot = function(x, y) {
     littleRobot.style.left = (x - 25) + "px";
     littleRobot.style.top = (y - 25) + "px"; // grid cause grace said so nothx
     return littleRobot;
-}
+};
 
 var storeAction = function(name, value, x, y) {
     data[data.modeTeleop ? "teleop" : "auto"].push({

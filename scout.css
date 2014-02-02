@@ -10,16 +10,21 @@ html {
     font-family: "Ubuntu", sans-serif;
 }
 
-body, html, h1, h2 {
+body, html {
     margin: 0px;
     padding: 0px;
 }
 
-span.blue {
+#titles h1, #titles h2 {
+    margin: 0px;
+    padding: 0px;
+}
+
+#robot-color.blue {
     color: blue;
 }
 
-span.red {
+#robot-color.red {
     color: red;
 }
 
@@ -141,6 +146,14 @@ input[type=button].scout.bad {
 
 #scout-buttons input[type=button].scout.quarter {
     height: calc(338px / 4);
+}
+
+.toggle#hotGoal.off {
+    color: #000;
+}
+
+.toggle#hotGoal.on {
+    color: #df4931;
 }
 
 .toggle.on {

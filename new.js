@@ -46,7 +46,7 @@ fieldContainer.on("click", function(e) {
     data.currentX = x;
     data.currentY = y;
     littleRobot.style.left = (x - 25) + "px";
-    littleRobot.style.top = (y - 25) + "px"; // grid cause grace said so nothx
+    littleRobot.style.top = (y - 25) + "px";
 });
 
 fieldContainer.on("mouseup", function(e) {
@@ -63,6 +63,11 @@ $(".scout.toggle").on("click", function(e) {
     data[data.modeTeleop ? "teleopMeta" : "autoMeta"][this.id] = enabled;
     this.classList[enabled ? "add" : "remove"]("on");
     this.classList[!enabled ? "add" : "remove"]("off");
+    if (this.dataset.value != null) {
+        var v = this.value;
+        this.value = this.dataset.value;
+        this.dataset.value = v;
+    }
 });
 
 $("#reset").on("click", function(e) {
@@ -90,8 +95,8 @@ $("#auto-done").on("click", function(e) {
     data.teleopMeta.deadBot = data.autoMeta.deadBot;
     activateSelector("#auto", false);
     activateSelector("#teleop", true);
-    activateSelector("#auto-done", false);
-    activateSelector("#undo-teleop", true);
+    activateSelector("#bottom-buttons .auto", false);
+    activateSelector("#bottom-buttons .teleop", true);
 });
 
 // teleop
@@ -114,6 +119,10 @@ $(".scout.teleop.eject").on("click", function(e) {
     }
 });
 
-// $("#undo-teleop").on("click", function(e) { // make me works
-//     undoAction();
-// });
+$("#undo-teleop").on("click", function(e) {
+
+});
+
+$("#teleop-done").on("click", function(e) {
+
+});

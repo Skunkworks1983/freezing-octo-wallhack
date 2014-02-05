@@ -1,2 +1,1 @@
-[click me](http://skunkworks1983.github.io/freezing-octo-wallhack)
-
+[click me](http://skunkworks1983.github.io/freezing-octo-wallhack/new.html)

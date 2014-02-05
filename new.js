@@ -120,9 +120,10 @@ $(".scout.teleop.eject").on("click", function(e) {
 });
 
 $("#undo-teleop").on("click", function(e) {
-
+    undoAction();
+    // more
 });
 
 $("#teleop-done").on("click", function(e) {
-
+    document.location.reload(true);
 });

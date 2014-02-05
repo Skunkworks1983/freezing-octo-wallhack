@@ -121,7 +121,7 @@ input[type=button].scout.active {
     display: inline-block;
 }
 
-input[type=button].scout.bad {
+input[type=button].scout.teleop.bad {
     color: #df4931;
 }
 
@@ -166,4 +166,8 @@ input[type=button].scout.bad {
 
 .status.selected {
     color: #3498db;
+}
+
+.status.selected.bad {
+    color: #df4931;
 }

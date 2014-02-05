@@ -83,11 +83,16 @@ $(".scout.auto.position").on("click", function(e) {
 });
 
 $(".scout.auto.status").on("click", function(e) {
-    data.autoMeta.status = this.id;
-    $(".scout.auto.status").each(function(element) {
-        element.classList.remove("selected");
-    });
-    this.classList.add("selected");
+    if (data.autoMeta.status != this.id) {
+        data.autoMeta.status = this.id;
+        $(".scout.auto.status").each(function(element) {
+            element.classList.remove("selected");
+        });
+        this.classList.add("selected");
+    } else {
+        data.autoMeta.status = "noAuto";
+        this.classList.remove("selected");
+    }
 });
 
 $("#auto-done").on("click", function(e) {

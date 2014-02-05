@@ -18,8 +18,8 @@ var data = {
 
     "currentX": 100,
     "currentY": 169,
-    "MAX_X": 742,
-    "MAX_Y": 338
+    "MAX_X": 960,
+    "MAX_Y": 437
 };
 
 $("#start").on("click", function(e) {

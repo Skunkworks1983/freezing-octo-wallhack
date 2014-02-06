@@ -35,9 +35,10 @@ var spawnLittleRobot = function(x, y) {
     return littleRobot;
 };
 
-var storeAction = function(name, value, x, y) {
+var storeAction = function(name, category, value, x, y) {
     data[data.modeTeleop ? "teleop" : "auto"].push({
         "action": name,
+        "category": category,
         "value": value,
         "x": x,
         "y": y,

@@ -107,7 +107,7 @@ $("#auto-done").on("click", function(e) {
 // teleop
 
 $(".scout.teleop.collect").on("click", function(e) {
-    storeAction(this.id, 1, data.currentX, data.currentY); // FIX ME
+    storeAction(this.id, "collect", 1, data.currentX, data.currentY); // FIX ME
     activateSelector("#scout-buttons", false);
     activateSelector("#field-container", true);
     activateSelector("#collect", false);
@@ -115,18 +115,22 @@ $(".scout.teleop.collect").on("click", function(e) {
 });
 
 $(".scout.teleop.eject").on("click", function(e) {
-    storeAction(this.id, 1, data.currentX, data.currentY); // FIX ME
+    storeAction(this.id, "eject", 1, data.currentX, data.currentY); // FIX ME
     if (!this.classList.contains("bad")) {
-        activateSelector("#field-container", true);
         activateSelector("#scout-buttons", false);
-        activateSelector("#eject", false);
+        activateSelector("#field-container", true);
         activateSelector("#collect", true);
+        activateSelector("#eject", false);
     }
 });
 
-$("#undo-teleop").on("click", function(e) {
-    undoAction();
-    // more
+$("#undo-teleop").on("click", function(e) { // FIX ME
+    var action = undoAction();
+    undidCollect = action.category === "collect";
+    activateSelector("#scout-buttons", true);
+    activateSelector("#field-container", false);
+    activateSelector("#collect", undidCollect);
+    activateSelector("#eject", !undidCollect);
 });
 
 $("#teleop-done").on("click", function(e) {

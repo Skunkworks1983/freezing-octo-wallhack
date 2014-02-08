@@ -1,3 +1,5 @@
+var l = function() { console.log.apply(console, arguments); };
+
 var activateSelector = function(selector, activated) {
     $(selector).each(function(element) {
         if (!element.classList.contains("always-on")) {

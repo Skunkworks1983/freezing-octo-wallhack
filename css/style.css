@@ -11,21 +11,8 @@ html {
 }
 
 body, html {
-    margin: 0px;
-    padding: 0px;
-}
-
-#titles h1, #titles h2 {
-    margin: 0px;
-    padding: 0px;
-}
-
-#robot-color.blue {
-    color: blue;
-}
-
-#robot-color.red {
-    color: red;
+    margin: 0;
+    padding: 0;
 }
 
 .active {
@@ -34,6 +21,27 @@ body, html {
 
 .not-active {
     display: none;
+}
+
+.corner {
+    position: absolute;
+    padding: 9px;
+    bottom: 0;
+    right: 0;
+}
+
+#titles h1, #titles h2 {
+    margin: 0;
+    padding: 0;
+}
+
+#titles h1 {
+    font-size: 6em;
+}
+
+#titles h2 {
+    font-size: 4em;
+    padding-left: 1em;
 }
 
 #initial-overlay, #data-mode {
@@ -64,24 +72,16 @@ body, html {
     font-size: 1.5em;
 }
 
+#robot-color.blue {
+    color: blue;
+}
+
+#robot-color.red {
+    color: red;
+}
+
 #robot-image {
     width: 200px;
-}
-
-#titles h1 {
-    font-size: 6em;
-}
-
-#titles h2 {
-    font-size: 4em;
-    padding-left: 1em;
-}
-
-.corner {
-    position: absolute;
-    padding: 9px;
-    bottom: 0px;
-    right: 0px;
 }
 
 #magic-container {
@@ -108,7 +108,7 @@ body, html {
     padding: 9px;
 }
 
-#little-robot {
+#field-container #little-robot {
     position: absolute;
     width: 50px;
     height: 50px;

@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<title>heyoo</title>
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<script src="scout.js" type="text/javascript"></script>
+<link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="normalize.css" type="text/css" />
+<link rel="stylesheet" href="scout.css" type="text/css" />
+</head>
+<body>
+
+
+<div id="initial-overlay" class="active">
+<div id="titles">
+<h1>scoutapp</h1>
+<h2>welcome <span id="scout-name">unknown</span></h2>
+</div>
+<div id="match-info">
+<h1>match info</h1>
+team number: <span id="robot-number">1983</span><br />
+team color: <span id="robot-color" class="blue">Blue</span><br />
+match number: <span id="match-number">1</span><br>
+<img id="robot-image" src="robot.jpg" />
+</div>
+<div id="lets-go" class="corner">
+<input id="start" type="button" class="scout" value="Let's go" />
+</div>
+</div>
+
+<div id="data-mode" class="not-active">
+<div id="magic-container"><!-- don't question it -->
+<div id="field-container"><!-- I bet you feel important punk --></div>
+<div id="bottom-buttons">
+<input type="button" class="scout" value="amzaing" id="test" />
+</div>
+</div>
+<div id="side-buttons">
+
+<div id="auto-buttons" class="active">
+<input type="button" class="scout auto position" id="initialPosition" value="Start position" />
+<input type="button" class="scout auto position" id="shootPosition" value="Shoot position" />
+<input type="button" class="scout auto position" id="finalPosition" value="Final position" />
+
+<input type="button" class="scout auto status half" id="lowerGoal" value="Lower goal" />
+<input type="button" class="scout auto status half" id="upperGoal" value="Upper goal" />
+
+<input type="button" class="scout auto hot toggle" id="hotGoal" value="Hot goal" />
+
+<input type="button" class="scout auto status half" id="jammed" value="Jammed" />
+<input type="button" class="scout auto status half" id="missed" value="Missed" />
+
+<input type="button" class="scout auto next" id="auto-next" value="End auto" />
+</div>
+
+<div id="teleop-buttons" class="not-active">
+<div id="collect">
+<input type="button" class="scout collect" id="collectedBall" value="Collected" />
+<input type="button" class="scout collect" id="caughtBall" value="Caught" />
+</div>
+<div id="eject">
+<input type="button" class="scout eject bad" id="jammedBall" value="FATAL JAM" />
+<input type="button" class="scout eject" id="droppedBall" value="Dropped" />
+<input type="button" class="scout eject" id="passedBall" value="Passed" />
+<input type="button" class="scout eject" id="threwTruss" value="Truss'd" />
+<input type="button" class="scout eject half" id="scoredLow" value="Low Goal" />
+<input type="button" class="scout eject half" id="scoredHigh" value="High Goal" />
+</div>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

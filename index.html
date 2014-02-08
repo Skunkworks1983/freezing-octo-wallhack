@@ -1,16 +1,17 @@
 <!doctype html>
 <html>
 <head>
-<title>heyoo</title>
+<title>New new new (tm) scout ui</title>
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="viewport" content="width=device-width, user-scalable=no" />
-<script src="scout.js" type="text/javascript"></script>
+<script src="js/mquery.js" type="text/javascript"></script>
+<script src="js/util.js" type="text/javascript"></script>
 <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="normalize.css" type="text/css" />
-<link rel="stylesheet" href="scout.css" type="text/css" />
+<link rel="stylesheet" href="css/normalize.css" type="text/css" />
+<link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
 <body>
-
+<div id="container">
 
 <div id="initial-overlay" class="active">
 <div id="titles">
@@ -22,55 +23,57 @@
 team number: <span id="robot-number">1983</span><br />
 team color: <span id="robot-color" class="blue">Blue</span><br />
 match number: <span id="match-number">1</span><br>
-<img id="robot-image" src="robot.jpg" />
+<img id="robot-image" src="img/robot.jpg" />
 </div>
 <div id="lets-go" class="corner">
-<input id="start" type="button" class="scout" value="Let's go" />
+<input id="start" type="button" class="scout ui" value="Let's go" />
 </div>
 </div>
 
 <div id="data-mode" class="not-active">
-<div id="magic-container"><!-- don't question it -->
-<div id="field-container"><!-- I bet you feel important punk --></div>
+<div id="magic-container">
+<div id="field-container" class="not-active"></div>
+<div id="scout-buttons" class="active">
+
+<div id="auto" class="active">
+<input type="button" class="scout auto position quarter" id="startPosition" value="Start position" />
+<input type="button" class="scout auto status quarter" id="upperGoal" value="Upper goal" />
+<input type="button" class="scout auto position quarter" id="shootPosition" value="Shoot position" />
+<input type="button" class="scout auto status quarter" id="lowerGoal" value="Lower goal" />
+<input type="button" class="scout auto position quarter" id="finalPosition" value="Final position" />
+<input type="button" class="scout auto status quarter" id="missed" value="Missed" />
+<input type="button" class="scout auto hot toggle off quarter" id="hotGoal" value="Hot goal" />
+<input type="button" class="scout auto status bad quarter" id="jammed" value="Jammed" />
+</div>
+
+<div id="teleop" class="not-active">
+<div id="collect" class="active">
+<input type="button" class="scout teleop collect full" id="collectedBall" value="Collected" />
+<input type="button" class="scout teleop collect full" id="caughtBall" value="Caught" />
+</div>
+<div id="eject" class="not-active">
+<input type="button" class="scout teleop eject bad third" id="jammedBall" value="FATAL JAM" />
+<input type="button" class="scout teleop eject third" id="droppedBall" value="Dropped" />
+<input type="button" class="scout teleop eject third" id="passedBall" value="Passed" />
+<input type="button" class="scout teleop eject third" id="threwTruss" value="Truss'd" />
+<input type="button" class="scout teleop eject third" id="scoredLow" value="Low Goal" />
+<input type="button" class="scout teleop eject third" id="scoredHigh" value="High Goal" />
+</div>
+</div>
+
+</div>
+
 <div id="bottom-buttons">
-<input type="button" class="scout" value="amzaing" id="test" />
+<input type="button" class="scout toggle off" id="deadBot" data-asd-dfgsdf-cxcv data-value="Bot ressurected" value="Bot died" />
+<input type="button" class="scout auto done active" id="auto-done" value="End auto" />
+<input type="button" class="scout teleop undo not-active" id="undo-teleop" value="Undo last thing" />
+<input type="button" class="scout teleop done not-active" id="teleop-done" value="End match" />
+<input type="button" class="scout reset" id="reset" value="RESET EVERYTHING" />
 </div>
-</div>
-<div id="side-buttons">
-
-<div id="auto-buttons" class="active">
-<input type="button" class="scout auto position" id="initialPosition" value="Start position" />
-<input type="button" class="scout auto position" id="shootPosition" value="Shoot position" />
-<input type="button" class="scout auto position" id="finalPosition" value="Final position" />
-
-<input type="button" class="scout auto status half" id="lowerGoal" value="Lower goal" />
-<input type="button" class="scout auto status half" id="upperGoal" value="Upper goal" />
-
-<input type="button" class="scout auto hot toggle" id="hotGoal" value="Hot goal" />
-
-<input type="button" class="scout auto status half" id="jammed" value="Jammed" />
-<input type="button" class="scout auto status half" id="missed" value="Missed" />
-
-<input type="button" class="scout auto next" id="auto-next" value="End auto" />
-</div>
-
-<div id="teleop-buttons" class="not-active">
-<div id="collect">
-<input type="button" class="scout collect" id="collectedBall" value="Collected" />
-<input type="button" class="scout collect" id="caughtBall" value="Caught" />
-</div>
-<div id="eject">
-<input type="button" class="scout eject bad" id="jammedBall" value="FATAL JAM" />
-<input type="button" class="scout eject" id="droppedBall" value="Dropped" />
-<input type="button" class="scout eject" id="passedBall" value="Passed" />
-<input type="button" class="scout eject" id="threwTruss" value="Truss'd" />
-<input type="button" class="scout eject half" id="scoredLow" value="Low Goal" />
-<input type="button" class="scout eject half" id="scoredHigh" value="High Goal" />
 </div>
 </div>
 
 </div>
-</div>
-
+<script src="js/script.js" type="text/javascript"></script>
 </body>
 </html>

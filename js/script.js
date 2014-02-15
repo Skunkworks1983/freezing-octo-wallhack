@@ -1,4 +1,10 @@
+var baseUrl = "http://10.76.4.150:9292/api"; // change me
+
 var data = {
+    "currentTeam": -1,
+    "color": "green",
+    "matchNumber": -1,
+
     "modeTeleop": false,
 
     "auto": [],
@@ -21,6 +27,49 @@ var data = {
     "MAX_X": 960,
     "MAX_Y": 437
 };
+
+activateSelector("#start", false);
+$("#scout-number").on("change", function(e) {
+    $("#robot-number").innerHTML = "0000";
+    $("#robot-color").innerHTML = "";
+    $("#match-number-span").innerHTML = "";
+    if (this.value !== "bad") {
+        scoutId = parseInt(this.value, 10) - 1
+        $.get(baseUrl + "/scout/register?scout_id=" + scoutId + "&event_id=2013wase", function(serverData) {
+            matchNumbersArray = serverData.map(function(match) {
+                return match.match_number;
+            });
+            matchNumbers = {}
+            matchNumbersArray.forEach(function(num) {
+                matchNumbers[num] = num;
+            });
+            matches = createSelect("match-numbers", matchNumbers);
+            matches.on("change", function() {
+                if (this.value !== "bad") {
+                    data.matchNumber = parseInt(this.value, 10);
+                    activateSelector("#start", true);
+                    match = serverData[data.matchNumber - 1];
+                    $("#robot-number").innerHTML = match.team_number;
+                    data.currentTeam = match.team_number;
+                    data.color = match.color;
+                    $("#robot-color").classList.remove("blue");
+                    $("#robot-color").classList.remove("red");
+                    $("#robot-color").classList.add(match.color === "blue" ? "blue" : "red");
+                    $("#robot-color").innerHTML = (match.color === "blue") ? "blue" : "red";
+                } else {
+                    $("#robot-number").innerHTML = "0000";
+                    $("#robot-color").innerHTML = "";
+                    activateSelector("#start", false);
+                }
+            });
+            var bad = document.createElement("option");
+            bad.value = "bad";
+            bad.appendChild(document.createTextNode(""));
+            matches.insertBefore(bad, matches.firstChild);
+            $("#match-number-span").appendChild(matches);
+        });
+    }
+});
 
 $("#start").on("click", function(e) {
     activateSelector("#initial-overlay", false);
@@ -134,5 +183,21 @@ $("#undo-teleop").on("click", function(e) { // FIX ME
 });
 
 $("#teleop-done").on("click", function(e) {
-    document.location.reload(true);
+    $.post(baseUrl + "/scout/match", {
+        "event_id": "2013wase",
+        "match_number": data.matchNumber,
+        "team_number": data.currentTeam,
+        "actions": data["teleop"].map(function(action) {
+            return {
+                "action": action.action,
+                "value": action.value,
+                "x": action.x,
+                "y": action.y,
+                "time": action.time
+            };
+        })
+    }, function(data) {
+        console.log(data);
+        alert("success, refresh the page");
+    });
 });

@@ -51,3 +51,21 @@ var storeAction = function(name, category, value, x, y) {
 var undoAction = function() {
     return data[data.modeTeleop ? "teleop" : "auto"].pop();
 };
+
+var createSelect = function(id, options) {
+    var select = document.createElement("select");
+    for (var value in options) {
+        if (options.hasOwnProperty(value)) {
+            var text = options[value];
+            if (text.hasOwnProperty("text")) {
+                text = text.text;
+            }
+            var option = document.createElement("option");
+            option.value = value;
+            option.appendChild(document.createTextNode(text));
+            select.appendChild(option);
+        }
+    }
+    select.id = id;
+    return select;
+};

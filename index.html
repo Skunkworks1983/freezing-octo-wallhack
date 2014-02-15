@@ -16,13 +16,22 @@
 <div id="initial-overlay" class="active">
 <div id="titles">
 <h1>scoutapp</h1>
-<h2>welcome <span id="scout-name">unknown</span></h2>
+<h2>welcome <select id="scout-number">
+<option value="bad"></option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+</select>
+</h2>
 </div>
 <div id="match-info">
 <h1>match info</h1>
-team number: <span id="robot-number">1983</span><br />
-team color: <span id="robot-color" class="blue">Blue</span><br />
-match number: <span id="match-number">1</span><br>
+team number: <span id="robot-number">0000</span><br />
+team color: <span id="robot-color" class="blue"></span><br />
+match number: <span id="match-number-span"></span><br>
 <img id="robot-image" src="img/robot.jpg" />
 </div>
 <div id="lets-go" class="corner">

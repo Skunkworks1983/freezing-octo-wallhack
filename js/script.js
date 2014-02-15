@@ -1,4 +1,4 @@
-var baseUrl = "http://10.76.4.150:9292/api"; // change me
+var baseUrl = "http://10.76.4.150/api"; // change me
 
 var data = {
     "currentTeam": -1,
@@ -34,8 +34,8 @@ $("#scout-number").on("change", function(e) {
     $("#robot-color").innerHTML = "";
     $("#match-number-span").innerHTML = "";
     if (this.value !== "bad") {
-        scoutId = parseInt(this.value, 10) - 1
-        $.get(baseUrl + "/scout/register?scout_id=" + scoutId + "&event_id=2013wase", function(serverData) {
+        scoutId = parseInt(this.value, 10);
+        $.get(baseUrl + "/register?scout_id=" + scoutId + "&event_id=2013wase", function(serverData) {
             matchNumbersArray = serverData.map(function(match) {
                 return match.match_number;
             });
@@ -183,7 +183,7 @@ $("#undo-teleop").on("click", function(e) { // FIX ME
 });
 
 $("#teleop-done").on("click", function(e) {
-    $.post(baseUrl + "/scout/match", {
+    $.post(baseUrl + "/match", {
         "event_id": "2013wase",
         "match_number": data.matchNumber,
         "team_number": data.currentTeam,

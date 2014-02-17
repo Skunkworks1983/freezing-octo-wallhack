@@ -69,3 +69,9 @@ var createSelect = function(id, options) {
     select.id = id;
     return select;
 };
+
+var getXY = function(callback) {
+    data.fieldCallback = callback;
+    activateSelector("#scout-buttons", false);
+    activateSelector("#field-container", true);
+};

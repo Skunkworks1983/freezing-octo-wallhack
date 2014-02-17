@@ -1,4 +1,7 @@
-var baseUrl = "http://10.76.4.150/api"; // change me
+var baseUrl = "http://192.168.43.167/api"; // change me
+// var baseUrl = "http://127.0.0.1/api";
+
+var noop = function() {};
 
 var data = {
     "currentTeam": -1,
@@ -22,8 +25,7 @@ var data = {
         "deadBot": false,
     },
 
-    "currentX": 100,
-    "currentY": 169,
+    "fieldCallback": noop,
     "MAX_X": 960,
     "MAX_Y": 437
 };
@@ -76,7 +78,7 @@ $("#start").on("click", function(e) {
     activateSelector("#data-mode", true);
 });
 
-var littleRobot = spawnLittleRobot(data.currentX, data.currentY);
+var littleRobot = spawnLittleRobot(100, 169);
 $("#field-container").appendChild(littleRobot);
 
 var fieldContainer = $("#field-container");
@@ -92,16 +94,15 @@ fieldContainer.on("click", function(e) {
     if (y + 25 > data.MAX_Y) y = data.MAX_Y - 25;
     if (x < 25) x = 25;
     if (y < 25) y = 25;
-    data.currentX = x;
-    data.currentY = y;
     littleRobot.style.left = (x - 25) + "px";
     littleRobot.style.top = (y - 25) + "px";
+    data.fieldCallback(x, y);
 });
 
 fieldContainer.on("mouseup", function(e) {
     setTimeout(function() {
-        activateSelector("#field-container", false);
         activateSelector("#scout-buttons", true);
+        activateSelector("#field-container", false);
     }, 200);
 });
 
@@ -126,9 +127,11 @@ $("#reset").on("click", function(e) {
 // auto
 
 $(".scout.auto.position").on("click", function(e) {
-    data.autoMeta[this.id] = {"x": data.currentX, "y": data.currentY}; // FIX ME
-    activateSelector("#scout-buttons", false);
-    activateSelector("#field-container", true);
+    var name = this.id;
+    getXY(function(x, y) {
+        console.log(name, x, y);
+        data.autoMeta[name] = {"x": x, "y": y};
+    });
 });
 
 $(".scout.auto.status").on("click", function(e) {
@@ -156,30 +159,32 @@ $("#auto-done").on("click", function(e) {
 // teleop
 
 $(".scout.teleop.collect").on("click", function(e) {
-    storeAction(this.id, "collect", 1, data.currentX, data.currentY); // FIX ME
-    activateSelector("#scout-buttons", false);
-    activateSelector("#field-container", true);
-    activateSelector("#collect", false);
-    activateSelector("#eject", true);
+    var name = this.id;
+    getXY(function(x, y) {
+        activateSelector("#collect", false);
+        activateSelector("#eject", true);
+        storeAction(name, "collect", 1, x, y);
+    });
 });
 
 $(".scout.teleop.eject").on("click", function(e) {
-    storeAction(this.id, "eject", 1, data.currentX, data.currentY); // FIX ME
-    if (!this.classList.contains("bad")) {
-        activateSelector("#scout-buttons", false);
-        activateSelector("#field-container", true);
+    var name = this.id;
+    getXY(function(x, y) {
         activateSelector("#collect", true);
         activateSelector("#eject", false);
-    }
+        storeAction(name, "eject", 1, x, y);
+    });
 });
 
-$("#undo-teleop").on("click", function(e) { // FIX ME
-    var action = undoAction();
-    undidCollect = action.category === "collect";
+$("#undo-teleop").on("click", function(e) {
+    if ($("#field-container").classList.contains("not-active")) {
+        var action = undoAction();
+        undidCollect = action.category === "collect";
+        activateSelector("#collect", undidCollect);
+        activateSelector("#eject", !undidCollect);
+    }
     activateSelector("#scout-buttons", true);
     activateSelector("#field-container", false);
-    activateSelector("#collect", undidCollect);
-    activateSelector("#eject", !undidCollect);
 });
 
 $("#teleop-done").on("click", function(e) {

@@ -1,5 +1,4 @@
-var baseUrl = "http://192.168.43.167/api"; // change me
-// var baseUrl = "http://127.0.0.1/api";
+var baseUrl = window.location.href + "api";
 
 var noop = function() {};
 

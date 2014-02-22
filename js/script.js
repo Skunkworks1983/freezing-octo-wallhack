@@ -191,6 +191,8 @@ $("#teleop-done").on("click", function(e) {
         "event_id": "2013wase",
         "match_number": data.matchNumber,
         "team_number": data.currentTeam,
+        "scout_number": parseInt($("#scout-number").value, 10),
+        "scout_name": "unknown",
         "actions": data["teleop"].map(function(action) {
             return {
                 "action": action.action,

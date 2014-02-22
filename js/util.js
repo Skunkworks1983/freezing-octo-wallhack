@@ -44,7 +44,7 @@ var storeAction = function(name, category, value, x, y) {
         "value": value,
         "x": x,
         "y": y,
-        "time": Date.now()
+        "time": Date.now() / 1000 // postgresql doesn't like millis
     });
 };
 

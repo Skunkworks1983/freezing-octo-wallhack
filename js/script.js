@@ -1,5 +1,4 @@
 var baseUrl = window.location.href + "api";
-
 var noop = function() {};
 
 var data = {
@@ -36,7 +35,7 @@ $("#scout-number").on("change", function(e) {
     $("#match-number-span").innerHTML = "";
     if (this.value !== "bad") {
         scoutId = parseInt(this.value, 10);
-        $.get(baseUrl + "/register?scout_id=" + scoutId + "&event_id=2013wase", function(serverData) {
+        $.get(baseUrl + "/register?scout_id=" + scoutId + "&event_id=" + eventId, function(serverData) {
             matchNumbersArray = serverData.map(function(match) {
                 return match.match_number;
             });
@@ -188,7 +187,7 @@ $("#undo-teleop").on("click", function(e) {
 
 $("#teleop-done").on("click", function(e) {
     $.post(baseUrl + "/match", {
-        "event_id": "2013wase",
+        "event_id": eventId,
         "match_number": data.matchNumber,
         "team_number": data.currentTeam,
         "scout_number": parseInt($("#scout-number").value, 10),

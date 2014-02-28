@@ -116,7 +116,26 @@ body, html {
 
 input[type=button].scout {
     height: 40px;
-    width: 200px;
+    width: calc((960px - (7 * 9px)) / 6);
+}
+
+#bottom-buttons input[type=button].scout {
+    float: left;
+    margin-left: 9px;
+}
+
+#bottom-buttons input[type=button].scout:first-child {
+    margin-left: 0px;
+}
+
+#bottom-buttons input[type=button].scout.right {
+    float: right;
+    margin-left: 0px;
+    margin-right: 9px;
+}
+
+#bottom-buttons input[type=button].scout.right:last-child {
+    margin-right: 0px;
 }
 
 input[type=button].scout.active {

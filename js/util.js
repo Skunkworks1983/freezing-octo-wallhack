@@ -33,7 +33,7 @@ var spawnLittleRobot = function(x, y) {
     var littleRobot = document.createElement("div");
     littleRobot.id = "little-robot";
     littleRobot.style.left = (x - 25) + "px";
-    littleRobot.style.top = (y - 25) + "px"; // grid cause grace said so nothx
+    littleRobot.style.top = (y - 25) + "px";
     return littleRobot;
 };
 
@@ -44,7 +44,7 @@ var storeAction = function(name, category, value, x, y) {
         "value": value,
         "x": x,
         "y": y,
-        "time": Date.now() / 1000 // postgresql doesn't like millis
+        "time": Date.now() / 1000 // postgresql doesn't like millis so this is best fix
     });
 };
 
@@ -74,4 +74,8 @@ var getXY = function(callback) {
     data.fieldCallback = callback;
     activateSelector("#scout-buttons", false);
     activateSelector("#field-container", true);
+};
+
+var getLastXY = function(callback, forceAuto) { // callback because of the other one lol
+    callback(data.LAST_X, data.LAST_Y);
 };

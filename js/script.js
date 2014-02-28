@@ -200,7 +200,8 @@ $("#teleop-done").on("click", function(e) {
                 "y": action.y,
                 "time": action.time
             };
-        })
+        }),
+        "autonomous": data["autoMeta"]
     }, function(data) {
         console.log(data);
         alert("success, refresh the page");

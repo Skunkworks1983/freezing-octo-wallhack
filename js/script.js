@@ -107,8 +107,8 @@ fieldContainer.on("mouseup", function(e) {
 // general
 
 $(".scout.toggle").on("click", function(e) {
-    var enabled = !data[data.modeTeleop ? "teleopMeta" : "autoMeta"][this.id];
-    data[data.modeTeleop ? "teleopMeta" : "autoMeta"][this.id] = enabled;
+    var name = this.id;
+    var enabled = this.classList.contains("off");
     this.classList[enabled ? "add" : "remove"]("on");
     this.classList[!enabled ? "add" : "remove"]("off");
     if (this.dataset.value != null) {
@@ -116,6 +116,9 @@ $(".scout.toggle").on("click", function(e) {
         this.value = this.dataset.value;
         this.dataset.value = v;
     }
+    getLastXY(function(x, y) {
+        storeAction(name, "other", enabled, x, y);
+    });
 });
 
 $("#reset").on("click", function(e) {
@@ -206,4 +209,35 @@ $("#teleop-done").on("click", function(e) {
         console.log(data);
         alert("success, refresh the page");
     });
+});
+
+$("#teleop input.scout").on("click", function(e) {
+    var self = this;
+    if (!this.classList.contains("defence")) {
+        console.log("should do something");
+        $(".scout.defence").each(function(element) {
+            var enabled = false;
+            var wasEnabled = element.classList.contains("on");
+            element.classList.remove("on");
+            element.classList.add("off");
+            if (element.dataset.value != null && wasEnabled) {
+                var v = element.value;
+                element.value = element.dataset.value;
+                element.dataset.value = v;
+            }
+        });
+    } else {
+        $(".scout.defence").each(function(element) {
+            console.log(self === this);
+            // var enabled = false;
+            // var wasEnabled = element.classList.contains("on");
+            // element.classList.remove("on");
+            // element.classList.add("off");
+            // if (element.dataset.value != null && wasEnabled) {
+            //     var v = element.value;
+            //     element.value = element.dataset.value;
+            //     element.dataset.value = v;
+            // }
+        });
+    }
 });

@@ -45,7 +45,7 @@ var request = function(type, url, data, callback) {
         data = null;
     }
     xhr.open(type, url);
-    if (type === "POST" && data != null) {
+    if (type === "POST" && data != null && Object.keys(data).length != 0) {
         fd = new FormData();
         for (var key in data) {
             fd.append(key, JSON.stringify(data[key]));

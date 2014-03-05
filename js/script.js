@@ -1,7 +1,10 @@
 var baseUrl = window.location.href + "api";
 var noop = function() {};
 
-var data = {
+var defaultData;
+var data = defaultData = {
+    "scoutNumber": -1,
+    "scoutName": "unknown",
     "currentTeam": -1,
     "color": "green",
     "matchNumber": -1,
@@ -13,9 +16,9 @@ var data = {
         "deadBot": false,
         "status": "noAuto",
         "hotGoal": false,
-        "startPosition": {"x": 0, "y": 0},
-        "shootPosition": {"x": 0, "y": 0},
-        "finalPosition": {"x": 0, "y": 0}
+        "startPosition": {"x": -1, "y": -1},
+        "shootPosition": {"x": -1, "y": -1},
+        "finalPosition": {"x": -1, "y": -1}
     },
 
     "teleop": [],
@@ -35,7 +38,8 @@ $("#scout-number").on("change", function(e) {
     $("#match-number-span").innerHTML = "";
     if (this.value !== "bad") {
         scoutId = parseInt(this.value, 10);
-        $.get(baseUrl + "/register?scout_id=" + scoutId + "&event_id=" + eventId, function(serverData) {
+        data.scoutNumber = scoutId;
+        $.get(baseUrl + "/register", { "scout_id": scoutId, "event_id": eventId }, function(serverData) {
             matchNumbersArray = serverData.map(function(match) {
                 return match.match_number;
             });
@@ -81,10 +85,6 @@ $("#field-container").appendChild(littleRobot);
 
 var fieldContainer = $("#field-container");
 
-onLongPress(fieldContainer, function(e) {
-    console.log("long");
-});
-
 fieldContainer.on("click", function(e) {
     var x = e.x;
     var y = e.y;
@@ -129,8 +129,7 @@ $("#reset").on("click", function(e) {
 
 $(".scout.auto.position").on("click", function(e) {
     var name = this.id;
-    getXY(function(x, y) {
-        console.log(name, x, y);
+    getXY(this.value, function(x, y) {
         data.autoMeta[name] = {"x": x, "y": y};
     });
 });
@@ -149,19 +148,21 @@ $(".scout.auto.status").on("click", function(e) {
 });
 
 $("#auto-done").on("click", function(e) {
-    data.modeTeleop = true;
-    data.teleopMeta.deadBot = data.autoMeta.deadBot;
-    activateSelector("#auto", false);
-    activateSelector("#teleop", true);
-    activateSelector("#bottom-buttons .auto", false);
-    activateSelector("#bottom-buttons .teleop", true);
+    if (confirm("Confirm autonomous over")) {
+        data.modeTeleop = true;
+        data.teleopMeta.deadBot = data.autoMeta.deadBot;
+        activateSelector("#auto", false);
+        activateSelector("#teleop", true);
+        activateSelector("#bottom-buttons .auto", false);
+        activateSelector("#bottom-buttons .teleop", true);
+    }
 });
 
 // teleop
 
 $(".scout.teleop.collect").on("click", function(e) {
     var name = this.id;
-    getXY(function(x, y) {
+    getXY(this.value, function(x, y) {
         activateSelector("#collect", false);
         activateSelector("#eject", true);
         storeAction(name, "collect", 1, x, y);
@@ -170,7 +171,7 @@ $(".scout.teleop.collect").on("click", function(e) {
 
 $(".scout.teleop.eject").on("click", function(e) {
     var name = this.id;
-    getXY(function(x, y) {
+    getXY(this.value, function(x, y) {
         activateSelector("#collect", true);
         activateSelector("#eject", false);
         storeAction(name, "eject", 1, x, y);
@@ -189,55 +190,46 @@ $("#undo-teleop").on("click", function(e) {
 });
 
 $("#teleop-done").on("click", function(e) {
-    $.post(baseUrl + "/match", {
-        "event_id": eventId,
-        "match_number": data.matchNumber,
-        "team_number": data.currentTeam,
-        "scout_number": parseInt($("#scout-number").value, 10),
-        "scout_name": "unknown",
-        "actions": data["teleop"].map(function(action) {
-            return {
-                "action": action.action,
-                "value": action.value,
-                "x": action.x,
-                "y": action.y,
-                "time": action.time
-            };
-        }),
-        "autonomous": data["autoMeta"]
-    }, function(data) {
-        console.log(data);
-        alert("success, refresh the page");
-    });
+    if (confirm("Confirm match over")) {
+        $.post(baseUrl + "/match", {
+            "event_id": eventId,
+            "match_number": data.matchNumber,
+            "team_number": data.currentTeam,
+            "scout_number": parseInt($("#scout-number").value, 10),
+            "scout_name": "unknown",
+            "actions": data["teleop"].map(function(action) {
+                return {
+                    "action": action.action,
+                    "value": action.value,
+                    "x": action.x,
+                    "y": action.y,
+                    "time": action.time
+                };
+            }),
+            "autonomous": data["autoMeta"]
+        }, function(data) {
+            console.log(data);
+            cleanup();
+        });
+    }
 });
 
-$("#teleop input.scout").on("click", function(e) {
+$("#data-mode input.scout:not(.auto)").on("click", function(e) {
     var self = this;
-    if (!this.classList.contains("defence")) {
-        console.log("should do something");
-        $(".scout.defence").each(function(element) {
+    $(".scout.defence").each(function(element) {
+        if (self !== element) {
             var enabled = false;
             var wasEnabled = element.classList.contains("on");
             element.classList.remove("on");
             element.classList.add("off");
-            if (element.dataset.value != null && wasEnabled) {
-                var v = element.value;
-                element.value = element.dataset.value;
-                element.dataset.value = v;
+            if (wasEnabled) {
+                if (element.dataset.value != null) {
+                    var v = element.value;
+                    element.value = element.dataset.value;
+                    element.dataset.value = v;
+                }
+                storeAction(element.id, "other", enabled, -1, -1);
             }
-        });
-    } else {
-        $(".scout.defence").each(function(element) {
-            console.log(self === this);
-            // var enabled = false;
-            // var wasEnabled = element.classList.contains("on");
-            // element.classList.remove("on");
-            // element.classList.add("off");
-            // if (element.dataset.value != null && wasEnabled) {
-            //     var v = element.value;
-            //     element.value = element.dataset.value;
-            //     element.dataset.value = v;
-            // }
-        });
-    }
+        }
+    });
 });

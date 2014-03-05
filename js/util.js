@@ -70,12 +70,61 @@ var createSelect = function(id, options) {
     return select;
 };
 
-var getXY = function(callback) {
+var getXY = function(displayText, callback) {
+    $("#field-text").innerHTML = displayText;
     data.fieldCallback = callback;
-    activateSelector("#scout-buttons", false);
     activateSelector("#field-container", true);
+    activateSelector("#scout-buttons", false);
 };
 
 var getLastXY = function(callback, forceAuto) { // callback because of the other one lol
     callback(data.LAST_X, data.LAST_Y);
+};
+
+var cleanup = function() {
+    // reset all data
+    var newData = defaultData;
+    // reset toggles
+    $(".scout.toggle").each(function(element) {
+        var enabled = false;
+        var wasEnabled = element.classList.contains("on");
+        element.classList.remove("on");
+        element.classList.add("off");
+        if (element.dataset.value != null && wasEnabled) {
+            var v = element.value;
+            element.value = element.dataset.value;
+            element.dataset.value = v;
+        }
+    });
+    // reset auto position
+    $(".scout.auto.status").each(function(element) {
+        element.classList.remove("selected");
+    });
+    // reset current xy/littleRobot/field
+    $("#field-container").removeChild(littleRobot);
+    littleRobot = spawnLittleRobot(100, 169);
+    $("#field-container").appendChild(littleRobot);
+    activateSelector("#field-container", false);
+    activateSelector("#scout-buttons", true);
+    // reset auto/teleop
+    activateSelector("#auto", true);
+    activateSelector("#teleop", false);
+    activateSelector("#bottom-buttons .auto", true);
+    activateSelector("#bottom-buttons .teleop", false);
+    // keep scoutName/Number same
+    newData.scoutNumber = data.scoutNumber;
+    newData.scoutName = data.scoutName
+    // advance match by one
+    newData.matchNumber = data.matchNumber + 1
+    var matchChangeEvent = new Event("change", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": true
+    });
+    $("#match-numbers").value = newData.matchNumber;
+    $("#match-numbers").dispatchEvent(matchChangeEvent);
+    // reset initial overlay
+    activateSelector("#data-mode", false);
+    activateSelector("#initial-overlay", true);
+    data = newData;
 };

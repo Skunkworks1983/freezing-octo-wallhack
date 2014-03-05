@@ -124,7 +124,7 @@ input[type=button].scout {
     margin-left: 9px;
 }
 
-#bottom-buttons input[type=button].scout:first-child {
+#bottom-buttons input[type=button].scout:not(.not-active):first-child {
     margin-left: 0px;
 }
 
@@ -134,7 +134,7 @@ input[type=button].scout {
     margin-right: 9px;
 }
 
-#bottom-buttons input[type=button].scout.right:last-child {
+#bottom-buttons input[type=button].scout.right:not(.not-active) {
     margin-right: 0px;
 }
 
@@ -191,4 +191,11 @@ input[type=button].scout.teleop.bad {
 
 .status.selected.bad {
     color: #df4931;
+}
+
+#field-text {
+    text-align: center;
+    font-size: 3em;
+    color: white;
+    opacity: 0.5;
 }

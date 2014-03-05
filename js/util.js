@@ -72,7 +72,12 @@ var createSelect = function(id, options) {
 
 var getXY = function(displayText, callback) {
     $("#field-text").innerHTML = displayText;
-    data.fieldCallback = callback;
+    var period = data.modeTeleop ? "teleop" : "auto";
+    activateSelector("#" + period + "-done", false);
+    data.fieldCallback = function(x, y) {
+        activateSelector("#" + period + "-done", true);
+        callback(x, y);
+    }
     activateSelector("#field-container", true);
     activateSelector("#scout-buttons", false);
 };

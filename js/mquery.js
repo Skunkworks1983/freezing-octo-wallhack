@@ -4,7 +4,7 @@
 // dom
 
 var $ = function() {
-    var elementList = document.querySelectorAll.apply(doc, arguments);
+    var elementList = doc.querySelectorAll.apply(doc, arguments);
     if (elementList.length === 1) elementList = elementList[0];
     return elementList;
 };
@@ -49,12 +49,14 @@ var request = function(type, url, data, callback) {
         callback = data;
         data = null;
     }
-    if (data != null && Object.keys(data).length != 0) {
+    if (data != null && Object.keys(data).length !== 0) {
         if (type === "POST") {
             posting = true;
             fd = new FormData();
             for (var key in data) {
-                fd.append(key, JSON.stringify(data[key]));
+                if (data.hasOwnProperty(key)) {
+                    fd.append(key, JSON.stringify(data[key]));
+                }
             }
         } else if (type === "GET") {
             actualUrl = actualUrl + "?" + Object.keys(data).map(function(key) {

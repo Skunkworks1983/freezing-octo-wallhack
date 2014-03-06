@@ -1,8 +1,7 @@
 var baseUrl = window.location.href + "api";
-var noop = function() {};
+var nop = function() {};
 
-var defaultData;
-var data = defaultData = {
+var defaultData = {
     "scoutNumber": -1,
     "scoutName": "unknown",
     "currentTeam": -1,
@@ -26,10 +25,11 @@ var data = defaultData = {
         "deadBot": false,
     },
 
-    "fieldCallback": noop,
+    "fieldCallback": nop,
     "MAX_X": 960,
     "MAX_Y": 437
 };
+var data = defaultData;
 
 activateSelector("#start", false);
 $("#scout-number").on("change", function(e) {
@@ -37,22 +37,22 @@ $("#scout-number").on("change", function(e) {
     $("#robot-color").innerHTML = "";
     $("#match-number-span").innerHTML = "";
     if (this.value !== "bad") {
-        scoutId = parseInt(this.value, 10);
+        var scoutId = parseInt(this.value, 10);
         data.scoutNumber = scoutId;
         $.get(baseUrl + "/register", { "scout_id": scoutId, "event_id": eventId }, function(serverData) {
-            matchNumbersArray = serverData.map(function(match) {
+            var matchNumbersArray = serverData.map(function(match) {
                 return match.match_number;
             });
-            matchNumbers = {}
+            var matchNumbers = {};
             matchNumbersArray.forEach(function(num) {
                 matchNumbers[num] = num;
             });
-            matches = createSelect("match-numbers", matchNumbers);
+            var matches = createSelect("match-numbers", matchNumbers);
             matches.on("change", function() {
                 if (this.value !== "bad") {
                     data.matchNumber = parseInt(this.value, 10);
                     activateSelector("#start", true);
-                    match = serverData[data.matchNumber - 1];
+                    var match = serverData[data.matchNumber - 1];
                     $("#robot-number").innerHTML = match.team_number;
                     data.currentTeam = match.team_number;
                     data.color = match.color;
@@ -181,7 +181,7 @@ $(".scout.teleop.eject").on("click", function(e) {
 $("#undo-teleop").on("click", function(e) {
     if ($("#field-container").classList.contains("not-active")) {
         var action = undoAction();
-        undidCollect = action.category === "collect";
+        var undidCollect = action.category === "collect";
         activateSelector("#collect", undidCollect);
         activateSelector("#eject", !undidCollect);
     }
@@ -197,7 +197,7 @@ $("#teleop-done").on("click", function(e) {
             "team_number": data.currentTeam,
             "scout_number": parseInt($("#scout-number").value, 10),
             "scout_name": "unknown",
-            "actions": data["teleop"].map(function(action) {
+            "actions": data.teleop.map(function(action) {
                 return {
                     "action": action.action,
                     "value": action.value,
@@ -206,7 +206,7 @@ $("#teleop-done").on("click", function(e) {
                     "time": action.time
                 };
             }),
-            "autonomous": data["autoMeta"]
+            "autonomous": data.autoMeta
         }, function(data) {
             console.log(data);
             cleanup();

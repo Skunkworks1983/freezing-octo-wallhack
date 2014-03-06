@@ -77,7 +77,7 @@ var getXY = function(displayText, callback) {
     data.fieldCallback = function(x, y) {
         activateSelector("#" + period + "-done", true);
         callback(x, y);
-    }
+    };
     activateSelector("#field-container", true);
     activateSelector("#scout-buttons", false);
 };
@@ -118,9 +118,9 @@ var cleanup = function() {
     activateSelector("#bottom-buttons .teleop", false);
     // keep scoutName/Number same
     newData.scoutNumber = data.scoutNumber;
-    newData.scoutName = data.scoutName
+    newData.scoutName = data.scoutName;
     // advance match by one
-    newData.matchNumber = data.matchNumber + 1
+    newData.matchNumber = data.matchNumber + 1;
     var matchChangeEvent = new Event("change", {
         "view": window,
         "bubbles": true,

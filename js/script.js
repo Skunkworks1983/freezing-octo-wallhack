@@ -48,6 +48,11 @@ $("#scout-number").on("change", function(e) {
                 matchNumbers[num] = num;
             });
             var matches = createSelect("match-numbers", matchNumbers);
+            var bad = document.createElement("option");
+            bad.value = "bad";
+            bad.appendChild(document.createTextNode(""));
+            matches.insertBefore(bad, matches.firstChild);
+            matches.value = "bad";
             matches.on("change", function() {
                 if (this.value !== "bad") {
                     data.matchNumber = parseInt(this.value, 10);
@@ -66,10 +71,6 @@ $("#scout-number").on("change", function(e) {
                     activateSelector("#start", false);
                 }
             });
-            var bad = document.createElement("option");
-            bad.value = "bad";
-            bad.appendChild(document.createTextNode(""));
-            matches.insertBefore(bad, matches.firstChild);
             $("#match-number-span").appendChild(matches);
         });
     }
@@ -86,8 +87,8 @@ $("#field-container").appendChild(littleRobot);
 var fieldContainer = $("#field-container");
 
 fieldContainer.on("click", function(e) {
-    var x = e.x;
-    var y = e.y;
+    var x = e.clientX;
+    var y = e.clientY;
     if (x + 25 > data.MAX_X) x = data.MAX_X - 25;
     if (y + 25 > data.MAX_Y) y = data.MAX_Y - 25;
     if (x < 25) x = 25;

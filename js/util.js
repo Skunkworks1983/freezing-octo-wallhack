@@ -14,6 +14,22 @@ var activateSelector = function(selector, activated) {
     });
 };
 
+var clone = function(obj) {
+    if (obj == null || typeof obj !== "object") return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) {
+            if (typeof obj[attr] === "object") {
+                copy[attr] = clone(obj[attr]);
+            } else {
+                copy[attr] = obj[attr];
+            }
+        }
+    }
+    return copy;
+}
+
+
 var onLongPress = function(element, callback) {
     var interval;
     element.on("mousedown", function(e) {
@@ -88,7 +104,8 @@ var getLastXY = function(callback, forceAuto) { // callback because of the other
 
 var cleanup = function() {
     // reset all data
-    var newData = defaultData;
+    var oldData = clone(data);
+    data = clone(defaultData);
     // reset toggles
     $(".scout.toggle").each(function(element) {
         var enabled = false;
@@ -117,19 +134,21 @@ var cleanup = function() {
     activateSelector("#bottom-buttons .auto", true);
     activateSelector("#bottom-buttons .teleop", false);
     // keep scoutName/Number same
-    newData.scoutNumber = data.scoutNumber;
-    newData.scoutName = data.scoutName;
+    data.scoutNumber = oldData.scoutNumber;
+    data.scoutName = oldData.scoutName;
     // advance match by one
-    newData.matchNumber = data.matchNumber + 1;
+    data.matchNumber = oldData.matchNumber + 1;
     var matchChangeEvent = new Event("change", {
         "view": window,
         "bubbles": true,
         "cancelable": true
     });
-    $("#match-numbers").value = newData.matchNumber;
+    $("#match-numbers").value = data.matchNumber;
     $("#match-numbers").dispatchEvent(matchChangeEvent);
     // reset initial overlay
     activateSelector("#data-mode", false);
     activateSelector("#initial-overlay", true);
-    data = newData;
+    if (data.teleop.length !== 0) {
+        console.log("pls no");
+    }
 };

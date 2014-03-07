@@ -29,7 +29,7 @@ var defaultData = {
     "MAX_X": 960,
     "MAX_Y": 437
 };
-var data = defaultData;
+var data = clone(defaultData);
 
 activateSelector("#start", false);
 $("#scout-number").on("change", function(e) {
@@ -209,7 +209,7 @@ $("#teleop-done").on("click", function(e) {
             }),
             "autonomous": data.autoMeta
         }, function(data) {
-            console.log(data);
+            console.log(data["error"]);
             cleanup();
         });
     }

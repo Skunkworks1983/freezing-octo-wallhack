@@ -53,19 +53,30 @@ var spawnLittleRobot = function(x, y) {
     return littleRobot;
 };
 
-var storeAction = function(name, category, value, x, y) {
+var storeAction = function(name, category, value, x, y, prettyName) {
     data[data.modeTeleop ? "teleop" : "auto"].push({
         "action": name,
         "category": category,
         "value": value,
         "x": x,
         "y": y,
-        "time": Date.now() / 1000 // postgresql doesn't like millis so this is best fix
+        "time": Date.now() / 1000, // postgresql doesn't like millis so this is best fix
+        "prettyName": prettyName
     });
+    $("#undo-info").innerHTML = prettyName;
 };
 
 var undoAction = function() {
-    return data[data.modeTeleop ? "teleop" : "auto"].pop();
+    var mode = data.modeTeleop ? "teleop" : "auto";
+    if (data[mode].length < 1) return {"category": "collect"}; // nah mate
+    var undid = data[mode].pop();
+    if (data[mode].length > 0) {
+        var pretty = data[mode][data[mode].length - 1].prettyName;
+        $("#undo-info").innerHTML = pretty; // kill me
+    } else {
+        $("#undo-info").innerHTML = "Nothing";
+    }
+    return undid;
 };
 
 var createSelect = function(id, options) {

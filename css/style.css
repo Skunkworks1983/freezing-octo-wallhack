@@ -199,3 +199,10 @@ input[type=button].scout.teleop.bad {
     color: white;
     opacity: 0.5;
 }
+
+#undo-info-box {
+    float: left;
+    margin-left: 9px;
+    height: 40px;
+    width: calc((960px - (7 * 9px)) / 6);
+}

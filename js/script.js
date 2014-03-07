@@ -109,6 +109,7 @@ fieldContainer.on("mouseup", function(e) {
 
 $(".scout.toggle").on("click", function(e) {
     var name = this.id;
+    var pretty = this.value;
     var enabled = this.classList.contains("off");
     this.classList[enabled ? "add" : "remove"]("on");
     this.classList[!enabled ? "add" : "remove"]("off");
@@ -118,7 +119,7 @@ $(".scout.toggle").on("click", function(e) {
         this.dataset.value = v;
     }
     getLastXY(function(x, y) {
-        storeAction(name, "other", enabled, x, y);
+        storeAction(name, "other", enabled, x, y, pretty);
     });
 });
 
@@ -163,28 +164,32 @@ $("#auto-done").on("click", function(e) {
 
 $(".scout.teleop.collect").on("click", function(e) {
     var name = this.id;
-    getXY(this.value, function(x, y) {
+    var pretty = this.value;
+    getXY(pretty, function(x, y) {
         activateSelector("#collect", false);
         activateSelector("#eject", true);
-        storeAction(name, "collect", 1, x, y);
+        storeAction(name, "collect", 1, x, y, pretty);
     });
 });
 
 $(".scout.teleop.eject").on("click", function(e) {
     var name = this.id;
-    getXY(this.value, function(x, y) {
+    var pretty = this.value;
+    getXY(pretty, function(x, y) {
         activateSelector("#collect", true);
         activateSelector("#eject", false);
-        storeAction(name, "eject", 1, x, y);
+        storeAction(name, "eject", 1, x, y, pretty);
     });
 });
 
 $("#undo-teleop").on("click", function(e) {
     if ($("#field-container").classList.contains("not-active")) {
         var action = undoAction();
-        var undidCollect = action.category === "collect";
-        activateSelector("#collect", undidCollect);
-        activateSelector("#eject", !undidCollect);
+        if (action.category !== "other") {
+            var undidCollect = action.category === "collect";
+            activateSelector("#collect", undidCollect);
+            activateSelector("#eject", !undidCollect);
+        }
     }
     activateSelector("#scout-buttons", true);
     activateSelector("#field-container", false);
@@ -224,12 +229,13 @@ $("#data-mode input.scout:not(.auto)").on("click", function(e) {
             element.classList.remove("on");
             element.classList.add("off");
             if (wasEnabled) {
+                var pretty = element.value;
                 if (element.dataset.value != null) {
                     var v = element.value;
                     element.value = element.dataset.value;
                     element.dataset.value = v;
                 }
-                storeAction(element.id, "other", enabled, -1, -1);
+                storeAction(element.id, "other", enabled, -1, -1, pretty);
             }
         }
     });

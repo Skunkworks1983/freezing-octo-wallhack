@@ -50,7 +50,7 @@ var request = function(type, url, data, callback) {
         data = null;
     }
     if (data != null && Object.keys(data).length !== 0) {
-        if (type === "POST") {
+        if (type === "POST" || type === "PUT") {
             posting = true;
             fd = new FormData();
             for (var key in data) {
@@ -58,7 +58,7 @@ var request = function(type, url, data, callback) {
                     fd.append(key, JSON.stringify(data[key]));
                 }
             }
-        } else if (type === "GET") {
+        } else {
             actualUrl = actualUrl + "?" + Object.keys(data).map(function(key) {
                 var val = key + "=";
                 if (Array.isArray(data[key])) {
@@ -80,6 +80,8 @@ var request = function(type, url, data, callback) {
 
 $.get = request.bind(global, "GET");
 $.post = request.bind(global, "POST");
+$.delete = request.bind(global, "DELETE");
+$.put = request.bind(global, "PUT");
 
 // attach
 

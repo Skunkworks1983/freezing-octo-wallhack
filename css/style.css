@@ -30,7 +30,7 @@ body, html {
     right: 0;
 }
 
-#titles h1, #titles h2 {
+#titles h1, #titles h2, #titles h3 {
     margin: 0;
     padding: 0;
 }
@@ -42,6 +42,11 @@ body, html {
 #titles h2 {
     font-size: 4em;
     padding-left: 1em;
+}
+
+#titles h3 {
+    font-size: 2em;
+    padding-left: 2em;
 }
 
 #initial-overlay, #data-mode {

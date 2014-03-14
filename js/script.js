@@ -34,6 +34,7 @@ var defaultData = {
 var data = clone(defaultData);
 
 activateSelector("#start", false);
+$("#event-name").innerHTML = eventName;
 $("#scout-number").on("change", function(e) {
     $("#robot-number").innerHTML = "0000";
     $("#robot-color").innerHTML = "";

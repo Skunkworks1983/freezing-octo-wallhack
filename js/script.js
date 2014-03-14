@@ -7,6 +7,8 @@ var defaultData = {
     "currentTeam": -1,
     "color": "green",
     "matchNumber": -1,
+    "matchLevel": "qm",
+    "matchKey": "1970wano_qm-1",
 
     "modeTeleop": false,
 
@@ -40,12 +42,25 @@ $("#scout-number").on("change", function(e) {
         var scoutId = parseInt(this.value, 10);
         data.scoutNumber = scoutId;
         $.get(baseUrl + "/register", { "scout_id": scoutId, "event_id": eventId }, function(serverData) {
-            var matchNumbersArray = serverData.map(function(match) {
-                return match.match_number;
-            });
             var matchNumbers = {};
-            matchNumbersArray.forEach(function(num) {
-                matchNumbers[num] = num;
+            serverData = serverData.sort(matchListSorter);
+            serverData.forEach(function(match) {
+                var text;
+                switch (match.comp_level) {
+                case "qm": // quals
+                    text = match.match_number;
+                    break;
+                case "qf": // quarters
+                    text = "QF " + match.set_number + ", " + match.match_number;
+                    break;
+                case "sf": // semis
+                    text = "SF " + match.set_number + ", " + match.match_number;
+                    break;
+                case "f":  // finals
+                    text = "F " + match.match_number;
+                    break;
+                }
+                matchNumbers[match.key] = text;
             });
             var matches = createSelect("match-numbers", matchNumbers);
             var bad = document.createElement("option");
@@ -55,9 +70,11 @@ $("#scout-number").on("change", function(e) {
             matches.value = "bad";
             matches.on("change", function() {
                 if (this.value !== "bad") {
-                    data.matchNumber = parseInt(this.value, 10);
-                    activateSelector("#start", true);
-                    var match = serverData[data.matchNumber - 1];
+                    var matchKey = this.value;
+                    var match = searchServerData(serverData, matchKey);
+                    data.matchNumber = match.match_number;
+                    data.matchLevel = match.comp_level;
+                    data.matchKey = matchKey;
                     $("#robot-number").innerHTML = match.team_number;
                     data.currentTeam = match.team_number;
                     data.color = match.color;
@@ -65,6 +82,7 @@ $("#scout-number").on("change", function(e) {
                     $("#robot-color").classList.remove("red");
                     $("#robot-color").classList.add(match.color === "blue" ? "blue" : "red");
                     $("#robot-color").innerHTML = (match.color === "blue") ? "blue" : "red";
+                    activateSelector("#start", true);
                 } else {
                     $("#robot-number").innerHTML = "0000";
                     $("#robot-color").innerHTML = "";

@@ -163,3 +163,32 @@ var cleanup = function() {
         console.log("pls no");
     }
 };
+
+var compLevelConvert = function(level) {
+    switch (level) {
+    case "qm":
+        return 1;
+    case "qf":
+        return 2;
+    case "sf":
+        return 3;
+    case "f":
+        return 4;
+    }
+};
+
+var matchListSorter = function(a, b) {
+    if (a.key === b.key) return 0;
+    if (a.comp_level !== b.comp_level) {
+        return (compLevelConvert(a.comp_level) > compLevelConvert(b.comp_level)) ? 1 : -1;
+    } else {
+        return (a.sort_number > b.sort_number) ? 1 : -1;
+    }
+};
+
+var searchServerData = function(serverData, matchKey) {
+    for (var i = 0; i < serverData.length; i++) { // no foreach here
+        if (serverData[i].key === matchKey) return serverData[i];
+    }
+    return null;
+};

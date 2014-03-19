@@ -154,7 +154,7 @@ var cleanup = function() {
         "bubbles": true,
         "cancelable": true
     });
-    $("#match-numbers").value = data.matchNumber;
+    $("#match-numbers").selectedIndex += 1;
     $("#match-numbers").dispatchEvent(matchChangeEvent);
     // reset initial overlay
     activateSelector("#data-mode", false);

@@ -49,7 +49,7 @@ $("#scout-number").on("change", function(e) {
                 var text;
                 switch (match.comp_level) {
                 case "qm": // quals
-                    text = match.match_number;
+                    text = "" + match.match_number;
                     break;
                 case "qf": // quarters
                     text = "QF " + match.set_number + ", " + match.match_number;

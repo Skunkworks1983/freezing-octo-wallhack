@@ -38,12 +38,19 @@ var defaultData = {
 };
 var data = clone(defaultData);
 
+activateSelector("#match-info", false);
 activateSelector("#start", false);
+
 $("#event-name").innerHTML = eventName;
 $("#scout-number").on("change", function(e) {
-    $("#robot-number").innerHTML = "0000";
-    $("#match-number-span").innerHTML = "";
-    if (this.value !== "bad") {
+    if (this.value === "bad") {
+        activateSelector("#match-info", false);
+        activateSelector("#start", false);
+    } else {
+        $("#robot-number").innerHTML = "0000";
+        $("#robot-number").classList.remove("blue");
+        $("#robot-number").classList.remove("red");
+        $("#match-number-span").innerHTML = "";
         var scoutId = parseInt(this.value, 10);
         data.scoutNumber = scoutId;
         $.get(baseUrl + "/register", { "scout_id": scoutId, "event_id": eventId }, function(serverData) {
@@ -99,6 +106,7 @@ $("#scout-number").on("change", function(e) {
                 }
             });
             $("#match-number-span").appendChild(matches);
+            activateSelector("#match-info", true);
         });
     }
 });

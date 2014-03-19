@@ -76,11 +76,11 @@ body, html {
     font-size: 1.5em;
 }
 
-#robot-color.blue {
+#robot-color.blue, #the-big-robot-number.blue {
     color: blue;
 }
 
-#robot-color.red {
+#robot-color.red, #the-big-robot-number.red {
     color: red;
 }
 
@@ -210,4 +210,14 @@ input[type=button].scout.teleop.bad {
     margin-left: 9px;
     height: 40px;
     width: calc((960px - (7 * 9px)) / 6);
+}
+
+#the-big-robot-number {
+    position: fixed;
+    width: 960px;
+    height: 437px;
+    font-size: 25em;
+    text-align: center;
+    opacity: 0.1;
+    pointer-events: none;
 }

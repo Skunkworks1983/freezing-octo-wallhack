@@ -1,4 +1,4 @@
-/* jquery condensed into 797 bytes compressed */
+/* jquery but small and with bad practices */
 ;(function(global, doc) {
 
 // dom

@@ -29,7 +29,9 @@ var defaultData = {
 
     "fieldCallback": nop,
     "MAX_X": 960,
-    "MAX_Y": 437
+    "MAX_Y": 437,
+    "LAST_X": -1,
+    "LAST_Y": -1
 };
 var data = clone(defaultData);
 
@@ -83,6 +85,10 @@ $("#scout-number").on("change", function(e) {
                     $("#robot-color").classList.remove("red");
                     $("#robot-color").classList.add(match.color === "blue" ? "blue" : "red");
                     $("#robot-color").innerHTML = (match.color === "blue") ? "blue" : "red";
+                    $("#the-big-robot-number").classList.remove("blue");
+                    $("#the-big-robot-number").classList.remove("red");
+                    $("#the-big-robot-number").classList.add(match.color === "blue" ? "blue" : "red");
+                    $("#the-big-robot-number").innerHTML = match.team_number;
                     activateSelector("#start", true);
                 } else {
                     $("#robot-number").innerHTML = "0000";
@@ -100,7 +106,7 @@ $("#start").on("click", function(e) {
     activateSelector("#data-mode", true);
 });
 
-var littleRobot = spawnLittleRobot(100, 169);
+var littleRobot = spawnLittleRobot(400, 219);
 $("#field-container").appendChild(littleRobot);
 
 var fieldContainer = $("#field-container");
@@ -114,6 +120,8 @@ fieldContainer.on("click", function(e) {
     if (y < 25) y = 25;
     littleRobot.style.left = (x - 25) + "px";
     littleRobot.style.top = (y - 25) + "px";
+    data.LAST_X = x;
+    data.LAST_Y = y;
     data.fieldCallback(x, y);
 });
 

@@ -4,7 +4,7 @@
 <title>super srs scout ui</title>
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="viewport" content="width=device-width, user-scalable=no" />
-<script src="js/mquery.js" type="text/javascript"></script>
+<script src="js/bad.js" type="text/javascript"></script>
 <script src="js/util.js" type="text/javascript"></script>
 <script src="hacks/event.js" type="text/javascript"></script>
 <link href="//fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
@@ -43,6 +43,7 @@ match number: <span id="match-number-span"></span><br>
 </div>
 
 <div id="data-mode" class="not-active">
+<span id="the-big-robot-number">1983</span>
 <div id="magic-container">
 <div id="field-container" class="not-active"><div id="field-text"></div></div>
 <div id="scout-buttons" class="active">
@@ -65,13 +66,13 @@ match number: <span id="match-number-span"></span><br>
 </div>
 <div id="eject" class="not-active">
 <input type="button" class="scout teleop eject quarter" id="droppedBall" value="Dropped" />
-<input type="button" class="scout teleop eject quarter" id="scoredHigh" value="High Goal" />
 <input type="button" class="scout teleop eject quarter" id="passedBall" value="Passed" />
-<input type="button" class="scout teleop eject quarter" id="scoredLow" value="Low Goal" />
+<input type="button" class="scout teleop eject quarter" id="knockedOut" value="Ball Knocked Out" />
+<input type="button" class="scout teleop eject quarter" id="scoredHigh" value="High Goal" />
 <input type="button" class="scout teleop eject quarter" id="threwTruss" value="Truss'd" />
+<input type="button" class="scout teleop eject quarter" id="scoredLow" value="Low Goal" />
+<input type="button" class="scout teleop eject quarter" id="missedTrussed" value="Missed Truss Shot" />
 <input type="button" class="scout teleop eject quarter" id="missed" value="Missed" />
-<input type="button" class="scout teleop eject quarter" id="knockedOut" value="Ball Knocked Out" /> <!-- wire -->
-<input type="button" class="scout teleop eject quarter" id="ballBouncedOutOfGoal" value="Bounced Out of Goal" /> <!-- wire -->
 </div>
 </div>
 

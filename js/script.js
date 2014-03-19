@@ -17,9 +17,9 @@ var defaultData = {
         "deadBot": false,
         "status": "noAuto",
         "hotGoal": false,
-        "startPosition": {"x": -1, "y": -1},
-        "shootPosition": {"x": -1, "y": -1},
-        "finalPosition": {"x": -1, "y": -1}
+        "startPosition": {"x": 400, "y": 219},
+        "shootPosition": {"x": 400, "y": 219},
+        "finalPosition": {"x": 400, "y": 219}
     },
 
     "teleop": [],
@@ -28,8 +28,11 @@ var defaultData = {
     },
 
     "fieldCallback": nop,
+
     "MAX_X": 960,
     "MAX_Y": 437,
+    "INITIAL_X": 400,
+    "INITIAL_Y": 219,
     "LAST_X": -1,
     "LAST_Y": -1
 };
@@ -39,7 +42,6 @@ activateSelector("#start", false);
 $("#event-name").innerHTML = eventName;
 $("#scout-number").on("change", function(e) {
     $("#robot-number").innerHTML = "0000";
-    $("#robot-color").innerHTML = "";
     $("#match-number-span").innerHTML = "";
     if (this.value !== "bad") {
         var scoutId = parseInt(this.value, 10);
@@ -81,10 +83,10 @@ $("#scout-number").on("change", function(e) {
                     $("#robot-number").innerHTML = match.team_number;
                     data.currentTeam = match.team_number;
                     data.color = match.color;
-                    $("#robot-color").classList.remove("blue");
-                    $("#robot-color").classList.remove("red");
-                    $("#robot-color").classList.add(match.color === "blue" ? "blue" : "red");
-                    $("#robot-color").innerHTML = (match.color === "blue") ? "blue" : "red";
+                    $("#robot-number").classList.remove("blue");
+                    $("#robot-number").classList.remove("red");
+                    $("#robot-number").classList.add(match.color === "blue" ? "blue" : "red");
+                    $("#robot-number").innerHTML = match.team_number;
                     $("#the-big-robot-number").classList.remove("blue");
                     $("#the-big-robot-number").classList.remove("red");
                     $("#the-big-robot-number").classList.add(match.color === "blue" ? "blue" : "red");
@@ -160,6 +162,12 @@ $(".scout.auto.position").on("click", function(e) {
     var name = this.id;
     getXY(this.value, function(x, y) {
         data.autoMeta[name] = {"x": x, "y": y};
+        if (name === "startPosition") {
+            data.autoMeta.shootPosition = {"x": x, "y": y};
+            data.autoMeta.finalPosition = {"x": x, "y": y};
+        } else if (name === "shootPosition") {
+            data.autoMeta.finalPosition = {"x": x, "y": y};
+        }
     });
 });
 

@@ -76,11 +76,11 @@ body, html {
     font-size: 1.5em;
 }
 
-#robot-color.blue, #the-big-robot-number.blue {
+#robot-number.blue, #the-big-robot-number.blue {
     color: blue;
 }
 
-#robot-color.red, #the-big-robot-number.red {
+#robot-number.red, #the-big-robot-number.red {
     color: red;
 }
 

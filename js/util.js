@@ -113,6 +113,15 @@ var getLastXY = function(callback, forceAuto) { // callback because of the other
     callback(data.LAST_X, data.LAST_Y);
 };
 
+var switchToTeleop = function(teleop) {
+    if (teleop == null) teleop = true;
+    data.modeTeleop = teleop;
+    activateSelector("#auto", !teleop);
+    activateSelector("#teleop", teleop);
+    activateSelector("#bottom-buttons .auto", !teleop);
+    activateSelector("#bottom-buttons .teleop", teleop);
+}
+
 var cleanup = function() {
     // reset all data
     var oldData = clone(data);

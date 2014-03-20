@@ -13,19 +13,7 @@ var defaultData = {
     "modeTeleop": false,
 
     "auto": [],
-    "autoMeta": {
-        "deadBot": false,
-        "status": "noAuto",
-        "hotGoal": false,
-        "startPosition": {"x": 400, "y": 219},
-        "shootPosition": {"x": 400, "y": 219},
-        "finalPosition": {"x": 400, "y": 219}
-    },
-
     "teleop": [],
-    "teleopMeta": {
-        "deadBot": false,
-    },
 
     "fieldCallback": nop,
 
@@ -156,51 +144,23 @@ $(".scout.toggle").on("click", function(e) {
         this.dataset.value = v;
     }
     getLastXY(function(x, y) {
-        storeAction(name, "other", enabled, x, y, pretty);
+        storeAction(name, "toggle", enabled, x, y, pretty);
     });
-});
-
-$("#reset").on("click", function(e) {
-    document.location.reload(true);
 });
 
 // auto
 
-$(".scout.auto.position").on("click", function(e) {
-    var name = this.id;
-    getXY(this.value, function(x, y) {
-        data.autoMeta[name] = {"x": x, "y": y};
-        if (name === "startPosition") {
-            data.autoMeta.shootPosition = {"x": x, "y": y};
-            data.autoMeta.finalPosition = {"x": x, "y": y};
-        } else if (name === "shootPosition") {
-            data.autoMeta.finalPosition = {"x": x, "y": y};
+$(".scout.auto").on("click", function(e) {
+    var name = (this.dataset.name != null ? this.dataset.name : this.id);
+    var pretty = (this.dataset.value != null ? this.dataset.value : this.value);
+    var isAutoDone = (this.id === "auto-done");
+    console.log(isAutoDone);
+    getXY(pretty, function(x, y) {
+        storeAction(name, "auto", 1, x, y, pretty);
+        if (isAutoDone) {
+            confirm("Confirm autonomous over") ? switchToTeleop(true) : undoAction();
         }
     });
-});
-
-$(".scout.auto.status").on("click", function(e) {
-    if (data.autoMeta.status != this.id) {
-        data.autoMeta.status = this.id;
-        $(".scout.auto.status").each(function(element) {
-            element.classList.remove("selected");
-        });
-        this.classList.add("selected");
-    } else {
-        data.autoMeta.status = "noAuto";
-        this.classList.remove("selected");
-    }
-});
-
-$("#auto-done").on("click", function(e) {
-    if (confirm("Confirm autonomous over")) {
-        data.modeTeleop = true;
-        data.teleopMeta.deadBot = data.autoMeta.deadBot;
-        activateSelector("#auto", false);
-        activateSelector("#teleop", true);
-        activateSelector("#bottom-buttons .auto", false);
-        activateSelector("#bottom-buttons .teleop", true);
-    }
 });
 
 // teleop
@@ -225,10 +185,10 @@ $(".scout.teleop.eject").on("click", function(e) {
     });
 });
 
-$("#undo-teleop").on("click", function(e) {
+$("#undo").on("click", function(e) {
     if ($("#field-container").classList.contains("not-active")) {
         var action = undoAction();
-        if (action.category !== "other") {
+        if (action.category === "collect" || action.category === "eject") {
             var undidCollect = action.category === "collect";
             activateSelector("#collect", undidCollect);
             activateSelector("#eject", !undidCollect);

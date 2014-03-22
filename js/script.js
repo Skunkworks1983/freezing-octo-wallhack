@@ -236,7 +236,7 @@ $("#teleop-done").on("click", function(e) {
             }),
             "autonomous": data.autoMeta
         }, function(data) {
-            console.log(data["error"]);
+            console.log(data.error);
             cleanup();
         });
     }

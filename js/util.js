@@ -27,7 +27,7 @@ var clone = function(obj) {
         }
     }
     return copy;
-}
+};
 
 var spawnLittleRobot = function(x, y) {
     var littleRobot = document.createElement("div");
@@ -115,7 +115,7 @@ var switchToTeleop = function(teleop) {
     activateSelector("#teleop", teleop);
     activateSelector("#bottom-buttons .auto", !teleop);
     activateSelector("#bottom-buttons .teleop", teleop);
-}
+};
 
 var cleanup = function() {
     // reset all data

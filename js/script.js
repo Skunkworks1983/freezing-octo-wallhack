@@ -100,8 +100,15 @@ $("#scout-number").on("change", function(e) {
 });
 
 $("#start").on("click", function(e) {
+    var startPositionClickEvent = new Event("click", {
+        "view": window,
+        "bubbles": true,
+        "cancelable": true
+    });
     activateSelector("#initial-overlay", false);
     activateSelector("#data-mode", true);
+    var theAutoButton = $("#autoMovedTo");
+    theAutoButton.dispatchEvent(startPositionClickEvent);
 });
 
 var littleRobot = spawnLittleRobot(400, 219);
@@ -153,11 +160,15 @@ $(".scout.toggle").on("click", function(e) {
 $(".scout.auto").on("click", function(e) {
     var name = (this.dataset.name != null ? this.dataset.name : this.id);
     var pretty = (this.dataset.value != null ? this.dataset.value : this.value);
-    var isAutoDone = (this.id === "auto-done");
-    console.log(isAutoDone);
+    var self = this;
     getXY(pretty, function(x, y) {
         storeAction(name, "auto", 1, x, y, pretty);
-        if (isAutoDone) {
+        if (name == "autoStartPosition") {
+            self.dataset.name = "autoMovedTo";
+            self.dataset.value = "Moved To";
+            self.value = "Moved To";
+        }
+        if (self.id === "auto-done") {
             confirm("Confirm autonomous over") ? switchToTeleop(true) : undoAction();
         }
     });
@@ -188,6 +199,12 @@ $(".scout.teleop.eject").on("click", function(e) {
 $("#undo").on("click", function(e) {
     if ($("#field-container").classList.contains("not-active")) {
         var action = undoAction();
+        if (action.action === "autoStartPosition") {
+            var movedTo = $("#autoMovedTo");
+            movedTo.dataset.name = "autoStartPosition";
+            movedTo.dataset.value = "Start Position";
+            movedTo.value = "Start Position";
+        }
         if (action.category === "collect" || action.category === "eject") {
             var undidCollect = action.category === "collect";
             activateSelector("#collect", undidCollect);

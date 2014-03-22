@@ -116,6 +116,7 @@ var getLastXY = function(callback, forceAuto) { // callback because of the other
 };
 
 var switchToTeleop = function(teleop) {
+    // change undo text
     if (teleop == null) teleop = true;
     data.modeTeleop = teleop;
     activateSelector("#auto", !teleop);

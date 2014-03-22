@@ -220,4 +220,6 @@ input[type=button].scout.teleop.bad {
     text-align: center;
     opacity: 0.1;
     pointer-events: none;
+    left: 0;
+    top: 0;
 }

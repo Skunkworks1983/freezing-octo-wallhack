@@ -73,7 +73,13 @@ var request = function(type, url, data, callback) {
     }
     xhr.open(type, actualUrl);
     xhr.onload = function() {
-        callback(JSON.parse(this.response));
+        var incomingData;
+        try {
+            incomingData = JSON.parse(this.response);
+        } catch (e) {
+            incomingData = {"error": e};
+        }
+        callback(incomingData);
     };
     xhr.send(posting ? fd : null);
 };

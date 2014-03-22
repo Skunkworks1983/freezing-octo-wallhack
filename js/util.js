@@ -139,7 +139,7 @@ var cleanup = function() {
     });
     // reset current xy/littleRobot/field
     $("#field-container").removeChild(littleRobot);
-    littleRobot = spawnLittleRobot(100, 169);
+    littleRobot = spawnLittleRobot(data.INITIAL_X, data.INITIAL_Y);
     $("#field-container").appendChild(littleRobot);
     activateSelector("#field-container", false);
     activateSelector("#scout-buttons", true);

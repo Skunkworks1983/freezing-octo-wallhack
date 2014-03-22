@@ -19,7 +19,7 @@ var defaultData = {
 
     "MAX_X": 960,
     "MAX_Y": 437,
-    "INITIAL_X": 400,
+    "INITIAL_X": 480,
     "INITIAL_Y": 219,
     "LAST_X": -1,
     "LAST_Y": -1
@@ -111,7 +111,7 @@ $("#start").on("click", function(e) {
     theAutoButton.dispatchEvent(startPositionClickEvent);
 });
 
-var littleRobot = spawnLittleRobot(400, 219);
+var littleRobot = spawnLittleRobot(data.INITIAL_X, data.INITIAL_Y);
 $("#field-container").appendChild(littleRobot);
 
 var fieldContainer = $("#field-container");
@@ -219,24 +219,25 @@ $("#undo").on("click", function(e) {
 
 $("#teleop-done").on("click", function(e) {
     if (confirm("Confirm match over")) {
+        var allActions = data.auto.concat(data.teleop).map(function(action) {
+            return {
+                    "action": action.action,
+                    "value": action.value,
+                    "x": action.x,
+                    "y": action.y,
+                    "time": action.time
+            };
+        });
+        console.log(allActions);
         $.post(baseUrl + "/match", {
             "event_id": eventId,
             "match_number": data.matchNumber,
             "team_number": data.currentTeam,
             "scout_number": parseInt($("#scout-number").value, 10),
             "scout_name": "unknown",
-            "actions": data.teleop.map(function(action) {
-                return {
-                    "action": action.action,
-                    "value": action.value,
-                    "x": action.x,
-                    "y": action.y,
-                    "time": action.time
-                };
-            }),
-            "autonomous": data.autoMeta
-        }, function(data) {
-            console.log(data.error);
+            "actions": allActions
+        }, function(incomingData) {
+            console.log(incomingData.error);
             cleanup();
         });
     }

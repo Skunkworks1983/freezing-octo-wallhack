@@ -211,6 +211,8 @@ $("#undo").on("click", function(e) {
             activateSelector("#eject", !undidCollect);
         }
     }
+    var period = data.modeTeleop ? "teleop" : "auto";
+    activateSelector("#" + period + "-done", true);
     activateSelector("#scout-buttons", true);
     activateSelector("#field-container", false);
 });

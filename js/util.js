@@ -102,8 +102,10 @@ var getXY = function(displayText, callback) {
     var period = data.modeTeleop ? "teleop" : "auto";
     activateSelector("#" + period + "-done", false);
     data.fieldCallback = function(x, y) {
-        activateSelector("#" + period + "-done", true);
         callback(x, y);
+        if ((data.modeTeleop ? "teleop" : "auto") === period) {
+            activateSelector("#" + period + "-done", true);
+        }
     };
     activateSelector("#field-container", true);
     activateSelector("#scout-buttons", false);

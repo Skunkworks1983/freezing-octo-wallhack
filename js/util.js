@@ -29,22 +29,6 @@ var clone = function(obj) {
     return copy;
 }
 
-
-var onLongPress = function(element, callback) {
-    var interval;
-    element.on("mousedown", function(e) {
-        e.preventDefault();
-        clearTimeout(interval);
-        interval = setTimeout(function() {
-            callback.call(element, e);
-        }, 200);
-    });
-    element.on("mouseup", function(e) {
-        e.preventDefault();
-        clearTimeout(interval);
-    });
-};
-
 var spawnLittleRobot = function(x, y) {
     var littleRobot = document.createElement("div");
     littleRobot.id = "little-robot";
@@ -54,12 +38,20 @@ var spawnLittleRobot = function(x, y) {
 };
 
 var storeAction = function(name, category, value, x, y, prettyName) {
+    var realX = x;
+    var realY = data.MAX_Y - y;
+    if (data.color === "red") {
+        realX = data.MAX_X - realX;
+        realY = data.MAX_Y - realY;
+    }
+    realX = realX / data.MAX_X;
+    realY = realY / data.MAX_Y;
     data[data.modeTeleop ? "teleop" : "auto"].push({
         "action": name,
         "category": category,
         "value": value,
-        "x": x,
-        "y": y,
+        "x": realX,
+        "y": realY,
         "time": Date.now() / 1000, // postgresql doesn't like millis so this is best fix
         "prettyName": prettyName
     });

@@ -593,15 +593,15 @@ function issueError(theMsg, cleer)
 		<INPUT id="submit6" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
 </DIV>
-<TEXTAREA id= "comment" style="position: left: 100px; top: 220px; border: 2px solid;" rows="7" cols="116" class="bigFont"></TEXTAREA>
-<SELECT id="key" style="position: absolute; left: 30px; top: 340px;" onchange="scoutWords(this)" class="bigFont"><OPTION value=" " SELECTED> </OPTION>
+<SELECT id="key" style="position: absolute; left: 30px; top: 200px;" onchange="scoutWords(this)" class="bigFont"><OPTION value=" " SELECTED> </OPTION>
 	<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
 	<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
 	<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
 	<OPTION value="Scoring">Scoring</OPTION></SELECT>
-<SELECT id="scoutWords" style="position: absolute; left: 170px; top: 340px; visibility: hidden" class="mediumFont"><OPTION value=" "> </OPTION></SELECT>
 <INPUT type="button" value="ADD" class="bigFont" style="position: absolute; left: 350px; top: 340px" onclick="addComment()"></INPUT>
 <INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 430px; top: 340px;" onclick="clearComment()"></INPUT>
+<DIV id="divTag1" style="visibility: visibie"><TEXTAREA id="tag1" rows="1" columns="50" style="position: absolute;
+	left: 10px; top: 230px"></TEXTAREA></DIV>
  <DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
 </BODY>
 </HTML>

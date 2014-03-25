@@ -1,0 +1,456 @@
+<!doctype html5>
+<HTML>
+<HEAD>
+<TITLE>Q&A After Match</TITLE>
+<SCRIPT LANGUAGE='JavaScript'>
+
+// *** Gobal Constants *** //
+blueAllianceURL = 'http://www.thebluealliance.com/event/';
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
+RED = '#FF0000';
+// *** Global Variables *** //
+var matchNo, eventName;
+var teamR1, teamR2, teamR3;
+var teamB1, teamB2, teamB3;
+function Initialize()
+////////////////
+//            //
+// Initialize //
+//            //
+////////////////
+//
+//  Come here when the body loads
+{
+	postDate();
+	updateClock();
+	eventName = getURLParameter('Event');
+	if (eventName.length < 1)
+	{																		// Parameter missing
+		issueError('URL string has no "?Event=" parameter.', false);
+	} else {
+		var chrs = document.getElementById('title').innerHTML;
+		chrs = chrs.concat(' ');
+		chrs = chrs.concat(eventName);
+		document.getElementById('title').innerHTML = chrs;
+		chrs = blueAllianceURL.concat(eventName);
+		issueRequestHTTP("GET", chrs, function(result)
+		{
+			scheduleHasBeenDownloaded(result);
+		});
+	}
+}
+function postDate()
+///////////////
+//           //
+// Post Date //
+//           //
+///////////////
+{
+var chrs = new String(); 
+var thisDay = new Date();
+    chrs = document.getElementById('match-date').innerHTML; 
+	var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday");
+	var monthname = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+    chrs = chrs.concat(weekday[thisDay.getDay()] + " "); 
+    chrs = chrs.concat(thisDay.getDate() + ", "); 
+    chrs = chrs.concat(monthname[thisDay.getMonth()] + " "); 
+    chrs = chrs.concat(thisDay.getFullYear());
+	document.getElementById('match-date').innerHTML = chrs;
+}
+function updateClock()
+//////////////////
+//              //
+// Update Clock //
+//              //
+//////////////////
+// This will update the tablet's time every minute ...
+{
+    var now = new Date();							 // current time
+    var chrs = 'Time: ';
+    if (now.getHours() > 12)
+	{
+		chrs = chrs.concat(parseInt(now.getHours()) - 12 + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + ' PM';
+	} else {
+		chrs = chrs.concat(now.getHours() + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + " AM";
+	}
+    document.getElementById('match-time').innerHTML = chrs;
+    // call this function again in 1000ms
+    setTimeout(updateClock, 60000);								// Every minute
+}
+function issueRequestHTTP(request, URL, callback)
+////////////////////////////
+//                        //
+// Issue via HTTP Request //
+//                        //
+////////////////////////////
+//
+// Parameters:	request		= Type of request {GET or SET}
+//				URL			= URL to send request
+//				callback	= function to call when issued
+//
+{
+   var xmlHTTP = getXmlHttp();
+   xmlHTTP.onreadystatechange = function()
+   {
+      if (xmlHTTP.readyState == 4)
+      {
+          callback(xmlHTTP.responseText);
+          assignContent(xmlHTTP.responseText);
+      }
+   }
+	xmlHTTP.open(request, URL, true);
+    xmlHTTP.send(null);
+}
+//
+// Return a cross-browser XmlHttp request object
+//
+function getXmlHttp()
+//////////////////
+//              //
+// Get XML HTTP //
+//              //
+//////////////////
+//
+//  Called to see if we can HTTP request things
+{
+ var xmlHTTP;
+   if (window.XMLHttpRequest)
+   {
+      xmlHTTP = new XMLHttpRequest();
+   } else if (window.ActiveXObject)
+   {
+      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+   
+   if (xmlHTTP == null)												// Not successful
+   {
+//      alert("Your browser does not support XMLHTTP.");
+	issueError(' XMLHTTP not supported.', false);
+	console.log('XMLHTTP not supported.')							// Test
+   }
+   return xmlHTTP;
+}
+function getURLParameter(name)
+///////////////////////
+//                   //
+// Get URL Parameter //
+//                   //
+///////////////////////
+//
+// This will extract the value of the paramter "name" passed in the URL string
+{
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
+}
+function parseHTML(html)
+////////////////
+//            //
+// Parse HTML //
+//            //
+////////////////
+//
+//  Parse the HTML contents
+{
+	var teams;
+	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
+	teamR1 = new Int16Array(maxMatches);
+	teamR2 = new Int16Array(maxMatches);
+	teamR3 = new Int16Array(maxMatches);
+	teamB1 = new Int16Array(maxMatches);
+	teamB2 = new Int16Array(maxMatches);
+	teamB3 = new Int16Array(maxMatches);
+	var lines = html.split('\n');										// Line feeds
+	var i = 0;
+	var j = 1;
+	while (i < lines.length)
+	{
+		if (lines[i].indexOf('Quals') < 0)
+		{
+			i++;
+		} else {
+			if (lines[i].substring(2, 6) == '<td>')
+			{
+				teams = lines[i + 2].split('/');
+				if (teams.length > 1) teamR1[j] = Number(teams[2]);
+				teams = lines[i + 3].split('/');
+				if (teams.length > 1) teamR2[j] = Number(teams[2]);
+				teams = lines[i + 4].split('/');
+				if (teams.length > 1) teamR3[j] = Number(teams[2]);
+				teams = lines[i + 5].split('/');
+				if (teams.length > 1) teamB1[j] = Number(teams[2]);
+				teams = lines[i + 6].split('/');
+				if (teams.length > 1) teamB2[j] = Number(teams[2]);
+				teams = lines[i + 7].split('/');
+				if (teams.length > 1) teamB3[j] = Number(teams[2]);
+				j++;
+				i = i + 8;
+			} else i++;
+		}
+	}
+}
+function assignRobots(match)
+///////////////////
+//               //
+// Assign Robots //
+//               //
+///////////////////
+{
+	matchNo = match.value;
+	if (isNumeric(matchNo) && (matchNo != ' '))
+	{
+		var chrs = '1   : ';
+		chrs = chrs.concat(teamR1[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot1').innerHTML = chrs;
+		document.getElementById('check1').value = false;
+		chrs = '2   : ';
+		chrs = chrs.concat(teamR2[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot2').innerHTML = chrs;
+		document.getElementById('check2').value = false;
+		chrs = '3   : ';
+		chrs = chrs.concat(teamR3[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot3').innerHTML = chrs;
+		document.getElementById('check3').value = false;
+		chrs = '4   : ';
+		chrs = chrs.concat(teamB1[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot4').innerHTML = chrs;
+		document.getElementById('check4').value = false;
+		chrs = '5   : ';
+		chrs = chrs.concat(teamB2[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot5').innerHTML = chrs;
+		document.getElementById('check5').value = false;
+		chrs = '6   : ';
+		chrs = chrs.concat(teamB3[matchNo]);
+		chrs = chrs.concat(Spaces(chrs.length, 11));
+		document.getElementById('robot6').innerHTML = chrs;
+		document.getElementById('check6').value = false;
+	}
+}
+function countIndicesOf(searchStr, str, caseSensitive)
+//////////////////////
+//                  //
+// Count Indices Of //
+//                  //
+//////////////////////
+{
+    var startIndex = 0;
+    var idxCount = 0;
+    var searchStrLen = searchStr.length;
+    var indx;
+    if (!caseSensitive)
+    {
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    }
+    while ((indx = str.indexOf(searchStr, startIndex)) > -1)
+    {
+    	idxCount++;
+        startIndex = indx + searchStrLen;
+    }
+    return idxCount;
+}
+function scheduleHasBeenDownloaded(content)
+//////////////////////////////////
+//                              //
+// Schedule Has Been Downloaded //
+//                              //
+//////////////////////////////////
+{
+	if (content.length < 1)												// Failed to read schedule FileUpload
+	{
+		issueError("URL has no content.", false);
+	} else {
+		parseHTML(content);
+	}
+}
+function assignContent(str)
+////////////////////
+//                //
+// Assign Content //
+//                //
+////////////////////
+{
+//	content = str;
+}
+function Spaces(nThere, nWant)
+//////////////
+//          //
+//  Spaces  //
+//          //
+//////////////
+//
+//  This will return the # of spaces between "nThere" and "nWant"
+{
+	if (nWant > nThere)
+	{
+		var spcs = '                                        ';
+		return spcs.substr(1, nWant - nThere);
+	}
+}
+function confirmQA(check)
+/////////////////
+//             //
+// Confirm Q&A //
+//             //
+/////////////////
+//
+// Set the "confirm QA" field in the appropriate action records
+{
+	if (check.value)
+	{
+		var tablet = check.id.substr(check.id.length - 1, 1);
+		var chrs = 'robot';
+		chrs = chrs.concat(tablet);
+		var elem = document.getElementById(chrs);
+		var team = elem.innerHTML.subString(4, elem.innerHTML.length);
+		elem = document.getElementById('match-number');
+		var URL = procLink.concat('?match_number=');
+		URL = URL.concat(matchNo);
+		URL = URL.concat('&team_number=');
+		URL = URL.concat(team);
+		URL = URL.concat('&scout_number=');
+		URL = URL.concat(tablet);
+		issueRequestHTTP("GET", URL, function()
+		{
+			confirmAllActions(chrs);
+		});
+		check.disabled = true;
+	}
+}
+function confirmAllActions(record)
+/////////////////////////
+//                     //
+// Confirm All Actions //
+//                     //
+/////////////////////////
+//
+//  This will set the confir_QA field to "true" for all actions
+{
+	var parsed = JSON.parse(record);
+	if (parsed.length > 0)
+	{
+		var chrs, dummy;
+		for (var i=0; i < parsed.length; i++)
+		{
+			chrs = procLink.concat('?id=');
+			chrs = chrs.concat(parsed[i].id);
+			chrs = chrs.concat('&qa_checked=true');
+			issueRequestHTTP("UPDATE", chrs, assignContent(dummy));
+		}
+	} else {
+		issueError("No actions", false);
+	}
+}
+function issueError(theMsg, cleer)
+////////////////////
+//                //
+// Issue an Error //
+//                //
+////////////////////
+//
+//  This will print an error message on the screen at the bottom.
+{
+	var msg = document.getElementById('ErrMsg');
+	if (cleer)		// Clear message content?
+	{
+		var chrs = 'Error: ';
+	} else var chrs = msg.innerHTML;
+	chrs = chrs.concat(theMsg);
+	msg.innerHTML = chrs;
+	msg.style.color = RED;
+	msg.style.visibility = 'visible';
+}
+function isNumeric(tryMe)
+////////////////
+//            //
+// Is Numeric //
+//            //
+////////////////
+{
+	return !isNaN(tryMe);
+}
+function viewData(robot)
+///////////////
+//           //
+// View Data //
+//           //
+///////////////
+//
+//  Call the Q&A_Pivot Record form with the robot indicated
+{
+	var URL = 'Q&A_Pivot.html?Event=';
+	URL = URL.concat(eventName);
+	URL = URL.concat('&tablet=');
+	var i = robot.id.substr(robot.id.length - 1, 1);
+	URL = URL.concat(i);
+	URL = URL.concat('&match=');
+	var elem = document.getElementById('match-number');
+	URL = URL.concat(elem.value);
+	console.log(URL);							// Test
+	window.open(URL, "Q&A_AfterMatch");
+}
+</SCRIPT>
+<STYLE TYPE="text/css">
+	.yoloSwagWithBorder{
+		border: 2px solid;
+		border-radius: 5px;
+	}
+	.redFont{
+		color: red;
+	}
+	.blueFont{
+		color: blue;
+	}
+	.blackFont{
+		color: black;
+		font-size: 12pt;
+	}
+</STYLE>
+</HEAD>
+<BODY onLoad="Initialize()">
+<H4><CENTER><A id="title">1983 Skunk Works Q&A After Match</A></CENTER></H4>
+<DIV style="position: absolute; left: 585px; top: 305px; display: inline"><FONT style="font-family: Helvitica; font-size: 16pt;">Match #:</FONT></DIV>
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 150px;">
+	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 1090px; top: 10px;">Time: </DIV>
+	<DIV style="position: absolute; left: 80px; top: 40px;"><FONT color="RED"><H3><U>RED</U></H3></FONT></DIV>
+	<DIV style="position: absolute; left: 750px; top: 40px"><FONT color="BLUE"><H3><U>BLUE</U></H3></FONT></DIV></H3>
+	<DIV style="position: absolute; left: 250px; top: 70px;">Confirm</DIV><DIV style="position: absolute; left: 930px; top: 70px;">Confirm</DIV>
+	<FONT style="font-family: Helvetica; font-size: 16pt;"><DIV style="position: absolute; left: 15px; top: 90px; display: inline"
+		class="redFont"><A id="robot1">1  : 0000&nbsp;&nbsp;</A><INPUT id="view1" type="button" value="VIEW DATA" onclick="viewData(this)"
+		style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check1" type="checkbox" disabled="false" onClick="confirmQA(this)">
+																																		</INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 130px; display: inline" class="redFont"><A id="robot2">2  : 0000&nbsp;&nbsp;</A><INPUT id="view2"
+		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check2"
+																				type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 170px; display: inline" class="redFont"><A id="robot3">3  : 0000&nbsp;&nbsp;</A><INPUT id="view3" 
+		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check3"
+																				type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
+	</FONT>
+	<DIV style="position: absolute; left: 655px; top: 40px;"><HR noshade size="3" width="1" style="height: 150"></HR></DIV>
+	<FONT style="font-family: Helvetica; font-size: 16pt;"><DIV style="position: absolute; left: 700px; top: 90px; display: inline"
+		class="blueFont"><A id="robot4">4  : 0000&nbsp;&nbsp;</A><INPUT id="view4" type="button" value="VIEW DATA" style="width:100px;height:50px"
+		onclick="viewData(this)" class="blackFont"></INPUT>_____<INPUT id="check4" type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT>
+																																					</DIV>
+	<DIV style="position: absolute; left: 700px; top: 130px; display: inline" class="blueFont"><A id="robot5">5  : 0000&nbsp;&nbsp;</A><INPUT id="view5"
+		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check5"
+																			type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 700px; top: 170px; display: inline" class="blueFont"><A id="robot6">6  : 0000&nbsp;&nbsp;</A><INPUT id="view6" 
+		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check6"
+																			type="checkbox" disabled="false" onclick="confirmQA(this)"></INPUT></DIV>
+	<SELECT id="match-number" style="position: absolute; left: 660px; top: 305px;" onchange="assignRobots(this)"><OPTION value=" " SELECTED> </OPTION>
+		<OPTION value="1">1</OPTION><OPTION value="2">2</OPTION><OPTION value="3">3</OPTION><OPTION value="4">4</OPTION><OPTION value="5">5</OPTION>
+		<OPTION value="6">6</OPTION><OPTION value="7">7</OPTION><OPTION value="8">8</OPTION><OPTION value="9">9</OPTION><OPTION value="10">10</OPTION>
+		<OPTION value="11">11</OPTION><OPTION value="12">12</OPTION><OPTION value="13">13</OPTION><OPTION value="14">14</OPTION>
+		<OPTION value="15">15</OPTION></SELECT></FONT>
+	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
+</DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,888 @@
+<!doctype html5>
+<HTML>
+<HEAD>
+<TITLE>Q&A Pivot</TITLE>
+<SCRIPT LANGUAGE='JavaScript'>
+
+// *** Gobal Constants *** //
+blueAllianceURL = 'http://www.thebluealliance.com/event/';
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/";	// Mark's procs
+RED = '#FF0000';
+GREEN = '#00FF00';
+BLACK = '#000000';
+
+// ** Global Variables *** //
+var eventName;
+var matchNo;
+var tabletNo;
+
+function MakeArray(n)
+/////////////////
+//             //
+// MAKE ARRAY  //
+//             //
+/////////////////
+// This function will create an array of size 'n'
+{
+	this.length = n + 1;
+	for (var i = 1; i <= n; i++) this[i] = 0;
+	return this;
+}
+
+function Initialize()
+//////////////////
+//              //
+//  INITIALIZE  //
+//              //
+//////////////////
+//
+// Come here when body is first created ...
+{
+	postDate();
+	updateClock();
+	eventName = getURLParameter('Event');
+	if (eventName.length < 1)
+	{																		// Parameter missing
+		issueError('URL string has no "?Event=" parameter.', false);
+	} else {
+		var URL = blueAllianceURL;
+		URL = URL.concat(eventName);
+		var chrs = document.getElementById('title').innerHTML;
+		chrs = chrs.concat(' ');
+		chrs = chrs.concat(eventName);
+		document.getElementById('title').innerHTML = chrs;
+		matchNo = getURLParameter('match');
+		if (matchNo.length < 1)
+		{
+			issueError('URL string has no "&match=" parameter.', false);
+		} else {
+			URL = URL.concat('&match_number=');
+			URL = URL.concat(matchNo);
+			chrs = document.getElementById('match-number').innerHTML;
+			chrs = chrs.concat(matchNo);
+			document.getElementById('match-number').innerHTML = chrs;
+			tabletNo = getURLParameter('tablet');
+			if (tabletNo.length < 1)
+			{
+				issueError('URL string has no "&tablet=" parameter.', false);
+			} else {
+				URL = URL.concat('&tablet_number=');
+				URL = URL.concat(tabletNo);
+				chrs = document.getElementById('tablet-number').innerHTML;
+				chrs = chrs.concat(tabletNo);
+				document.getElementById('tablet-number').innerHTML = chrs;
+				console.log(URL);									// Test
+		  		issueRequestHTTP("GET", URL, function(result)
+				{
+					scheduleHasBeenDownloaded(result);
+				});
+				readDatabase();
+			}
+		}
+	}
+}
+function postDate()
+///////////////
+//           //
+// Post Date //
+//           //
+///////////////
+{
+var chrs = new String(); 
+var thisDay = new Date();
+    chrs = document.getElementById('match-date').innerHTML; 
+	var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday");
+	var monthname = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+    chrs = chrs.concat(weekday[thisDay.getDay()] + " "); 
+    chrs = chrs.concat(thisDay.getDate() + ", "); 
+    chrs = chrs.concat(monthname[thisDay.getMonth()] + " "); 
+    chrs = chrs.concat(thisDay.getFullYear());
+	document.getElementById('match-date').innerHTML = chrs;
+}
+function updateClock()
+//////////////////
+//              //
+// Update Clock //
+//              //
+//////////////////
+// This will update the tablet's time every minute ...
+{
+    var now = new Date();							 			// current time
+    var chrs = 'Time: ';
+    if (now.getHours() > 12)
+	{
+		chrs = chrs.concat(parseInt(now.getHours()) - 12 + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + ' PM';
+	} else {
+		chrs = chrs.concat(now.getHours() + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + " AM";
+	}
+    document.getElementById('match-time').innerHTML = chrs;
+    // call this function again in 1000ms
+    setTimeout(updateClock, 60000);								// Every minute
+}
+function getURLParameter(name)
+///////////////////////
+//                   //
+// Get URL Parameter //
+//                   //
+///////////////////////
+{
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
+}
+function readDatabase()
+/////////////////////
+//                 //
+//  Read Database  //
+//                 //
+/////////////////////
+{
+	var sql = procLink.concat('match?match_number=');
+	sql = sql.concat(matchNo);
+	sql = sql.concat('&scout_number=');
+	sql = sql.concat(tabletNo);
+	sql = sql.concat('&event_id=');
+	sql = sql.concat(eventName);
+	console.log(sql);												// Test
+	issueRequestHTTP("GET", sql, function(result)
+	{
+		requestHasBeenIssued(result);
+	});
+}
+function requestHasBeenIssued(content)
+//////////////////////////////
+//                          //
+//  Request Has Been Issued //
+//                          //
+//////////////////////////////
+//
+//  Called when the HTTP request has data to hand out
+{
+	if (content.length > 0)
+	{
+		var act, vlue, x, y, chrs;
+		var parsed = JSON.parse(content);							// Parse the JSON data into array of JSON objects
+		console.log(parsed.length);									// Test
+		if (parsed.length > 0)
+		{
+			for (var i=0; i < 9; i++)
+			{
+				if (i < parsed.length)
+				{
+					chrs = i + ' ';
+					chrs = chrs.concat('action:');						// Test
+					chrs = chrs.concat(parsed[i].action);				// Test
+					chrs = chrs.concat(', value:');						// Test
+					chrs = chrs.concat(parsed[i].value);				// Test
+					chrs = chrs.concat(', x=');							// Test
+					chrs = chrs.concat(parsed[i].x);					// Test
+					chrs = chrs.concat(', y=');							// Test
+					chrs = chrs.concat(parsed[i].y);					// Test
+					console.log(chrs);									// Test
+					if (i == 0)
+					{
+						var team = document.getElementById('team_number');
+						chrs = 'Team #: ';
+						team.innerHTML = chrs.concat(parsed[0].team_number);
+						var scout = document.getElementById('scout_number');
+						chrs = 'Scout #: ';
+						scout.innerHTML = chrs.concat(parsed[0].scout_number);
+						scout = document.getElementById('scout_name');
+						chrs = 'Name: ';
+						if (parsed[0].scout_name == null) {scout.innerHTML = chrs.concat('undefined');}
+						else scout.innerHTML = chrs.concat(parsed[0].scout_name);
+					}
+				}
+				chrs = 'action';
+				chrs = chrs.concat(i);
+				act = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					act.value = parsed[i].action;
+					act.style.visibility = 'visible';
+				} else {
+					act.style.visibility = 'hidden';
+				}
+				chrs = 'value';
+				chrs = chrs.concat(i);
+				vlue = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					vlue.value = parsed[i].value;
+					vlue.style.visibility = 'visible';
+				} else {
+					vlue.style.visibility = 'hidden';
+				}
+				chrs = 'x';
+				chrs = chrs.concat(i);
+				x = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					x.value = parsed[i].x;
+					x.style.visibility = 'visible';
+				} else {
+					x.style.visibility = 'hidden';
+				}
+				chrs = 'y';
+				chrs = chrs.concat(i);
+				y = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					y.value = parsed[i].y;
+					y.style.visibility = 'visible';
+				} else {
+					y.style.visibility = 'hidden';
+				}
+				chrs = 'time';
+				chrs = chrs.concat(i);
+				y = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					y.value = parsed[i].time;
+					y.style.visibility = 'visible';
+				} else {
+					y.style.visibility = 'hidden';
+				}
+/*
+		Hide/Show the rest of the buttons
+											*/
+				chrs = 'replace';
+				chrs = chrs.concat(i);
+				var elem = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					elem.style.visibility = 'visible';
+				} else elem.style.visibility = 'hidden';
+
+				chrs = 'delete';
+				chrs = chrs.concat(i);
+				elem = document.getElementById(chrs);
+				if (i < parsed.length)
+				{
+					elem.style.visibility = 'visible';
+				} else 	elem.style.visibility = 'hidden';
+				chrs = 'add';
+				chrs = chrs.concat(i);
+				elem = document.getElementById(chrs)
+				if (i == (parsed.length - 1))
+				{
+					elem.style.visibility = 'visible';
+				} else elem.style.visibility = 'hidden';
+			}
+		} else {
+			issueError('Nothing parsed.', false);
+			console.log('Nothing parsed.');								// Test
+		}
+	} else {
+		issueError('No response from database.', false);
+		console.log('No response from database.');							// Test
+	}
+}
+function msToString(millisecs)
+////////////////////////////
+//                        //
+// Milliseconds to String //
+//                        //
+////////////////////////////
+//
+// Will convert milliseconds to Hours/Minutes/Seconds
+{
+    var hours = Math.floor(millisecs / (60 * 60));
+    var divisor_for_minutes = millisecs % (60 * 60);
+    var minutes = Math.floor(divisor_for_minutes / 60);
+    var divisor_for_seconds = divisor_for_minutes % 60;
+    var seconds = Math.ceil(divisor_for_seconds);
+    return hours + ":" + minutes + ":" + seconds; 
+}
+function countIndicesOf(searchStr, str, caseSensitive)
+//////////////////////
+//                  //
+// Count Indices Of //
+//                  //
+//////////////////////
+//
+// This will count the number of instances of "str" within "searchStr".  "caseSensitive", if false, will ignore case.
+{
+    var startIndex = 0;
+    var idxCount = 0;
+    var searchStrLen = searchStr.length;
+    var indx;
+    if (!caseSensitive)
+    {
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    }
+    while ((indx = str.indexOf(searchStr, startIndex)) > -1)
+    {
+    	idxCount++;
+        startIndex = indx + searchStrLen;
+    }
+    return idxCount;
+}
+function scheduleHasBeenDownloaded(content)
+//////////////////////////////////
+//                              //
+// Schedule Has Been Downloaded //
+//                              //
+//////////////////////////////////
+//
+// Called when HTTP request has downloaded the website
+{
+	if (content.length < 1)												// Failed to read schedule file
+	{
+		issueError('URL has no content.', false);
+	} else {
+		parseHTML(content);												// Break out the HTML source
+	}
+}
+function issueRequestHTTP(request, URL, callback)
+////////////////////////////
+//                        //
+// Issue via HTTP Request //
+//                        //
+////////////////////////////
+//
+// Parameters:	request		= Type of request {GET or SET}
+//				URL			= URL to send request
+//				callback	= function to call when issued
+//
+{
+   var xmlHTTP = getXmlHttp();
+   xmlHTTP.onreadystatechange = function()
+   {
+      if (xmlHTTP.readyState == 4)
+      {
+          callback(xmlHTTP.responseText);
+          assignContent(xmlHTTP.responseText);
+      }
+   }
+	xmlHTTP.open(request, URL, true);
+    xmlHTTP.send(null);
+}
+//
+// Return a cross-browser XmlHttp request object
+//
+function getXmlHttp()
+//////////////////
+//              //
+// Get XML HTTP //
+//              //
+//////////////////
+//
+//  Called to see if we can HTTP request things
+{
+ var xmlHTTP;
+   if (window.XMLHttpRequest)
+   {
+      xmlHTTP = new XMLHttpRequest();
+   } else if (window.ActiveXObject)
+   {
+      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+   
+   if (xmlHTTP == null)												// Not successful
+   {
+//      alert("Your browser does not support XMLHTTP.");
+	issueError(' XMLHTTP not supported.', false);
+	console.log('XMLHTTP not supported.')							// Test
+   }
+   return xmlHTTP;
+}
+function parseHTML(html)
+////////////////
+//            //
+// Parse HTML //
+//            //
+////////////////
+//  Parse the HTML contents
+{
+	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
+	var elem = document.getElementById('match-number');
+	for (var i=elem.length + 1; i <= maxMatches; i++)
+	{
+	   	var newMatch = document.createElement("option");
+	   	newMatch.text = i + '';
+	   	elem.add(newMatch, elem[i]);
+	}
+}
+function deleteAction(idObj)
+///////////////////
+//               //
+// Delete Action //
+//               //
+///////////////////
+//
+//  This will delete the current line from the screen, delete the appropriate
+// record in the database and then move all subsequent lines up.
+{
+	var url = procLink.concat('match?');
+	var i = idObj.id.length;
+	while ((i > 0) && isNumeric(idObj.id.substr(i, idObj.id.length))) i--;
+	if (i > 0)
+	{
+		var chrs = 'id';
+		var j = Number(idObj.id.substr(i + 1, idObj.id.length));
+		chrs = chrs.concat(j);
+		url = url.concat(document.getElementById(chrs).value);
+		issueRequestHTTP("DELETE", url, function()
+		{
+			assignContent(chrs);
+		});
+	}
+/*
+		Move all subsequent lines up
+										*/
+	var elem1, elem2;
+	for (i = j + 1; i < 9; i++)
+	{
+		chrs = 'id';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'id';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+		chrs = 'action';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'action';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+		chrs = 'value';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'value';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+		chrs = 'x';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'x';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+		chrs = 'y';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'y';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+		chrs = 'time';
+		chrs = concat.chrs(i - 1);
+		elem1 = document.getElementById(chrs);
+		chrs = 'time';
+		chrs = concat.chrs(i);
+		elem2 = document.getElementById(chrs);
+		elem1.innerHTML = elem2.innerHTML;
+	}
+}
+function addRecord(idObj)
+////////////////
+//            //
+// Add Record //
+//            //
+////////////////
+//
+//  This will add a blank line (make visible) to the screen
+{
+	var id =  idObj.id;
+	var i = id.length;
+	console.log(id);							// Test
+	while ((i > 0) && (isNumeric(id.substr(i, id.length)))) i--;
+	console.log(id.substr(i + 1, id.length));	// Test
+	var j = Number(id.substr(i + 1, id.length));
+	if (j < 9)
+	{
+		var chrs = 'add';
+		chrs = chrs.concat(j);
+		var elem = document.getElementById(chrs);
+		elem.style.visibility = 'hidden';
+		j++;
+		chrs = 'action';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		elem.style.color = GREEN;							// Leave "green" until "replaced"
+		chrs = 'value';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		elem.style.color = GREEN;							// Leave "green" until "replaced"
+		chrs = 'x';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		elem.style.color = GREEN;							// Leave "green" until "replaced"
+		chrs = 'y';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		elem.style.color = GREEN;							// Leave "green" until "replaced"
+		chrs = 'time';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		elem.style.color = GREEN;							// Leave "green" until "replaced"
+		chrs = 'replace';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		chrs = 'delete';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+		chrs = 'add';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'visible';
+	}
+}
+function replaceAction(idObj)
+///////////////////////////
+//                       //
+// Replace Action Record //
+//                       //
+///////////////////////////
+//
+// Will do a "delete" and then an "insert" to the database
+{
+	var url;
+	var id =  idObj.id;
+	var i = id.length;
+	console.log(id);							// Test
+	while ((i > 0) && (isNumeric(id.substr(i, id.length)))) i--;
+	id = id.substr(i + 1, id.length);
+/*
+			First, delete the old record (unless was an "add"ed line
+										*/
+	var chrs = 'value';
+	chrs = chrs.concat(id);
+	var elem = document.getElementById(chrs);
+	if (elem.style.color == GREEN)								// Was an "add"ed line ... turn black and just do the "insert"
+	{
+		elem.style.color = BLACK;
+		chrs = 'action';
+		chrs = chrs.concat(id);
+		elem = document.getElementById(chrs);
+		elem.style.color = BLACK;
+		chrs = 'x';
+		chrs = chrs.concat(id);
+		elem = document.getElementById(chrs);
+		elem.style.color = BLACK;
+		chrs = 'y';
+		chrs = chrs.concat(id);
+		elem = document.getElementById(chrs);
+		elem.style.color = BLACK;
+		chrs = 'time';
+		chrs = chrs.concat(id);
+		elem = document.getElementById(chrs);
+		elem.style.color = BLACK;
+	} else {
+		url = procLink.concat('match?id=');
+		chrs = 'id';
+		chrs = chrs.concat(id);
+		elem = document.getElementById(chrs);
+		url = url.concat(elem.innerHTML);
+		issueRequestHTTP("DELETE", url, function()						// Delete record request
+		{
+			assignContent(chrs);
+		});
+	}
+	url = procLink.concat('match?');
+	chrs = 'action';
+	chrs = chrs.concat(id);
+	url = url.concat(document.getElementById(chrs).innerHTML);
+	chrs = 'value';
+	chrs = chrs.concat(id);
+	url = url.concat('&value=');
+	url = url.concat(document.getElementById(chrs).innerHTML);
+	chrs = 'x';
+	chrs = chrs.concat(id);
+	url = url.concat('&x=');
+	url = url.concat(document.getElementById(chrs).innerHTML);
+	chrs = 'y';
+	chrs = chrs.concat(id);
+	url = url.concat('&y=');
+	url = url.concat(document.getElementById(chrs).innerHTML);
+	url = url.concat('&event_id=');
+	url = url.concat(eventName);
+	url = url.concat('&team_number=');
+	chrs = document.getElementById('team_number').innerHTML;
+	url = url.concat(chrs.substr(6, chrs.length));
+	url = url.concat('&match_number=');
+	url = url.concat(document.getElementById('match-number').value);
+	url = url.concat('&scout_number=');
+	chrs = document.getElementById('scout_number').innerHTML;
+	url = url.concat(chrs.substr(7, chrs.length));
+	url = url.concat('&scout_name=');
+	chrs = document.getElementById('scout_name').innerHTML;
+	url = url.concat(chrs.substr(6, chrs.length));
+	url = url.concat('&time=');
+	chrs = 'time';
+	chrs = chrs.concat(id);
+	url = url.concat(document.getElementById(chrs).innerHTML);
+	console.log(url);													// Test
+	issueRequestHTTP("PUT", url, function()								// Insert a record to the database
+	{
+		assignContent(chrs);
+	});
+}
+function closeForm()
+////////////////
+//            //
+// Close Form //
+//            //
+////////////////
+//
+// Close this form
+{
+	window.close();
+}
+function assignContent(str)
+////////////////////
+//                //
+// Assign Content //
+//                //
+////////////////////
+{
+//	content = str;
+}
+function isNumeric(check)
+////////////////
+//            //
+// Is Numeric //
+//            //
+////////////////
+{
+	return !isNaN(check);
+}
+function issueError(theMsg, cleer)
+////////////////////
+//                //
+// Issue an Error //
+//                //
+////////////////////
+//
+//  This will print an error message on the screen at the bottom.
+{
+	var msg = document.getElementById('ErrMsg');
+	if (cleer)
+	{
+		var chars = '';
+	} else var chrs = msg.innerHTML;
+	chrs = chrs.concat(theMsg);
+	msg.innerHTML = chrs;
+	msg.style.color = RED;
+	msg.style.visibility = 'visible';
+}
+</SCRIPT>
+<STYLE TYPE="text/css">
+	.yoloSwagWithBorder{
+		border: 2px solid;
+		border-radius: 5px;
+	}
+	.bigFont{
+		font-size: 14pt;
+	}
+	.regFont{
+		font-size: 12pt;
+	}
+	.hugeRedFont{
+		background-color: yellow;
+		font-weight: bold;
+		font-size: 18pt;
+		color: red;
+	}
+</STYLE>
+</HEAD>
+<TITLE style="CENTER"><H2>Q&A</H2></Title>
+<BODY onLoad="Initialize()">
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height=600px; width=960px;">
+	<DIV id="match-date" style="position: absolute; left: 10px; top: 15px;">Date: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 1210px; top: 15px;">Time: </DIV>
+	<DIV id="title" style="position: absolute; left: 550px; top: 15px; display: inline">Match Scouting Sheet Skunkworks Robotics 1983</DIV>
+	<DIV id="match-number" style="position: absolute; left: 10px; top: 30px;">Match&nbsp;#:&nbsp;</DIV>
+	<DIV id="tablet-number" style="position: absolute; left: 120px; top: 30px; display: inline">Tablet #: </DIV>
+	<DIV style="position: absolute; left: 10px; top: 50px; display: inline">Pivot&nbsp;Record:</DIV>
+	<DIV style="position: absolute; left: 10px; top: 70px"><FONT size = "3"; face="Helvetica"><FORM method="post">
+					<TEXTAREA id="pivotSQL" cols="175" rows="5" style="border: solid 2px;" disabled></TEXTAREA></FORM></FONT></DIV>
+	<DIV style="position: absolute; left: 25px; top: 160px; display: inline">Action:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		X:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		Y:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time: </DIV>
+	<DIV style="position: absolute; left: 15px; top: 180px;"><SELECT id="action0"><OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION>
+		<OPTION value="upperGoal">upperGoal</OPTION><OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION>"
+		<OPTION value="jammed">jammed</OPTION><OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV id="id0" block="none"></DIV>
+	<DIV style="position: absolute; left: 210px; top: 180px;"><INPUT type="text" id="value0" size="2"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 180px;"><INPUT type="text" id="x0" size="10"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 180px;"><INPUT type="text" id="y0" size="10"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 180px;"><INPUT type="text" id="time0" size="35"> </INPUT>
+						<INPUT type="button" id="replace0" class="bigFont" value="REPLACE" onclick="replaceAction(this)"></INPUT>
+						<INPUT type="button" id="delete0" class="bigFont" value="DELETE" onclick="deleteAction(this)"></INPUT>
+						<INPUT type="button" id="add0" class="bigFont" value="+RECORD" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV id="team_number" style="position: absolute; left: 860px; top: 160px; display: inline">Team #: </DIV>
+	<DIV id="scout_number" style="position: absolute; left: 950px; top: 160px; display: inline">Scout #: </DIV>
+	<DIV id="scout_name" style="position: absolute; left: 1030px; top: 160px; display: inline">Name: </DIV>
+	<DIV style="position: absolute; left: 15px; top: 200px;"><SELECT id="action1" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 200px;"><INPUT type="text" id="value1" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 200px;"><INPUT type="text" id="x1" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 200px;"><INPUT type="text" id="y1" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 200px;"><INPUT type="text" id="time1" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace1" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete1" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add1" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 220px;"><SELECT id="action2" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 220px;"><INPUT type="text" id="value2" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 220px;"><INPUT type="text" id="x2" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 220px;"><INPUT type="text" id="y2" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 220px;"><INPUT type="text" id="time2" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace2" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete2" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add2" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 240px;"><SELECT id="action3" style="visibility: hidden"><OPTION value="startPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 240px;"><INPUT type="text" id="value3" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 240px;"><INPUT type="text" id="x3" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 240px;"><INPUT type="text" id="y3" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 240px;"><INPUT type="text" id="time3" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace3" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete3" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add3" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 260px;"><SELECT id="action4" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 260px;"><INPUT type="text" id="value4" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 260px;"><INPUT type="text" id="x4" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 260px;"><INPUT type="text" id="y4" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 260px;"><INPUT type="text" id="time4" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace4" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete4" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add4" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 280px;"><SELECT id="action5" style="visibility: hidden"><OPTION value="startPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 280px;"><INPUT type="text" id="value5" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 280px;"><INPUT type="text" id="x5" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 280px;"><INPUT type="text" id="y5" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 280px;"><INPUT type="text" id="time5" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace5" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete5" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add5" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 300px;"><SELECT id="action6" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 300px;"><INPUT type="text" id="value6" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 300px;"><INPUT type="text" id="x6" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 300px;"><INPUT type="text" id="y6" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 300px;"><INPUT type="text" id="time6" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace6" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete6" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add6" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 320px;"><SELECT id="action7" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 320px;"><INPUT type="text" id="value7" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 320px;"><INPUT type="text" id="x7" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 320px;"><INPUT type="text" id="y7" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 320px;"><INPUT type="text" id="time7" size="35" style="visibility: hidden"> </INPUT>
+					<INPUT type="button" id="replace7" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+					<INPUT type="button" id="delete7" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+					<INPUT type="button" id="add7" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<DIV style="position: absolute; left: 15px; top: 340px;"><SELECT id="action8" style="visibility: hidden"><OPTION value="autoStartPosition"
+		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
+																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
+		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
+		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
+		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
+		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
+			givingDefence</OPTION></SELECT></DIV>
+	<DIV style="position: absolute; left: 210px; top: 340px;"><INPUT type="text" id="value8" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 340px;"><INPUT type="text" id="x8" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 340px;"><INPUT type="text" id="y8" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 340px;"><INPUT type="text" id="time8" size="35" style="visibility: hidden"> </INPUT>
+				<INPUT type="button" id="replace8" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
+				<INPUT type="button" id="delete8" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
+				<INPUT type="button" id="add8" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
+	<INPUT type="button" style="position: absolute; left:1200px; top:580px;" class="hugeRedFont" value="CLOSE" size="4" onClick="closeForm()">
+																																				</INPUT>
+	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden">Error: </DIV>
+</DIV>
+</BODY>
+</HTML>

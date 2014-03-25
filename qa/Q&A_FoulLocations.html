@@ -1,0 +1,297 @@
+<!doctype html5>
+<HTML>
+<HEAD>
+<TITLE>Q&A Foul Locations</TITLE>
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<SCRIPT LANGUAGE='JavaScript'>
+
+// *** Gobal Constants *** //
+RED = '#FF0000';
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
+// *** Global Variables *** //
+var eX, eY;						// X and Y coordinates
+var eventName, matchNo, tabletNo;
+var foulSelected;
+function Initialize()
+////////////////
+//            //
+// Initialize //
+//            //
+////////////////
+//
+// Come here when the body loads
+
+{
+	eventName = getURLParameter('Event');
+	if (eventName.length < 1)
+	{																		// Parameter missing
+		issueError('URL string has no "?Event=" parameter.', false);
+	} else {
+		var chrs = document.getElementById('title').innerHTML;
+		chrs = chrs.concat(' ');
+		chrs = chrs.concat(eventName);
+		document.getElementById('title').innerHTML = chrs;
+		matchNo = getURLParameter('match');
+		if (matchNo.length < 1)
+		{
+			issueError('URL string has no "&match=" parameter.', false);
+		} else {
+			chrs = document.getElementById('match-number').innerHTML;
+			chrs = chrs.concat(matchNo);
+			document.getElementById('match-number').innerHTML = chrs;
+			tabletNo = getURLParameter('tablet');
+			if (tabletNo.length < 1)
+			{
+				issueError('URL string has no "&tablet=" parameter.', false);
+			}
+		}
+	}	
+	var field = document.getElementById('field');
+	if (field.addEventListener)
+	{
+		field.addEventListener("mousedown", onButtonDown);
+	}
+	foulSelected = false;
+}
+function onButtonDown(event)
+////////////////////
+//                //
+// On Button Down //
+//                //
+////////////////////
+//
+{
+//	var mouse = window.Event;
+/*	$('#field').mousedown(function(evt){
+    	eX = evt.screenX
+    	wY = evt.screenY;
+    	var x2=evt.pageX, y2=evt.pageY;
+    }); */
+    eX = event.clientX;
+    wY = event.clientY;
+	var ltSquare = document.getElementById('ltSquare');
+	var field = document.getElementById('field');
+	ltSquare.style.left = -21 + Math.floor(eX / 41) * 41;
+	ltSquare.style.top = -41 + Math.floor(wY / 41 ) * 41;
+//	console.log('X:' + eX + ', left:' + ltSquare.style.left + ', Y:' + wY + ', top:' + ltSquare.style.top);				// Test
+	ltSquare.style.visibility = "visible";
+}
+function closeForm()
+////////////////
+//            //
+// Close Form //
+//            //
+////////////////
+//
+{
+	if ((eX > 0) && (wY > 0))
+	{
+		var chrs, URL;
+		URL = procLink;
+		URL = URL.concat('?Event=');
+		URL = URL.concat(eventName);
+		URL = URL.concat('&scout_number=');
+		URL = URL.concat(tabletNo);
+		URL = URL.concat('&match_number=');
+		URL = URL.concat(matchNo);
+		URL = URL.concat('&x=');
+		URL = URL.concat(eX);
+		URL = URL.concat('&y=');
+		URL = URL.concat(wY);
+		if (foulSelected)
+		{
+			URL = URL.concat('&foul=');
+			chrs = document.getElementById('foul').value;
+			URL = URL.concat(chrs);
+		}
+		issueRequestHTTP("UPDATE", URL, assignContent(chrs));
+	}
+	window.close();
+}
+function foulAssigned(foul)
+///////////////////
+//               //
+// Foul Assigned //
+//               //
+///////////////////
+{
+	if (foul.value != ' ')
+	{
+		foulSelected = true;
+	} else foulSelected = false;
+}
+function issueRequestHTTP(request, URL, callback)
+////////////////////////////
+//                        //
+// Issue via HTTP Request //
+//                        //
+////////////////////////////
+//
+// Parameters:	request		= Type of request {GET or SET}
+//				URL			= URL to send request
+//				callback	= function to call when issued
+//
+{
+   var xmlHTTP = getXmlHttp();
+   xmlHTTP.onreadystatechange = function()
+   {
+      if (xmlHTTP.readyState == 4)
+      {
+          callback(xmlHTTP.responseText);
+          assignContent(xmlHTTP.responseText);
+      }
+   }
+	xmlHTTP.open(request, URL, true);
+    xmlHTTP.send(null);
+}
+//
+// Return a cross-browser XmlHttp request object
+//
+function getXmlHttp()
+//////////////////
+//              //
+// Get XML HTTP //
+//              //
+//////////////////
+//
+//  Called to see if we can HTTP request things
+{
+ var xmlHTTP;
+   if (window.XMLHttpRequest)
+   {
+      xmlHTTP = new XMLHttpRequest();
+   } else if (window.ActiveXObject)
+   {
+      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+   
+   if (xmlHTTP == null)												// Not successful
+   {
+//      alert("Your browser does not support XMLHTTP.");
+	issueError(' XMLHTTP not supported.', false);
+	console.log('XMLHTTP not supported.')							// Test
+   }
+   return xmlHTTP;
+}
+function getURLParameter(name)
+///////////////////////
+//                   //
+// Get URL Parameter //
+//                   //
+///////////////////////
+//
+// This will extract the value of the paramter "name" passed in the URL string
+{
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
+}
+function assignContent(info)
+////////////////////
+//                //
+// Assign Content //
+//                //
+////////////////////
+{
+}
+function issueError(theMsg, cleer)
+////////////////////
+//                //
+// Issue an Error //
+//                //
+////////////////////
+//
+//  This will print an error message on the screen at the bottom.
+{
+	var msg = document.getElementById('ErrMsg');
+	if (cleer)
+	{
+		var chars = '';
+	} else var chrs = msg.innerHTML;
+	chrs = chrs.concat(theMsg);
+	msg.innerHTML = chrs;
+	msg.style.color = RED;
+	msg.style.visibility = 'visible';
+}
+</SCRIPT>
+<STYLE TYPE="text/css">
+	.backGround{
+		z-index: 0;
+	}
+	.foreGround{
+		z-index: 2;
+	}
+	.bigFont{
+		font-size: 14pt;
+	}
+	.regFont{
+		font-size: 12pt;
+	}
+	.redFont{
+		color: red;
+	}
+	.hugeRedFont{
+		background-color: yellow;
+		font-weight: bold;
+		font-size: 18pt;
+		color: red;
+	}
+</STYLE>
+</HEAD>
+<TITLE style="CENTER"><H2>Q&A Foul Locations</H2></Title>
+<BODY onload="Initialize()">
+<H4><CENTER><A id="title">1983 Skunk Works Q&A Foul Location</A></CENTER></H4>
+<DIV id="container" style="height: 650px;">
+	<DIV id="match-number" style="position: absolute; left: 900px; top: 5px;" class="regFont">Match #: </DIV>
+	<DIV id="tablet-number" style="position: absolute; left: 1000px; top: 5px;" class="regFont">Tablet #: </DIV>
+	<DIV style="position: absolute; left: 20px; top: 40px;">
+	<IMG src="https://raw.github.com/Skunkworks1983/freezing-octo-wallhack/gh-pages/img/field.png?token=6645765__eyJzY29wZSI6IlJhd0Jsb2I6U2t1bmt3b3JrczE5ODMvZnJlZXppbmctb2N0by13YWxsaGFjay9naC1wYWdlcy9pbWcvZmllbGQucG5nIiwiZXhwaXJlcyI6MTM5NTg4Mzk1NH0%3D--c32e210701453ad915260249d984249046d90385" id="field" class="backGround"></IMG>
+	<IMG id="ltSquare" src="robot.gif" style="position: absolute; left: 0px; top: 0px; opacity=0.25; visibility: hidden;" class="foreGround"></IMG>
+	</DIV>
+	<DIV style="position: absolute; left: 750px; top: 20px;"><SPAN style="position: absolute; left:260px; top:80px; display:inline">Select&nbsp;Foul</SPAN>
+		<SELECT id="foul" style="position: absolute; left: 40px; top: 120px;" onchange="foulAssigned(this)"><OPTION value=" " SELECTED> </OPTION>
+		<OPTION value="G1 -Human entered field before green 'all clear' signaled">G1 -Human entered field before green 'all clear' signaled</OPTION>
+		<OPTION value="G10 -Robot damaged field">G10 -Robot damaged field</OPTION>
+		<OPTION value="G11 -Ball intentionally removed from play">G11 -Ball intentionally removed from play</OPTION>
+		<OPTION value="G12 -Robot gained 'possession' of opponent's ball">G12 -Robot gained 'possession' of opponent's ball</OPTION>
+		<OPTION value="G13 -Uncivil activity">G13 -Uncivil activity</OPTION>
+		<OPTION value="G14 -Action forced opponent to violate a rule">G14 -Action forced opponent to violate a rule</OPTION>
+		<OPTION value="G15 -Robot advanced beyond their side of the truss">G15 -Robot advanced beyond their side of the truss</OPTION>
+		<OPTION value="G16 -Team crossed line to their controller during autonomous">G16 -Team crossed line to their controller during autonomous</OPTION>
+		<OPTION value="G17 -Team had access to controller during autonomous">G17 -Team had access to controller during autonomous</OPTION>
+		<OPTION value="G18 -Robot supported by another robot">G18 -Robot supported by another robot</OPTION>
+		<OPTION value="G19 -Robot part separated and left on field">G19 -Robot part separated and left on field</OPTION>
+		<OPTION value="G2 -Team climbed onto field item">G2 -Team climbed onto field item</OPTION>
+		<OPTION value="G20 -Robot violated bumper requirement">G20 -Robot violated bumper requirement</OPTION>
+		<OPTION value="G21 -Robot part extended outside of field">G21 -Robot part extended outside of field</OPTION>
+		<OPTION value="G22 -Robot extended beyond 5' limit outside of goalie zone">G22 -Robot extended beyond 5' limit outside of goalie zone</OPTION>
+		<OPTION value="G23 -Robot extention(s) exceeded goalie zone width requirement">G23 -Robot extension(s) exceeded goalie zone width requirement</OPTION>
+		<OPTION value="G24 -Robot extended outside of 20 inch perimeter limit">G24 -Robot extended outside of 20 inch perimeter limit</OPTION>
+		<OPTION value="G25 -Team members created a blockade which impeded match flow">G25 -Team members created a blockade which impeded match flow</OPTION>
+		<OPTION value="G26 -Robot intentionally fell down to create a barrier">G26 -Robot intentionally fell down to create a barrier</OPTION>
+		<OPTION value="G26-1 -Robot penetrated opponent's low goal to block access">G26-1 -Robot penetrated opponent's low goal to block access</OPTION>
+		<OPTION value="G27 -Action on field showed intent to damage opponents">G27 -Action on field showed intent to damage opponents</OPTION>
+		<OPTION value="G28 -Damage to opponent from penetration within opponent's frame perimeter">G28 -Damage to opponent from penetration within opponent's frame perimeter</OPTION>
+		<OPTION value="G29 -Alliance pinned an opponent for more than 5 seconds">G29 -Alliance pinned an opponent for more than 5 seconds</OPTION>
+		<OPTION value="G3 -Robot design is deemed unsafe">G3 -Robot design is deemed unsafe</OPTION>
+		<OPTION value="G30 -Robot was in contact with fallen opponent within 10 second grace period">G30 -Robot was in contact with fallen opponent within 10 second grace period</OPTION>
+		<OPTION value="G31 -Strategy meant to inhibit robot activities">G31 -Strategy meant to inhibit robot activities</OPTION>
+		<OPTION value="G32 -Deliberately deflected opponent's ball">G32 -Deliberately deflected opponent's ball</OPTION>
+		<OPTION value="G33 -Coach not wearing 'COACH' button on field">G33 -Coach not wearing 'COACH' button on field</OPTION>
+		<OPTION value="G34 -Coach touched ball(s)">G34 -Coach touched ball(s)</OPTION>
+		<OPTION value="G35 -Ball removed from pedestal before lit">G35 -Ball removed from pedestal before lit</OPTION>
+		<OPTION value-"G36 -Ball did not touch a robot or carpet on driver's side before advancing past truss">G36 -Ball did not touch a robot or carpet on driver's side before advancing past truss</OPTION>
+		<OPTION value="G37 -Ball from pedestal not returned to field from the side">G37 -Ball from pedestal not returned to field from the side</OPTION>
+		<OPTION value="G38 -Ball passed to human player from another human player area">B38 -Ball passed to human player from another human player area</OPTION>
+		<OPTION value="G39 -Team did not remain in the field area from where they started">G39 -Team did not remain in the field area from where they started</OPTION>
+		<OPTION value="G4 -Robot at start not in compliance">G4 -Robot at start not in compliance</OPTION>
+		<OPTION value="G40 -Human player penetrated inside of field">G40 -Human player penetrated inside of field</OPTION>
+		<OPTION value="G41 -Human contacted ball or robot during match">G41 -Human contacted ball or robot during match</OPTION>
+		<OPTION value="G42 -Robot cotrolled outside of drive team">G42 -Robot controlled outside of drive team</OPTION>
+		<OPTION value="G5 -Ball not in touch with robot at start or not where alliance claimed">G5 -Ball not in touch with robot at start or not where alliance claimed</OPTION>
+		<OPTION value="G6 -Team deliberately or consistently delays match start">G6 -Team deliberately or consistently delays match start</OPTION>
+		</SELECT></DIV>
+	<INPUT type="button" value="RETURN" style="position: absolute; left:1100px; top:560px;" class="hugeRedFont" size="4" onClick="closeForm()"></INPUT>
+	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
+</DIV>
+</BODY>
+</HTML>

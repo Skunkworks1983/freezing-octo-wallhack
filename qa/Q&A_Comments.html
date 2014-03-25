@@ -1,0 +1,607 @@
+<!doctype html5>
+<HTML>
+<HEAD>
+<TITLE>Q&A Comments</TITLE>
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<SCRIPT LANGUAGE='JavaScript'>
+
+// *** Gobal Constants *** //
+var maxMatches;
+var teamR1, teamR2, teamR3, teamB1, teamB2, teamB3;
+var tabletNo, eventName, matchNo;
+RED = '#FF0000';
+blueAllianceURL = 'http://www.thebluealliance.com/event/';
+function Initialize()
+////////////////
+//            //
+// Initialize //
+//            //
+////////////////
+{
+	postDate();
+	updateClock();
+	eventName = getURLParameter('Event');
+	if (eventName.length < 1)
+	{																		// Parameter missing
+		issueError('URL string has no "?Event=" parameter.', false);
+	} else {
+		var chrs = document.getElementById('title').innerHTML;
+		chrs = chrs.concat(' ');
+		chrs = chrs.concat(eventName);
+		document.getElementById('title').innerHTML = chrs;
+//		readFileHttp(eventName, function(result)
+		chrs = blueAllianceURL.concat(eventName);
+		getScheduleHTTP(chrs, function(result)
+		{
+//			scheduleHasBeenRead(result);
+			scheduleHasBeenDownloaded(result);
+		});
+	}
+}
+function postDate()
+///////////////
+//           //
+// Post Date //
+//           //
+///////////////
+{
+var chrs = new String(); 
+var thisDay = new Date();
+    chrs = document.getElementById('match-date').innerHTML; 
+	var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday");
+	var monthname = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+    chrs = chrs.concat(weekday[thisDay.getDay()] + " "); 
+    chrs = chrs.concat(thisDay.getDate() + ", "); 
+    chrs = chrs.concat(monthname[thisDay.getMonth()] + " "); 
+    chrs = chrs.concat(thisDay.getFullYear());
+	document.getElementById('match-date').innerHTML = chrs;
+}
+function updateClock()
+//////////////////
+//              //
+// Update Clock //
+//              //
+//////////////////
+// This will update the tablet's time every minute ...
+{
+    var now = new Date();							 // current time
+    var chrs = 'Time: ';
+    if (now.getHours() > 12)
+	{
+		chrs = chrs.concat(parseInt(now.getHours()) - 12 + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + ' PM';
+	} else {
+		chrs = chrs.concat(now.getHours() + ":");
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + " AM";
+	}
+    document.getElementById('match-time').innerHTML = chrs;
+    // call this function again in 1000ms
+    setTimeout(updateClock, 60000);								// Every minute
+}
+
+function parseHTML(html)
+////////////////
+//            //
+// Parse HTML //
+//            //
+////////////////
+//  Parse the contents
+{
+	var teams;
+	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
+	teamR1 = new Int16Array(maxMatches);
+	teamR2 = new Int16Array(maxMatches);
+	teamR3 = new Int16Array(maxMatches);
+	teamB1 = new Int16Array(maxMatches);
+	teamB2 = new Int16Array(maxMatches);
+	teamB3 = new Int16Array(maxMatches);
+	var lines = html.split('\n');										// Line feeds
+	var i = 0;
+	var j = 1;
+	var elem = document.getElementById('match-number');
+	while (i < lines.length)
+	{
+		if (lines[i].indexOf('Quals') < 0)
+		{
+			i++;
+		} else {
+			if (lines[i].substring(2, 6) == '<td>')
+			{
+				teams = lines[i + 2].split('/');
+				if (teams.length > 1) teamR1[j] = Number(teams[2]);
+				teams = lines[i + 3].split('/');
+				if (teams.length > 1) teamR2[j] = Number(teams[2]);
+				teams = lines[i + 4].split('/');
+				if (teams.length > 1) teamR3[j] = Number(teams[2]);
+				teams = lines[i + 5].split('/');
+				if (teams.length > 1) teamB1[j] = Number(teams[2]);
+				teams = lines[i + 6].split('/');
+				if (teams.length > 1) teamB2[j] = Number(teams[2]);
+				teams = lines[i + 7].split('/');
+				if (teams.length > 1) teamB3[j] = Number(teams[2]);
+				j++;
+				i = i + 8;
+			   	if (j > elem.length)
+			   	{
+				   	var newMatch = document.createElement("option");
+				   	newMatch.text = j + '';
+				   	elem.add(newMatch, elem[j]);
+			   	}
+			} else i++;
+		}
+	}
+}
+function assignTeams(matchNum)
+//////////////////
+//              //
+// Assign Teams //
+//              //
+//////////////////
+{
+	var chrs;
+	if ((matchNum.value > 0) && (matchNum.value <= maxMatches))
+	{
+		chrs = "1: ";
+		document.getElementById('red_robot1').innerHTML = chrs.concat(teamR1[matchNum.value]);
+		chrs = "2: ";
+		document.getElementById('red_robot2').innerHTML = chrs.concat(teamR2[matchNum.value]);
+		chrs = "3: ";
+		document.getElementById('red_robot3').innerHTML = chrs.concat(teamR3[matchNum.value]);
+		chrs = "4: ";
+		document.getElementById('blue_robot1').innerHTML = chrs.concat(teamB1[matchNum.value]);
+		chrs = "5: ";
+		document.getElementById('blue_robot2').innerHTML = chrs.concat(teamB2[matchNum.value]);
+		chrs = "6: ";
+		document.getElementById('blue_robot3').innerHTML = chrs.concat(teamB3[matchNum.value]);
+		matchNo = Number(matchNum.value);
+	}
+}
+function scoutWords(comment)
+/////////////////
+//             //
+// Scout Words //
+//             //
+/////////////////
+{
+	var i;
+	var scout = document.getElementById('scoutWords');
+	scout.style.visibility = "visible";
+	var length = scout.options.length;
+	for (i = 0; i < length; i++) scout.options[i] = null;			// Clear all items
+
+	switch (comment.value)
+	{
+		case "Collector":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Good";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Slow";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text ="Poor";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "None";
+				scout.add(newOption, scout[3]);
+				scout.size = 4;
+				break;
+			}
+		case "Ball Containment":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Good";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Average";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Poor";
+				scout.add(newOption, scout[2]);
+				break;
+			}
+		case "Truss":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Weak shot";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Aim/Defense";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Drove around aimlessly";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "Bot died";
+				scout.add(newOption, scout[3]);
+				newOption = document.createElement("option");
+				newOption.text = "No show";
+				scout.add(newOption, scout[4]);
+				break;
+			}
+		case "Sketchiness":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Tippy";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Poor teamwork";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Driver";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "Ball stuck";
+				scout.add(newOption, scout[3]);
+				break;
+			}
+		case "Defense":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Effective";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Ineffective";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Human Player";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "Autonomous";
+				scout.add(newOption, scout[3]);
+				break;
+			}
+		case "Fouls":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Frame Perimeter";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Other";
+				scout.add(newOption, scout[1]);
+				break;
+			}
+		case "Pass":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Good pass";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Bad pass";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Slow";
+				scout.add(newOption, scout[2]);
+				break;
+			}
+		case "Drive Base":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Fast";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Strong";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Weak";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Slow";
+				scout.add(newOption, scout[2]);
+				break;
+			}
+		case "Shooter":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "Fast";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "Accurate";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption = document.createElement("option");
+				newOption.text = "Inaccurate";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "None";
+				scout.add(newOption, scout[3]);
+				break;
+			}
+		case "Scoring":
+			{
+				var newOption = document.createElement("option");
+				newOption.text = "1 pt.";
+				scout.add(newOption, scout[0]);
+				newOption = document.createElement("option");
+				newOption.text = "10 pt.";
+				scout.add(newOption, scout[1]);
+				newOption = document.createElement("option");
+				newOption.text = "Truss";
+				scout.add(newOption, scout[2]);
+				newOption = document.createElement("option");
+				newOption.text = "Catch";
+				scout.add(newOption, scout[3]);
+			}
+	}
+}
+function addComment()
+/////////////////
+//             //
+// Add Comment //
+//             //
+/////////////////
+{
+	
+ 	var remark = document.getElementById("comment").value;
+ 	if (remark.length > 0) remark = remark.concat(' ');
+	remark = remark.concat(document.getElementById("key").value);
+	remark = remark.concat(' ');
+	remark = remark.concat(document.getElementById("scoutWords").value);;
+	remark = remark.concat(".")
+	document.getElementById("comment").value = remark;
+}
+function clearComment()
+///////////////////
+//               //
+// Clear Comment //
+//               //
+///////////////////
+{
+	document.getElementById("comment").value = "";
+}
+function submitComment(submittal)
+////////////////////
+//                //
+// Submit Comment //
+//                //
+////////////////////
+{
+	var chrs;
+	var n = submittal.id.substr(submittal.id.length - 1, 1);
+	var URL = procLink.concat('?Event=');
+	URL = URL.concat(eventName);
+	URL = URL.concat('&tablet-number=');
+	URL = URL.concat(n);
+	URL = URL.concat('&match_number=');
+	URL = URL.concat(document.getElementById('match-number').value);
+	URL = URL.concat('&comment=');
+	URL = URL.concat(document.getElementById('comment').value);
+	issueRequestHTTP("SET", URL, assignContent(chrs));
+}
+function getURLParameter(name)
+///////////////////////
+//                   //
+// Get URL Parameter //
+//                   //
+///////////////////////
+{
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
+}
+function getScheduleHTTP(URL, callback)
+///////////////////////////////////
+//                               //
+// Get Schedule via HTTP Request //
+//                               //
+///////////////////////////////////
+//function readFileHttp(fileName, callback)
+////////////////////
+//                //
+// Read File HTTP //
+//                //
+////////////////////
+{
+   var xmlHTTP = getXmlHttp();
+   xmlHTTP.onreadystatechange = function()
+   {
+      if (xmlHTTP.readyState == 4)
+      {
+//          console.log(xmlHTTP.responseText);							// Test
+          callback(xmlHTTP.responseText);
+          assignContent(xmlHTTP.responseText);
+      }
+   }
+//    xmlHTTP.open("GET", fileName, true);
+	xmlHTTP.open("GET", URL, true);
+    xmlHTTP.send(null);
+}
+//
+// Return a cross-browser XmlHttp request object
+//
+function getXmlHttp()
+//////////////////
+//              //
+// Get XML HTTP //
+//              //
+//////////////////
+{
+ var xmlHTTP;
+   if (window.XMLHttpRequest)
+   {
+      xmlHTTP = new XMLHttpRequest();
+   } else if (window.ActiveXObject)
+   {
+      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+   
+   if (xmlHTTP == null)												// Not successful
+   {
+//      alert("Your browser does not support XMLHTTP.");
+	issueError('XMLHTTP not supported.', false);
+	console.log('XMLHTTP not supported.')							// Test
+   }
+   return xmlHTTP;
+}
+function assignContent(str)
+////////////////////
+//                //
+// Assign Content //
+//                //
+////////////////////
+{
+//	content = str;
+}
+function isNumeric(what)
+/////////////////
+//             //
+// Is Numeric? //
+//             //
+/////////////////
+{
+	return !isNaN(what);
+}
+function countIndicesOf(searchStr, str, caseSensitive)
+//////////////////////
+//                  //
+// Count Indices Of //
+//                  //
+//////////////////////
+{
+    var startIndex = 0;
+    var idxCount = 0;
+    var searchStrLen = searchStr.length;
+    var indx;
+    if (!caseSensitive)
+    {
+        str = str.toLowerCase();
+        searchStr = searchStr.toLowerCase();
+    }
+    while ((indx = str.indexOf(searchStr, startIndex)) > -1)
+    {
+    	idxCount++;
+        startIndex = indx + searchStrLen;
+    }
+    return idxCount;
+}
+function scheduleHasBeenDownloaded(content)
+//////////////////////////////////
+//                              //
+// Schedule Has Been Downloaded //
+//                              //
+//////////////////////////////////
+{
+	if (content.length < 1)												// Failed to read schedule FileUpload
+	{
+		issueError("URL has no content.", false);
+	} else {
+		parseHTML(content);
+	}
+}
+function getFoulLoc(info)
+///////////////////////
+//                   //
+// Get Foul Location //
+//                   //
+///////////////////////
+{
+	var n = info.id.substr(info.id.length - 1, 1);
+	var URL = 'Q&A_FoulLocations.html?Event=';
+	URL = URL.concat(eventName);
+	URL = URL.concat('&match=');
+	URL = URL.concat(matchNo);
+	URL = URL.concat('&tablet=');
+	URL = URL.concat(n);
+	window.open(URL, "Q&A_Comments");
+}
+function issueError(theMsg, cleer)
+////////////////////
+//                //
+// Issue an Error //
+//                //
+////////////////////
+//
+//  This will print an error message on the screen at the bottom.
+{
+	var msg = document.getElementById('ErrMsg');
+	if (cleer)
+	{
+		var chrs = 'Error: ';
+	} else var chrs = msg.innerHTML;
+	chrs = chrs.concat(theMsg);
+	msg.innerHTML = chrs;
+	msg.style.color = RED;
+	msg.style.visibility = 'visible';
+}
+</SCRIPT>
+<STYLE TYPE="text/css">
+	.yoloSwagWithBorder{
+		border: 2px solid;
+		border-radius: 5px;
+	}
+	.redFont{
+		color: red;
+	}
+	.blueFont{
+		color: blue;
+	}
+	.blackFont{
+		color: black;
+	}
+	.bigFont{
+		font-size: 14pt;
+		color: black;
+	}
+	.mediumFont {
+		font-size: 12pt;
+		color: black;
+	}
+</STYLE>
+</HEAD>
+<TITLE style="CENTER"><H2>Q&A</H2></Title>
+<BODY onLoad="Initialize()">
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 160px;">
+	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 1090px; top: 10px;">Time: </DIV>
+	<DIV id="title" style="position: absolute; left: 500px; top: 10px;" display="inline">Match Q&A Comments Skunkworks Robotics 1983</DIV><H3>
+	<DIV style="position: absolute; left: 655px; top: 0px;"><HR noshade size="3" width="1" style="height: 160"></HR></DIV>
+	<DIV style="position: absolute; left: 80px; top: 30px;"><FONT color="RED"><U>RED</U></FONT></DIV>
+	<DIV style="position: absolute; left: 735px; top: 30px"><FONT color="BLUE"><U>BLUE</U></FONT></DIV></H3>
+	<DIV style="position: absolute; left: 1050px; top: 35px;">Match #</DIV>
+	<FONT style="font-family: Helvetica; font-size: 16pt;">
+	<SELECT id="match-number" style="position: absolute; left: 1110px; top: 30px" onchange="assignTeams(this)">
+		<OPTION SELECTED VALUE=""> </OPTION><OPTION VALUE="1">1</OPTION><OPTION VALUE="2">2</OPTION>
+		<OPTION VALUE="3">3</OPTION><OPTION VALUE="4">4</OPTION><OPTION VALUE="5">5</OPTION><OPTION VALUE="6">6</OPTION>
+		<OPTION VALUE="7">7</OPTION><OPTION VALUE="8">8</OPTION><OPTION VALUE="9">9</OPTION><OPTION VALUE="10">10</OPTION>
+		<OPTION VALUE="11">11</OPTION><OPTION VALUE="12">12</OPTION><OPTION VALUE="13">13</OPTION><OPTION VALUE="14">14</OPTION>
+		<OPTION VALUE="15">15</OPTION><OPTION VALUE="16">16</OPTION><OPTION VALUE="17">17</OPTION><OPTION VALUE="18">18</OPTION>
+	</SELECT>
+	<DIV style="position: absolute; left: 15px; top: 60px" display="inline"><B id="red_robot1" CLASS="redFont">1: 0000</B>
+		<INPUT id= "foul1" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit1" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+	<DIV style="position: absolute; left: 670px; top: 60px" display="inline"><B id="blue_robot1" CLASS="blueFont">4: 0000</B>
+		<INPUT id= "foul4" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit4" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+	<DIV style="position: absolute; left: 15px; top: 95px" display="inline"><B id="red_robot2" CLASS="redFont">2: 0000</B>
+		<INPUT id= "foul2" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit2" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+	<DIV style="position: absolute; left: 670px; top: 95px" display="inline"><B id="blue_robot2" CLASS="blueFont">5: 0000</B>
+ 		<INPUT id= "foul5" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit5" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+	<DIV style="position: absolute; left: 15px; top: 130px" display="inline"><B id="red_robot3" CLASS="redFont">3: 0000</B>
+		<INPUT id= "foul3" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit3" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+	<DIV style="position: absolute; left: 670px; top: 130px" display="inline"><B id="blue_robot3" CLASS="blueFont">6: 0000</B>
+		<INPUT id= "foul6" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
+		<INPUT id="submit6" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
+	</DIV>
+</DIV>
+<TEXTAREA id= "comment" style="position: left: 100px; top: 220px; border: 2px solid;" rows="7" cols="116" class="bigFont"></TEXTAREA>
+<SELECT id="key" style="position: absolute; left: 30px; top: 340px;" onchange="scoutWords(this)" class="bigFont"><OPTION value=" " SELECTED> </OPTION>
+	<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
+	<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
+	<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
+	<OPTION value="Scoring">Scoring</OPTION></SELECT>
+<SELECT id="scoutWords" style="position: absolute; left: 170px; top: 340px; visibility: hidden" class="mediumFont"><OPTION value=" "> </OPTION></SELECT>
+<INPUT type="button" value="ADD" class="bigFont" style="position: absolute; left: 350px; top: 340px" onclick="addComment()"></INPUT>
+<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 430px; top: 340px;" onclick="clearComment()"></INPUT>
+ <DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
+</BODY>
+</HTML>

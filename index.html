@@ -1,98 +1,100 @@
 <!doctype html>
 <html>
 <head>
-<title>super srs scout ui</title>
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="viewport" content="width=device-width, user-scalable=no" />
-<script src="js/bad.js" type="text/javascript"></script>
-<script src="js/util.js" type="text/javascript"></script>
-<script src="hacks/event.js" type="text/javascript"></script>
-<link href="//fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="css/normalize.css" type="text/css" />
-<link rel="stylesheet" href="css/style.css" type="text/css" />
+  <title>super srs scout ui</title>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+  <!-- build:js app.js -->
+  <script src="js/bad.js" type="text/javascript"></script>
+  <script src="js/util.js" type="text/javascript"></script>
+  <script src="hacks/event.js" type="text/javascript"></script>
+  <!-- endbuild -->
+
+  <link href="//fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+
+  <!-- build:css app.css -->
+  <link rel="stylesheet" href="css/normalize.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <!-- endbuild -->
 </head>
 <body>
-<div id="container">
+  <div id="container">
+    <div id="initial-overlay" class="active">
+      <div id="titles">
+        <h1>scoutapp</h1>
+        <h2>welcome <select id="scout-number">
+          <option value="bad"></option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">T</option>
+        </select></h2>
+        <h3>you are scouting at: <br /><span id="event-name"></span></h3>
+      </div> <!-- titles -->
 
-<div id="initial-overlay" class="active">
-<div id="titles">
-<h1>scoutapp</h1>
-<h2>welcome <select id="scout-number">
-<option value="bad"></option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">T</option>
-</select>
-</h2>
-<h3>you are scouting at: <br /><span id="event-name"></span></h3>
-</div>
-<div id="match-info">
-<h1>match info</h1>
-match <span id="match-number-span"></span><br />
-team <span id="robot-number">0000</span>
-<!-- <img id="robot-image" src="img/robot.jpg" /> -->
-</div>
-<div id="lets-go" class="corner">
-<input id="start" type="button" class="scout ui" value="Start position" />
-</div>
-</div>
+      <div id="match-info">
+        <h1>match info</h1>
+        match <span id="match-number-span"></span><br />
+        team <span id="robot-number">0000</span>
+        <!-- <img id="robot-image" src="img/robot.jpg" /> -->
+      </div> <!-- match-info -->
 
-<div id="data-mode" class="not-active">
-<span id="the-big-robot-number">1983</span>
-<div id="magic-container">
-<div id="field-container" class="not-active"><div id="field-text"></div></div>
-<div id="scout-buttons" class="active">
+      <div id="lets-go" class="corner">
+        <input id="start" type="button" class="scout ui" value="Start position" />
+      </div> <!-- lets-go -->
+    </div> <!-- initial-overlay -->
 
-<div id="auto" class="active">
-<input type="button" class="scout auto half" id="autoMovedTo" data-name="autoStartPosition" data-value="Start Position" value="Moved To" />
-<input type="button" class="scout auto half" id="autoUpperGoal" value="Upper Goal" />
-<input type="button" class="scout auto half" id="autoMissedGoal" value="Missed Goal" />
-<input type="button" class="scout auto half" id="autoLowerGoal" value="Lower Goal" />
+    <div id="data-mode" class="not-active">
+      <span id="the-big-robot-number">1983</span>
+      <div id="magic-container">
+        <div id="field-container" class="not-active"><div id="field-text"></div></div>
+        <div id="scout-buttons" class="active">
 
-</div>
+          <div id="auto" class="active">
+            <input type="button" class="scout auto half" id="autoMovedTo" data-name="autoStartPosition" data-value="Start Position" value="Moved To" />
+            <input type="button" class="scout auto half" id="autoUpperGoal" value="Upper Goal" />
+            <input type="button" class="scout auto half" id="autoMissedGoal" value="Missed Goal" />
+            <input type="button" class="scout auto half" id="autoLowerGoal" value="Lower Goal" />
+          </div> <!-- auto -->
 
-<div id="teleop" class="not-active">
-<div id="collect" class="active">
-<input type="button" class="scout teleop collect full" id="collectedBall" value="Collected" />
-<input type="button" class="scout teleop collect full" id="caughtBall" value="Caught" />
-</div>
-<div id="eject" class="not-active">
-<input type="button" class="scout teleop eject quarter" id="droppedBall" value="Dropped" />
-<input type="button" class="scout teleop eject quarter" id="passedBall" value="Passed" />
-<input type="button" class="scout teleop eject quarter" id="knockedOut" value="Ball Knocked Out" />
-<input type="button" class="scout teleop eject quarter" id="upperGoal" value="High Goal" />
-<input type="button" class="scout teleop eject quarter" id="threwTruss" value="Truss'd" />
-<input type="button" class="scout teleop eject quarter" id="lowerGoal" value="Low Goal" />
-<input type="button" class="scout teleop eject quarter" id="missedTruss" value="Failed Truss" />
-<input type="button" class="scout teleop eject quarter" id="missedGoal" value="Missed Goal" />
-</div>
-</div>
+          <div id="teleop" class="not-active">
+            <div id="collect" class="active">
+              <input type="button" class="scout teleop collect full" id="collectedBall" value="Collected" />
+              <input type="button" class="scout teleop collect full" id="caughtBall" value="Caught" />
+            </div> <!-- collect -->
 
-</div>
+            <div id="eject" class="not-active">
+              <input type="button" class="scout teleop eject quarter" id="droppedBall" value="Dropped" />
+              <input type="button" class="scout teleop eject quarter" id="passedBall" value="Passed" />
+              <input type="button" class="scout teleop eject quarter" id="knockedOut" value="Ball Knocked Out" />
+              <input type="button" class="scout teleop eject quarter" id="upperGoal" value="High Goal" />
+              <input type="button" class="scout teleop eject quarter" id="threwTruss" value="Truss'd" />
+              <input type="button" class="scout teleop eject quarter" id="lowerGoal" value="Low Goal" />
+              <input type="button" class="scout teleop eject quarter" id="missedTruss" value="Failed Truss" />
+              <input type="button" class="scout teleop eject quarter" id="missedGoal" value="Missed Goal" />
+            </div> <!-- eject -->
+          </div> <!-- teleop -->
+        </div> <!-- scout-buttons -->
 
-<div id="bottom-buttons">
+        <div id="bottom-buttons">
+          <input type="button" class="scout toggle off" id="deadBot" data-value="Bot ressurected" value="Bot died" />
+          <input type="button" class="scout teleop toggle off defence not-active" id="gettingDefence" data-value="End defense" value="Being defended" />
+          <input type="button" class="scout teleop toggle off defence not-active" id="givingDefence" data-value="End defense" value="Playing defense" />
+          <input type="button" class="scout undo" id="undo" value="Undo last thing" />
+          <div id="undo-info-box" class="info-box">Last thing:<br /><span id="undo-info">Nothing</span></div>
+          <input type="button" class="scout auto done right active" id="auto-done" data-name="autoFinalPosition" data-value="Final Position" value="Final position" />
+          <input type="button" class="scout teleop done right not-active" id="teleop-done" value="End match" />
+        </div> <!-- bottom-buttons -->
+      </div> <!-- magic-container -->
+    </div> <!-- data-mode -->
+  </div> <!-- container -->
 
-<input type="button" class="scout toggle off" id="deadBot" data-value="Bot ressurected" value="Bot died" />
-
-<input type="button" class="scout teleop toggle off defence not-active" id="gettingDefence" data-value="End defense" value="Being defended" />
-<input type="button" class="scout teleop toggle off defence not-active" id="givingDefence" data-value="End defense" value="Playing defense" />
-
-<input type="button" class="scout undo" id="undo" value="Undo last thing" />
-
-<div id="undo-info-box" class="info-box">Last thing:<br /><span id="undo-info">Nothing</span></div>
-
-<input type="button" class="scout auto done right active" id="auto-done" data-name="autoFinalPosition" data-value="Final Position" value="Final position" />
-<input type="button" class="scout teleop done right not-active" id="teleop-done" value="End match" />
-
-</div>
-</div>
-</div>
-
-</div>
-<script src="js/script.js" type="text/javascript"></script>
+  <!-- build:js app.js -->
+  <script src="js/script.js" type="text/javascript"></script>
+  <!-- endbuild -->
 </body>
 </html>

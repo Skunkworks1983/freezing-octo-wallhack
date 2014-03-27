@@ -7,11 +7,16 @@
 <SCRIPT LANGUAGE='JavaScript'>
 
 // *** Gobal Constants *** //
+RED = '#FF0000';
+blueAllianceURL = 'http://www.thebluealliance.com/event/';
+commentProcLink = '';
+tagProcLink = '';
+
+// *** Global Variables *** //
 var maxMatches;
 var teamR1, teamR2, teamR3, teamB1, teamB2, teamB3;
 var tabletNo, eventName, matchNo;
-RED = '#FF0000';
-blueAllianceURL = 'http://www.thebluealliance.com/event/';
+
 function Initialize()
 ////////////////
 //            //
@@ -159,172 +164,209 @@ function assignTeams(matchNum)
 		matchNo = Number(matchNum.value);
 	}
 }
-function scoutWords(comment)
-/////////////////
-//             //
-// Scout Words //
-//             //
-/////////////////
+function subCategory()
+//////////////////
+//              //
+// Sub Category //
+//              //
+//////////////////
 {
 	var i;
-	var scout = document.getElementById('scoutWords');
-	scout.style.visibility = "visible";
+	var scout = document.getElementById('subTag');
 	var length = scout.options.length;
-	for (i = 0; i < length; i++) scout.options[i] = null;			// Clear all items
-
-	switch (comment.value)
+	for (i = length; i > -1; i--) scout.options[i] = null;			// Clear all items
+	var category = document.getElementById('category');
+	switch (category.value)
 	{
 		case "Collector":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Good";
+				newOption.text = "_";
 				scout.add(newOption, scout[0]);
-				newOption = document.createElement("option");
-				newOption.text = "Slow";
 				scout.add(newOption, scout[1]);
-				newOption = document.createElement("option");
-				newOption.text ="Poor";
+				scout.options[0].selected = true;
+				newOption.text = "Good";
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "None";
+				newOption.text = "Slow";
 				scout.add(newOption, scout[3]);
-				scout.size = 4;
+				newOption = document.createElement("option");
+				newOption.text ="Poor";
+				scout.add(newOption, scout[4]);
+				newOption = document.createElement("option");
+				newOption.text = "None";
+				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Ball Containment":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Good";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
+				scout.add(newOption, scout[1]);
+				scout.options[0].selected = true;
+				newOption.text = "Good";
+				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
 				newOption.text = "Average";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
 				newOption.text = "Poor";
-				scout.add(newOption, scout[2]);
+				scout.add(newOption, scout[4]);
 				break;
 			}
 		case "Truss":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Weak shot";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
-				newOption = document.createElement("option");
-				newOption.text = "Aim/Defense";
 				scout.add(newOption, scout[1]);
-				newOption = document.createElement("option");
-				newOption.text = "Drove around aimlessly";
+				scout.options[0].selected = true;
+				newOption.text = "Weak shot";
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Bot died";
+				newOption.text = "Aim/Defense";
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "No show";
+				newOption.text = "Drove around aimlessly";
 				scout.add(newOption, scout[4]);
+				newOption = document.createElement("option");
+				newOption.text = "Bot died";
+				scout.add(newOption, scout[5]);
+				newOption = document.createElement("option");
+				newOption.text = "No show";
+				scout.add(newOption, scout[6]);
 				break;
 			}
 		case "Sketchiness":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Tippy";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
-				newOption = document.createElement("option");
-				newOption.text = "Poor teamwork";
 				scout.add(newOption, scout[1]);
-				newOption = document.createElement("option");
-				newOption.text = "Driver";
+				scout.options[0].selected = true;
+				newOption.text = "Tippy";
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Ball stuck";
+				newOption.text = "Poor teamwork";
 				scout.add(newOption, scout[3]);
+				newOption = document.createElement("option");
+				newOption.text = "Driver";
+				scout.add(newOption, scout[4]);
+				newOption = document.createElement("option");
+				newOption.text = "Ball stuck";
+				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Defense":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Effective";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
-				newOption = document.createElement("option");
-				newOption.text = "Ineffective";
 				scout.add(newOption, scout[1]);
-				newOption = document.createElement("option");
-				newOption.text = "Human Player";
+				scout.options[0].selected = true;
+				newOption.text = "Effective";
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Autonomous";
+				newOption.text = "Ineffective";
 				scout.add(newOption, scout[3]);
+				newOption = document.createElement("option");
+				newOption.text = "Human Player";
+				scout.add(newOption, scout[4]);
+				newOption = document.createElement("option");
+				newOption.text = "Autonomous";
+				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Fouls":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Frame Perimeter";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
+				scout.add(newOption, scout[1]);
+				scout.options[0].selected = true;
+				newOption.text = "Frame Perimeter";
+				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
 				newOption.text = "Other";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[3]);
 				break;
 			}
 		case "Pass":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Good pass";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
+				scout.add(newOption, scout[1]);
+				scout[0].option.selected = true;
+				newOption.text = "Good pass";
+				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
 				newOption.text = "Bad pass";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
 				newOption.text = "Slow";
-				scout.add(newOption, scout[2]);
+				scout.add(newOption, scout[4]);
 				break;
 			}
 		case "Drive Base":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Fast";
+				newOption.text = " ";
 				scout.add(newOption, scout[0]);
+				scout.add(newOption, scout[1]);
+				scout.options[0].selected = true;
+				newOption.text = "Fast";
+				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
 				newOption.text = "Strong";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
 				newOption.text = "Weak";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
 				newOption.text = "Slow";
-				scout.add(newOption, scout[2]);
+				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Shooter":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "Fast";
+				newOption.text = " ";
+				scout.add(newOption, scout[1]);
 				scout.add(newOption, scout[0]);
+				scout.options[0].selected = true;
+				newOption.text = "Fast";
+				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
 				newOption.text = "Accurate";
-				scout.add(newOption, scout[1]);
+				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
 				newOption = document.createElement("option");
 				newOption.text = "Inaccurate";
-				scout.add(newOption, scout[2]);
+				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
 				newOption.text = "None";
-				scout.add(newOption, scout[3]);
+				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Scoring":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "1 pt.";
-				scout.add(newOption, scout[0]);
-				newOption = document.createElement("option");
-				newOption.text = "10 pt.";
+				newOption.text = " ";
 				scout.add(newOption, scout[1]);
-				newOption = document.createElement("option");
-				newOption.text = "Truss";
+				scout.options[0].selected = true;
+				newOption.text = "1 pt.";
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Catch";
+				newOption.text = "10 pt.";
 				scout.add(newOption, scout[3]);
+				newOption = document.createElement("option");
+				newOption.text = "Truss";
+				scout.add(newOption, scout[4]);
+				newOption = document.createElement("option");
+				newOption.text = "Catch";
+				scout.add(newOption, scout[5]);
 			}
 	}
 }
@@ -335,23 +377,30 @@ function addComment()
 //             //
 /////////////////
 {
-	
- 	var remark = document.getElementById("comment").value;
- 	if (remark.length > 0) remark = remark.concat(' ');
-	remark = remark.concat(document.getElementById("key").value);
-	remark = remark.concat(' ');
-	remark = remark.concat(document.getElementById("scoutWords").value);;
-	remark = remark.concat(".")
-	document.getElementById("comment").value = remark;
-}
-function clearComment()
-///////////////////
-//               //
-// Clear Comment //
-//               //
-///////////////////
-{
-	document.getElementById("comment").value = "";
+	var chrs;
+	var URL = commentProcLink;
+	URL = URL.concat('?event_id=');
+	URL = URL.concat(eventName);
+	URL = URL.concat('&match_number=');
+	URL = URL.concat(matchNo);
+	URL = URL.concat('&scout_number=');
+	URL = URL.concat(tabletNo);
+	URL = URL.concat('&comment=');
+	URL = URL.concat(document.getElementById('comment').value);
+	issueRequestHTTP("INSERT", URL, assignContent(chrs));
+	URL = tagProcLink;
+	URL = URL.concat('?tag_id=');
+	URL = URL.concat(eventName);
+	URL = URL.concat(matchNo);
+	URL = URL.concat(tabletNo);
+	chrs = 'tag';
+	URL = URL.concat('&tag=');
+	var elem, whatever;
+	for (var i=1; i<13; i++)
+	{
+		elem = document.getElementID(chrs.concat(i));
+		issueRequestHTTP("INSERT", URL.concat(elem.value), assignContent(whatever));
+	}
 }
 function submitComment(submittal)
 ////////////////////
@@ -371,6 +420,152 @@ function submitComment(submittal)
 	URL = URL.concat('&comment=');
 	URL = URL.concat(document.getElementById('comment').value);
 	issueRequestHTTP("SET", URL, assignContent(chrs));
+}
+function addTag()
+/////////////
+//         //
+// Add Tag //
+//         //
+/////////////
+{
+	var chrs = 'divTag';
+	var tag;
+	for (var i = 2; i < 13; i++)
+	{
+		if (document.getElementById(chrs.concat(i)).style.visibility == "hidden")
+		{
+			document.getElementById(chrs.concat(i)).style.visibility = "visible";
+			break;
+		}
+	}
+	var elem = document.getElementById('addTag');
+	var pos = getPosition(elem);
+	if (pos.y < 550) 
+	{
+		elem.style.top = pos.y + 28;
+		elem = document.getElementById('category');
+		elem.style.top = pos.y + 28;
+		elem = document.getElementById('subTag');
+		elem.style.top = pos.y + 28;
+		elem =document.getElementById('fillMyTag');
+		elem.style.top = pos.y + 28;
+	}
+}
+function resetTags()
+////////////////
+//            //
+// Reset Tags //
+//            //
+////////////////
+{
+	var tag = document.getElementById('tag1');
+	tag.value = "";
+	tag = document.getElementById('addTag');
+	tag.style.top = 230;
+	tag = document.getElementById('category');
+	tag.options[0].selected = true;
+	tag.style.top = 230;
+	tag = document.getElementById('subTag');
+	tag.style.top = 230;
+	tag.options[0].selected = true;
+	tag = document.getElementById('fillMyTag');
+	tag.style.top = 230;
+	var chrs;
+	for (var i=2; i < 13; i++)
+	{
+		chrs = 'divTag';
+		chrs = chrs.concat(i);
+		tag = document.getElementById(chrs);
+		tag.style.visibility = "hidden";
+		chrs = 'tag';
+		chrs = chrs.concat(i);
+		tag = document.getElementById(chrs);
+		tag.value = "";
+	}
+}
+function fillTag()
+//////////////
+//          //
+// Fill Tag //
+//          //
+//////////////
+{
+	var hide ='divTag';
+	for (var i=2; i < 13; i++)
+	{
+		if (document.getElementById(hide.concat(i)).style.visibility == "hidden") break;
+	}
+	if (i < 13)
+	{
+		hide = 'tag';
+		var tag = document.getElementById(hide.concat(i - 1));
+		tag.value = document.getElementById('subTag').value;
+	}
+}
+function deleteTag(tag)
+////////////////
+//            //
+// Delete Tag //
+//            //
+////////////////
+{
+	var i = Number(tag.id.substr(tag.id.length - 1, 1));
+	var chrs, elem1, elem2;;
+	for (var j=i; j < 12; j++)
+	{
+		chrs = 'divTag';
+		elem2 = document.getElementById(chrs.concat(j + 1));
+		if (elem2.style.visibility == "hidden")
+		{
+			elem1 = document.getElementById(chrs.concat(j));
+			elem1.style.visibility = "hidden";
+			chrs = 'tag';
+			elem1 = document.getElementById(chrs.concat(j));
+			elem1.value = "";
+			elem1 = document.getElementById('addTag');
+			var pos = getPosition(elem1);
+			elem1.style.top = pos.y - 30;
+			elem1 = document.getElementById('subTag');
+			elem1.style.top = pos.y - 30;
+			elem1 = document.getElementById('fillMyTag');
+			elem1.style.top = pos.y - 30;
+			elem1 = document.getElementById('category');
+			elem1.style.top = pos.y - 30;
+			break;
+		} else {
+			chrs = 'tag';
+			elem2 = document.getElementById(chrs.concat(j + 1));
+			elem1 = document.getElementById(chrs.concat(j));
+			elem1.value = elem2.value;
+		}
+	}
+}
+function replaceTag(tag)
+/////////////////
+//             //
+// Replace Tag //
+//             //
+/////////////////
+{
+
+}
+function getPosition(element)
+/////////////////////////////
+//                         //
+// Get Position of Element //
+//                         //
+/////////////////////////////
+{
+    var xPosition = 0;
+    var yPosition = 0;
+  
+    while(element)
+    {
+        xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+        yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+        element = element.offsetParent;
+    }
+    return { x: xPosition, y: yPosition };
 }
 function getURLParameter(name)
 ///////////////////////
@@ -593,15 +788,96 @@ function issueError(theMsg, cleer)
 		<INPUT id="submit6" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
 </DIV>
-<SELECT id="key" style="position: absolute; left: 30px; top: 200px;" onchange="scoutWords(this)" class="bigFont"><OPTION value=" " SELECTED> </OPTION>
-	<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
-	<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
-	<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
-	<OPTION value="Scoring">Scoring</OPTION></SELECT>
-<INPUT type="button" value="ADD" class="bigFont" style="position: absolute; left: 350px; top: 340px" onclick="addComment()"></INPUT>
-<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 430px; top: 340px;" onclick="clearComment()"></INPUT>
-<DIV id="divTag1" style="visibility: visibie"><TEXTAREA id="tag1" rows="1" columns="50" style="position: absolute;
-	left: 10px; top: 230px"></TEXTAREA></DIV>
+<TEXTAREA id="comment" rows="1" columns="300" style="position: absolute; left: 10px; top: 180px; width: 700px" class="mediumFont"></TEXTAREA>
+<INPUT type="button" value="RESET TAGS" class="bigFont" style="position: absolute; left: 720px; top: 185px;" onclick="resetTags()"></INPUT>
+<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 920px; top: 185px;" onclick="clearComment()"></INPUT>
+
+<DIV id="divTag1" class="mediumFont"><TEXTAREA id="tag1" rows="1" columns="100" style="position: absolute; width: 500px;
+																					left: 10px; top: 230px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="replace1" value="REPLACE" style="position: absolute; left: 600px; top: 230px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT id="addTag" type="button" value="ADD" style="position: absolute; left: 690px; top: 230px;" onclick="addTag()" class="mediumFont"></INPUT>
+	<SELECT id="category" style="position: absolute; left: 770px; top: 230px;" onchange="subCategory()" class="bigFont"><OPTION value=" " SELECTED>
+																																				</OPTION>
+		<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
+		<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
+		<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
+		<OPTION value="Scoring">Scoring</OPTION></SELECT>
+	<SELECT id="subTag" style="position: absolute; left: 970px; top: 230px;"><OPTION value=" " SELECTED> </OPTION></SELECT>
+	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 1180px; top: 230px" onclick="fillTag()"></INPUT>
+</DIV>
+<DIV id="divTag2" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag2" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 260px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete2" value="DELETE" style="position: absolute; left: 520px; top: 260px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace2" value="REPLACE" style="position: absolute; left: 600px; top: 260px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+</DIV>
+<DIV id="divTag3" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag3" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 290px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 520px; top: 290px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 600px; top: 290px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+</DIV>
+<DIV id="divTag4" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag4" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 320px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete4" value="DELETE" style="position: absolute; left: 520px; top: 320px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace4" value="REPLACE" style="position: absolute; left: 600px; top: 320px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag5" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag5" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 350px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 520px; top: 350px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 600px; top: 350px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag6" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag6" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 380px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete6" value="DELETE" style="position: absolute; left: 520px; top: 380px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace6" value="REPLACE" style="position: absolute; left: 600px; top: 380px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag7" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag7" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 410px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete7" value="DELETE" style="position: absolute; left: 520px; top: 410px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace7" value="REPLACE" style="position: absolute; left: 600px; top: 410px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag8" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag8" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 440px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete8" value="DELETE" style="position: absolute; left: 520px; top: 440px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace8" value="REPLACE" style="position: absolute; left: 600px; top: 440px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag9" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag9" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 470px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete9" value="DELETE" style="position: absolute; left: 520px; top: 470px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace9" value="REPLACE" style="position: absolute; left: 600px; top: 470px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+</DIV>
+<DIV id="divTag10" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag10" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 500px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete10" value="DELETE" style="position: absolute; left: 520px; top: 500px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace10" value="REPLACE" style="position: absolute; left: 600px; top: 500px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+</DIV>
+<DIV id="divTag11" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag11" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 530px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete11" value="DELETE" style="position: absolute; left: 520px; top: 530px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace11" value="REPLACE" style="position: absolute; left: 600px; top: 530px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+<DIV id="divTag12" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag12" rows="1" columns="100" style="position: absolute; width: 500px;
+																							left: 10px; top: 560px" class="mediumFont"></TEXTAREA>
+	<INPUT type="button" id="delete12" value="DELETE" style="position: absolute; left: 520px; top: 560px;" onclick="deleteTag(this)"
+																															class="mediumFont"></INPUT>
+	<INPUT type="button" id="replace12" value="REPLACE" style="position: absolute; left: 600px; top: 560px" onclick="replaceTag(this)"
+																															class="mediumFont"></INPUT>
+</DIV>
+</DIV>
  <DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
 </BODY>
 </HTML>

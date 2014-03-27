@@ -181,121 +181,121 @@ function subCategory()
 		case "Collector":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = "_";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Good";
+				newOption.text = category.value.concat(" Good");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Slow";
+				newOption.text = category.value.concat(" Slow");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text ="Poor";
+				newOption.text = category.value.concat(" Poor");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "None";
+				newOption.text = category.value.concat(" None");
 				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Ball Containment":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Good";
+				newOption.text = category.value.concat(" Good");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Average";
+				newOption.text = category.value.concat(" Average");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Poor";
+				newOption.text = category.value.concat(" Poor");
 				scout.add(newOption, scout[4]);
 				break;
 			}
 		case "Truss":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Weak shot";
+				newOption.text = category.value.concat(" Weak shot");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Aim/Defense";
+				newOption.text = category.value.concat(" Aim/Defense");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Drove around aimlessly";
+				newOption.text = category.value.concat(" Drove around aimlessly");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "Bot died";
+				newOption.text = category.value.concat(" Bot died");
 				scout.add(newOption, scout[5]);
 				newOption = document.createElement("option");
-				newOption.text = "No show";
+				newOption.text = category.value.concat(" No show");
 				scout.add(newOption, scout[6]);
 				break;
 			}
 		case "Sketchiness":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Tippy";
+				newOption.text = category.value.concat(" Tippy");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Poor teamwork";
+				newOption.text = category.value.concat(" Poor teamwork");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Driver";
+				newOption.text = category.value.concat(" Driver");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "Ball stuck";
+				newOption.text = category.value.concat(" Ball stuck");
 				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Defense":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Effective";
+				newOption.text = category.value.concat(" Effective");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Ineffective";
+				newOption.text = category.value.concat(" Ineffective");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Human Player";
+				newOption.text = category.value.concat(" Human Player");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "Autonomous";
+				newOption.text = category.value.concat(" Autonomous");
 				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Fouls":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Frame Perimeter";
+				newOption.text = category.value.concat(" Frame Perimeter");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Other";
+				newOption.text = category.value.concat(" Other");
 				scout.add(newOption, scout[3]);
 				break;
 			}
 		case "Pass":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout[0].option.selected = true;
@@ -305,27 +305,27 @@ function subCategory()
 				newOption.text = "Bad pass";
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Slow";
+				newOption.text = category.value.concat(" Slow");
 				scout.add(newOption, scout[4]);
 				break;
 			}
 		case "Drive Base":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[0]);
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "Fast";
+				newOption.text = category.value.concat(" Fast");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Strong";
+				newOption.text = category.value.concat(" Strong");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Weak";
+				newOption.text = category.value.concat(" Weak");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "Slow";
+				newOption.text = category.value.concat(" Slow");
 				scout.add(newOption, scout[5]);
 				break;
 			}
@@ -336,36 +336,35 @@ function subCategory()
 				scout.add(newOption, scout[1]);
 				scout.add(newOption, scout[0]);
 				scout.options[0].selected = true;
-				newOption.text = "Fast";
+				newOption.text = category.value.concat(" Fast");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "Accurate";
+				newOption.text = category.value.concat(" Accurate");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption = document.createElement("option");
-				newOption.text = "Inaccurate";
+				newOption.text = category.value.concat(" Inaccurate");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "None";
+				newOption.text = category.value.concat(" None");
 				scout.add(newOption, scout[5]);
 				break;
 			}
 		case "Scoring":
 			{
 				var newOption = document.createElement("option");
-				newOption.text = " ";
+				newOption.text = category.value;
 				scout.add(newOption, scout[1]);
 				scout.options[0].selected = true;
-				newOption.text = "1 pt.";
+				newOption.text = category.value.concat(" 1 pt.");
 				scout.add(newOption, scout[2]);
 				newOption = document.createElement("option");
-				newOption.text = "10 pt.";
+				newOption.text = category.value.concat(" 10 pt.");
 				scout.add(newOption, scout[3]);
 				newOption = document.createElement("option");
-				newOption.text = "Truss";
+				newOption.text = category.value.concat(" Truss");
 				scout.add(newOption, scout[4]);
 				newOption = document.createElement("option");
-				newOption.text = "Catch";
+				newOption.text = category.value.concat(" Catch");
 				scout.add(newOption, scout[5]);
 			}
 	}
@@ -420,6 +419,7 @@ function submitComment(submittal)
 	URL = URL.concat('&comment=');
 	URL = URL.concat(document.getElementById('comment').value);
 	issueRequestHTTP("SET", URL, assignContent(chrs));
+	resetTags();	
 }
 function addTag()
 /////////////
@@ -803,8 +803,9 @@ function issueError(theMsg, cleer)
 		<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
 		<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
 		<OPTION value="Scoring">Scoring</OPTION></SELECT>
-	<SELECT id="subTag" style="position: absolute; left: 970px; top: 230px;"><OPTION value=" " SELECTED> </OPTION></SELECT>
-	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 1180px; top: 230px" onclick="fillTag()"></INPUT>
+	<SELECT id="subTag" style="position: absolute; left: 970px; top: 230px;" class="mediumFont"><OPTION value=" " SELECTED> </OPTION></SELECT>
+	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 1180px; top: 230px" onclick="fillTag()" class="mediumFont">
+																																			</INPUT>
 </DIV>
 <DIV id="divTag2" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag2" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 260px" class="mediumFont"></TEXTAREA>

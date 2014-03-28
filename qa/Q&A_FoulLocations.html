@@ -105,7 +105,7 @@ function closeForm()
 			chrs = document.getElementById('foul').value;
 			URL = URL.concat(chrs);
 		}
-		issueRequestHTTP("UPDATE", URL, assignContent(chrs));
+		issueRequestHTTP("INSERT", URL, assignContent(chrs));
 	}
 	window.close();
 }

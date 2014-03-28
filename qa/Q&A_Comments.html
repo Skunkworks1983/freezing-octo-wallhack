@@ -369,38 +369,6 @@ function subCategory()
 			}
 	}
 }
-function addComment()
-/////////////////
-//             //
-// Add Comment //
-//             //
-/////////////////
-{
-	var chrs;
-	var URL = commentProcLink;
-	URL = URL.concat('?event_id=');
-	URL = URL.concat(eventName);
-	URL = URL.concat('&match_number=');
-	URL = URL.concat(matchNo);
-	URL = URL.concat('&scout_number=');
-	URL = URL.concat(tabletNo);
-	URL = URL.concat('&comment=');
-	URL = URL.concat(document.getElementById('comment').value);
-	issueRequestHTTP("INSERT", URL, assignContent(chrs));
-	URL = tagProcLink;
-	URL = URL.concat('?tag_id=');
-	URL = URL.concat(eventName);
-	URL = URL.concat(matchNo);
-	URL = URL.concat(tabletNo);
-	chrs = 'tag';
-	URL = URL.concat('&tag=');
-	var elem, whatever;
-	for (var i=1; i<13; i++)
-	{
-		elem = document.getElementID(chrs.concat(i));
-		issueRequestHTTP("INSERT", URL.concat(elem.value), assignContent(whatever));
-	}
-}
 function submitComment(submittal)
 ////////////////////
 //                //
@@ -412,14 +380,45 @@ function submitComment(submittal)
 	var n = submittal.id.substr(submittal.id.length - 1, 1);
 	var URL = procLink.concat('?Event=');
 	URL = URL.concat(eventName);
-	URL = URL.concat('&tablet-number=');
+	URL = URL.concat('&team_number=');
+	switch (n)
+	{
+		case 1: URL = URL.concat(teamR1[matchNo]);
+		break;
+		case 2: URL = URL.concat(teamR2[matchNo]);
+		break;
+		case 3: URL = URL.concat(teamR3[matchNo]);
+		break;
+		case 4: URL = URL.concat(teamB1[matchNo]);
+		break;
+		case 5: URL = URL.concat(teamB2[matchNo]);
+		break;
+		case 6: URL = URL.concat(teamB3[matchNo]);
+	}
+	URL = URL.concat('&scout-number=');
 	URL = URL.concat(n);
 	URL = URL.concat('&match_number=');
-	URL = URL.concat(document.getElementById('match-number').value);
+	URL = URL.concat(matchNo);
 	URL = URL.concat('&comment=');
 	URL = URL.concat(document.getElementById('comment').value);
-	issueRequestHTTP("SET", URL, assignContent(chrs));
-	resetTags();	
+	URL = URL.concat('&comment_id=');
+	URL = URL.concat(eventName + matchNo + '' + n);
+	chrs = 'divTag'
+	for (var i=1; i<13; i++)
+	{
+		if (document.getElementById(chrs.concat(n)).style.visibility == "hidden")
+		{
+			break;
+		} else {
+			URL = tagProcLink;
+			URL = URL.concat(eventName + matchNo + '' + n);
+			URL = URL.concat('&tag=');
+			chrs = 'tag';
+			URL = URL.concat(document.getElementById(chrs.concat(i)).value);
+			issueRequestHTTP("INSERT", URL, assignContent(chrs));
+		}
+	}
+	resetTags();
 }
 function addTag()
 /////////////

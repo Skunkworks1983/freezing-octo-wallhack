@@ -163,7 +163,7 @@ $(".scout.auto").on("click", function(e) {
     var self = this;
     getXY(pretty, function(x, y) {
         storeAction(name, "auto", 1, x, y, pretty);
-        if (name == "autoStartPosition") {
+        if (name === "autoStartPosition") {
             self.dataset.name = "autoMovedTo";
             self.dataset.value = "Moved To";
             self.value = "Moved To";

@@ -7,7 +7,7 @@ white: #cccfd4
 */
 
 html {
-    font-family: "Ubuntu", sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
 body, html {
@@ -216,8 +216,10 @@ input[type=button].scout.teleop.bad {
     position: fixed;
     width: 960px;
     height: 437px;
+    line-height: 437px;
     font-size: 25em;
     text-align: center;
+    vertical-align: center;
     opacity: 0.1;
     pointer-events: none;
     left: 0;

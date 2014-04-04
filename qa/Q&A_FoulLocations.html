@@ -8,10 +8,10 @@
 
 // *** Gobal Constants *** //
 RED = '#FF0000';
-procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/fouls?event_id=";
 // *** Global Variables *** //
 var eX, eY;						// X and Y coordinates
-var eventName, matchNo, tabletNo;
+var eventName, matchNo, teamNo, tabletNo;
 var foulSelected;
 function Initialize()
 ////////////////
@@ -40,10 +40,13 @@ function Initialize()
 			chrs = document.getElementById('match-number').innerHTML;
 			chrs = chrs.concat(matchNo);
 			document.getElementById('match-number').innerHTML = chrs;
-			tabletNo = getURLParameter('tablet');
-			if (tabletNo.length < 1)
+			teamNo = getURLParameter('teamNo');
+			if (teamNo.length < 1)
 			{
-				issueError('URL string has no "&tablet=" parameter.', false);
+				issueError('URL string has no "&teamNo=" parameter.', false);
+			} else {
+				tabletNo = getURLParameter('tablet');
+				if (tabletNo.length < 1) issueError('URL string has no "&tablet=" parameter.', false);
 			}
 		}
 	}	
@@ -85,29 +88,32 @@ function closeForm()
 ////////////////
 //
 {
-	if ((eX > 0) && (wY > 0))
+//	if ((eX > 0) && (wY > 0))
 	{
 		var chrs, URL;
 		URL = procLink;
-		URL = URL.concat('?Event=');
 		URL = URL.concat(eventName);
+		URL = URL.concat('&team_number=');
+		URL = URL.concat(teamNo)
 		URL = URL.concat('&scout_number=');
 		URL = URL.concat(tabletNo);
 		URL = URL.concat('&match_number=');
 		URL = URL.concat(matchNo);
-		URL = URL.concat('&x=');
-		URL = URL.concat(eX);
-		URL = URL.concat('&y=');
-		URL = URL.concat(wY);
+//		URL = URL.concat('&x=');
+//		URL = URL.concat(eX);
+//		URL = URL.concat('&y=');
+//		URL = URL.concat(wY);
 		if (foulSelected)
 		{
 			URL = URL.concat('&foul=');
 			chrs = document.getElementById('foul').value;
 			URL = URL.concat(chrs);
 		}
-		issueRequestHTTP("INSERT", URL, assignContent(chrs));
+//		console.log(URL);										// Test
+		issueRequestHTTP("POST", URL, function(info) {
+			window.close();
+		});
 	}
-	window.close();
 }
 function foulAssigned(foul)
 ///////////////////
@@ -139,7 +145,7 @@ function issueRequestHTTP(request, URL, callback)
       if (xmlHTTP.readyState == 4)
       {
           callback(xmlHTTP.responseText);
-          assignContent(xmlHTTP.responseText);
+          assignContents(xmlHTTP.responseText);
       }
    }
 	xmlHTTP.open(request, URL, true);
@@ -185,7 +191,7 @@ function getURLParameter(name)
 {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
 }
-function assignContent(info)
+function assignContents(info)
 ////////////////////
 //                //
 // Assign Content //
@@ -193,6 +199,7 @@ function assignContent(info)
 ////////////////////
 {
 }
+
 function issueError(theMsg, cleer)
 ////////////////////
 //                //
@@ -244,8 +251,9 @@ function issueError(theMsg, cleer)
 	<DIV id="match-number" style="position: absolute; left: 900px; top: 5px;" class="regFont">Match #: </DIV>
 	<DIV id="tablet-number" style="position: absolute; left: 1000px; top: 5px;" class="regFont">Tablet #: </DIV>
 	<DIV style="position: absolute; left: 20px; top: 40px;">
-	<IMG src="https://raw.github.com/Skunkworks1983/freezing-octo-wallhack/gh-pages/img/field.png?token=6645765__eyJzY29wZSI6IlJhd0Jsb2I6U2t1bmt3b3JrczE5ODMvZnJlZXppbmctb2N0by13YWxsaGFjay9naC1wYWdlcy9pbWcvZmllbGQucG5nIiwiZXhwaXJlcyI6MTM5NTg4Mzk1NH0%3D--c32e210701453ad915260249d984249046d90385" id="field" class="backGround"></IMG>
-	<IMG id="ltSquare" src="robot.gif" style="position: absolute; left: 0px; top: 0px; opacity=0.25; visibility: hidden;" class="foreGround"></IMG>
+	<IMG src="file:///Users/davidweeks/Skunks/freezing-octo-wallhack/img/field.png" id="field" class="backGround"></IMG>
+	<IMG id="ltSquare" src="file:///Users/davidweeks/Skunks/freezing-octo-wallhack/img/robot.gif" style="position: absolute; left: 0px;
+																			top: 0px; opacity=0.25; visibility: hidden;" class="foreGround"></IMG>
 	</DIV>
 	<DIV style="position: absolute; left: 750px; top: 20px;"><SPAN style="position: absolute; left:260px; top:80px; display:inline">Select&nbsp;Foul</SPAN>
 		<SELECT id="foul" style="position: absolute; left: 40px; top: 120px;" onchange="foulAssigned(this)"><OPTION value=" " SELECTED> </OPTION>

@@ -9,8 +9,8 @@
 // *** Gobal Constants *** //
 RED = '#FF0000';
 blueAllianceURL = 'http://www.thebluealliance.com/event/';
-commentProcLink = '';
-tagProcLink = '';
+commentProcLink = "https://scout-o-matic-2014.herokuapp.com/api/comments?event_id=";
+tagProcLink = "https://scout-o-matic-2014.herokuapp.com/api/tags?event_id=";
 
 // *** Global Variables *** //
 var maxMatches;
@@ -37,7 +37,7 @@ function Initialize()
 		document.getElementById('title').innerHTML = chrs;
 //		readFileHttp(eventName, function(result)
 		chrs = blueAllianceURL.concat(eventName);
-		getScheduleHTTP(chrs, function(result)
+		issueRequestHTTP("GET", chrs, function(result)
 		{
 //			scheduleHasBeenRead(result);
 			scheduleHasBeenDownloaded(result);
@@ -105,7 +105,8 @@ function parseHTML(html)
 	teamB3 = new Int16Array(maxMatches);
 	var lines = html.split('\n');										// Line feeds
 	var i = 0;
-	var j = 1;
+	var j, k, l;
+	var chrs;
 	var elem = document.getElementById('match-number');
 	while (i < lines.length)
 	{
@@ -113,6 +114,10 @@ function parseHTML(html)
 		{
 			i++;
 		} else {
+			k = lines[i].indexOf('Quals');
+			chrs = lines[i].substr(k + 6, 5);
+			l = chrs.indexOf('<') + k + 5;
+			if (l < lines[i].length) j = Number(lines[i].substr(k + 6, l - k - 5));
 			if (lines[i].substring(2, 6) == '<td>')
 			{
 				teams = lines[i + 2].split('/');
@@ -378,31 +383,34 @@ function submitComment(submittal)
 {
 	var chrs;
 	var n = submittal.id.substr(submittal.id.length - 1, 1);
-	var URL = procLink.concat('?Event=');
+	var URL = commentProcLink;
 	URL = URL.concat(eventName);
 	URL = URL.concat('&team_number=');
 	switch (n)
 	{
-		case 1: URL = URL.concat(teamR1[matchNo]);
+		case '1': URL = URL.concat(teamR1[matchNo]);
 		break;
-		case 2: URL = URL.concat(teamR2[matchNo]);
+		case '2': URL = URL.concat(teamR2[matchNo]);
 		break;
-		case 3: URL = URL.concat(teamR3[matchNo]);
+		case '3': URL = URL.concat(teamR3[matchNo]);
 		break;
-		case 4: URL = URL.concat(teamB1[matchNo]);
+		case '4': URL = URL.concat(teamB1[matchNo]);
 		break;
-		case 5: URL = URL.concat(teamB2[matchNo]);
+		case '5': URL = URL.concat(teamB2[matchNo]);
 		break;
-		case 6: URL = URL.concat(teamB3[matchNo]);
+		case '6': URL = URL.concat(teamB3[matchNo]);
 	}
-	URL = URL.concat('&scout-number=');
+	URL = URL.concat('&scout_number=');
 	URL = URL.concat(n);
 	URL = URL.concat('&match_number=');
 	URL = URL.concat(matchNo);
 	URL = URL.concat('&comment=');
 	URL = URL.concat(document.getElementById('comment').value);
 	URL = URL.concat('&comment_id=');
-	URL = URL.concat(eventName + matchNo + '' + n);
+	URL = URL.concat(eventName + '-' + matchNo + '-' + n);
+//	console.log('Comment added:' + URL);																// Test
+//	issueError(URL);																// Test
+	issueRequestHTTP("POST", URL, assignContents);
 	chrs = 'divTag'
 	for (var i=1; i<13; i++)
 	{
@@ -410,12 +418,16 @@ function submitComment(submittal)
 		{
 			break;
 		} else {
+			if (document.getElementById('tag' + i).value.length == 0) break;
 			URL = tagProcLink;
-			URL = URL.concat(eventName + matchNo + '' + n);
-			URL = URL.concat('&tag=');
-			chrs = 'tag';
+			URL = URL.concat(eventName);
+			URL = URL.concat('&comment_id=');
+			URL = URL.concat(eventName + '-' + matchNo + '-' + n);
+			URL = URL.concat('&text=');
+			chrs = 'tag'; 
 			URL = URL.concat(document.getElementById(chrs.concat(i)).value);
-			issueRequestHTTP("INSERT", URL, assignContent(chrs));
+//			console.log('Tag added:' + URL);														// Test
+			issueRequestHTTP("POST", URL, assignContents);
 		}
 	}
 	resetTags();
@@ -575,10 +587,10 @@ function getURLParameter(name)
 {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||'';
 }
-function getScheduleHTTP(URL, callback)
+function issueRequestHTTP(reqType, URL, callback)
 ///////////////////////////////////
 //                               //
-// Get Schedule via HTTP Request //
+// Issue Request via HTTP Request //
 //                               //
 ///////////////////////////////////
 //function readFileHttp(fileName, callback)
@@ -595,11 +607,11 @@ function getScheduleHTTP(URL, callback)
       {
 //          console.log(xmlHTTP.responseText);							// Test
           callback(xmlHTTP.responseText);
-          assignContent(xmlHTTP.responseText);
+          assignContents(xmlHTTP.responseText);
       }
    }
-//    xmlHTTP.open("GET", fileName, true);
-	xmlHTTP.open("GET", URL, true);
+//    xmlHTTP.open(reqType, fileName, true);
+	xmlHTTP.open(reqType, URL, true);
     xmlHTTP.send(null);
 }
 //
@@ -629,7 +641,7 @@ function getXmlHttp()
    }
    return xmlHTTP;
 }
-function assignContent(str)
+function assignContents(str)
 ////////////////////
 //                //
 // Assign Content //
@@ -698,6 +710,21 @@ function getFoulLoc(info)
 	URL = URL.concat(matchNo);
 	URL = URL.concat('&tablet=');
 	URL = URL.concat(n);
+	URL = URL.concat('&teamNo=');
+	switch (n)
+	{
+		case '1': URL = URL.concat(teamR1[matchNo]);
+			break;
+		case '2': URL = URL.concat(teamR2[matchNo]);
+			break;
+		case '3': URL = URL.concat(teamR3[matchNo]);
+			break;
+		case '4': URL = URL.concat(teamB1[matchNo]);
+			break;
+		case '5': URL = URL.concat(teamB2[matchNo]);
+			break;
+		case '6': URL = URL.concat(teamB3[matchNo]);
+	}
 	window.open(URL, "Q&A_Comments");
 }
 function issueError(theMsg, cleer)
@@ -746,16 +773,16 @@ function issueError(theMsg, cleer)
 </HEAD>
 <TITLE style="CENTER"><H2>Q&A</H2></Title>
 <BODY onLoad="Initialize()">
-<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 160px;">
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 160px; width: 1100px">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
-	<DIV id="match-time" style="position: absolute; left: 1090px; top: 10px;">Time: </DIV>
-	<DIV id="title" style="position: absolute; left: 500px; top: 10px;" display="inline">Match Q&A Comments Skunkworks Robotics 1983</DIV><H3>
-	<DIV style="position: absolute; left: 655px; top: 0px;"><HR noshade size="3" width="1" style="height: 160"></HR></DIV>
+	<DIV id="match-time" style="position: absolute; left: 1000px; top: 10px;">Time: </DIV>
+	<DIV id="title" style="position: absolute; left: 360px; top: 10px;" display="inline">Match Q&A Comments Skunkworks Robotics 1983</DIV><H3>
+	<DIV style="position: absolute; left: 500px; top: 0px;"><HR noshade size="3" width="1" style="height: 160"></HR></DIV>
 	<DIV style="position: absolute; left: 80px; top: 30px;"><FONT color="RED"><U>RED</U></FONT></DIV>
-	<DIV style="position: absolute; left: 735px; top: 30px"><FONT color="BLUE"><U>BLUE</U></FONT></DIV></H3>
-	<DIV style="position: absolute; left: 1050px; top: 35px;">Match #</DIV>
+	<DIV style="position: absolute; left: 635px; top: 30px"><FONT color="BLUE"><U>BLUE</U></FONT></DIV></H3>
+	<DIV style="position: absolute; left: 960px; top: 35px;">Match #</DIV>
 	<FONT style="font-family: Helvetica; font-size: 16pt;">
-	<SELECT id="match-number" style="position: absolute; left: 1110px; top: 30px" onchange="assignTeams(this)">
+	<SELECT id="match-number" style="position: absolute; left: 1035px; top: 30px" onchange="assignTeams(this)">
 		<OPTION SELECTED VALUE=""> </OPTION><OPTION VALUE="1">1</OPTION><OPTION VALUE="2">2</OPTION>
 		<OPTION VALUE="3">3</OPTION><OPTION VALUE="4">4</OPTION><OPTION VALUE="5">5</OPTION><OPTION VALUE="6">6</OPTION>
 		<OPTION VALUE="7">7</OPTION><OPTION VALUE="8">8</OPTION><OPTION VALUE="9">9</OPTION><OPTION VALUE="10">10</OPTION>
@@ -766,7 +793,7 @@ function issueError(theMsg, cleer)
 		<INPUT id= "foul1" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit1" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
-	<DIV style="position: absolute; left: 670px; top: 60px" display="inline"><B id="blue_robot1" CLASS="blueFont">4: 0000</B>
+	<DIV style="position: absolute; left: 505px; top: 60px" display="inline"><B id="blue_robot1" CLASS="blueFont">4: 0000</B>
 		<INPUT id= "foul4" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit4" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
@@ -774,7 +801,7 @@ function issueError(theMsg, cleer)
 		<INPUT id= "foul2" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit2" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
-	<DIV style="position: absolute; left: 670px; top: 95px" display="inline"><B id="blue_robot2" CLASS="blueFont">5: 0000</B>
+	<DIV style="position: absolute; left: 505px; top: 95px" display="inline"><B id="blue_robot2" CLASS="blueFont">5: 0000</B>
  		<INPUT id= "foul5" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit5" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
@@ -782,99 +809,99 @@ function issueError(theMsg, cleer)
 		<INPUT id= "foul3" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit3" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
-	<DIV style="position: absolute; left: 670px; top: 130px" display="inline"><B id="blue_robot3" CLASS="blueFont">6: 0000</B>
+	<DIV style="position: absolute; left: 505px; top: 130px" display="inline"><B id="blue_robot3" CLASS="blueFont">6: 0000</B>
 		<INPUT id= "foul6" type="submit" value="FOUL" style="position: absolute; left: 100px; top: 0px;" onClick="getFoulLoc(this)"></INPUT>
 		<INPUT id="submit6" type="submit" value="SUBMIT" style="position: absolute; left: 160px; top: 0px;" onclick="submitComment(this)"></INPUT>
 	</DIV>
 </DIV>
 <TEXTAREA id="comment" rows="1" columns="300" style="position: absolute; left: 10px; top: 180px; width: 700px" class="mediumFont"></TEXTAREA>
-<INPUT type="button" value="RESET TAGS" class="bigFont" style="position: absolute; left: 720px; top: 185px;" onclick="resetTags()"></INPUT>
-<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 920px; top: 185px;" onclick="clearComment()"></INPUT>
+<INPUT type="button" value="RESET TAGS" class="bigFont" style="position: absolute; left: 780px; top: 185px;" onclick="resetTags()"></INPUT>
+<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 980px; top: 185px;" onclick="clearComment()"></INPUT>
 
 <DIV id="divTag1" class="mediumFont"><TEXTAREA id="tag1" rows="1" columns="100" style="position: absolute; width: 500px;
 																					left: 10px; top: 230px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="replace1" value="REPLACE" style="position: absolute; left: 600px; top: 230px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace1" value="REPLACE" style="position: absolute; left: 520px; top: 230px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT id="addTag" type="button" value="ADD" style="position: absolute; left: 690px; top: 230px;" onclick="addTag()" class="mediumFont"></INPUT>
-	<SELECT id="category" style="position: absolute; left: 770px; top: 230px;" onchange="subCategory()" class="bigFont"><OPTION value=" " SELECTED>
+	<INPUT id="addTag" type="button" value="ADD" style="position: absolute; left: 600px; top: 230px;" onclick="addTag()" class="mediumFont"></INPUT>
+	<SELECT id="category" style="position: absolute; left: 690px; top: 230px;" onchange="subCategory()" class="bigFont"><OPTION value=" " SELECTED>
 																																				</OPTION>
 		<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
 		<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
 		<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
 		<OPTION value="Scoring">Scoring</OPTION></SELECT>
-	<SELECT id="subTag" style="position: absolute; left: 970px; top: 230px;" class="mediumFont"><OPTION value=" " SELECTED> </OPTION></SELECT>
-	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 1180px; top: 230px" onclick="fillTag()" class="mediumFont">
+	<SELECT id="subTag" style="position: absolute; left: 920px; top: 230px;" class="mediumFont"><OPTION value=" " SELECTED> </OPTION></SELECT>
+	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 1010px; top: 230px" onclick="fillTag()" class="mediumFont">
 																																			</INPUT>
 </DIV>
 <DIV id="divTag2" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag2" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 260px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete2" value="DELETE" style="position: absolute; left: 520px; top: 260px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete2" value="DELETE" style="position: absolute; left: 440px; top: 260px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace2" value="REPLACE" style="position: absolute; left: 600px; top: 260px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace2" value="REPLACE" style="position: absolute; left: 520px; top: 260px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 <DIV id="divTag3" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag3" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 290px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 520px; top: 290px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 440px; top: 290px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 600px; top: 290px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 520px; top: 290px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 <DIV id="divTag4" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag4" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 320px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete4" value="DELETE" style="position: absolute; left: 520px; top: 320px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete4" value="DELETE" style="position: absolute; left: 440px; top: 320px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace4" value="REPLACE" style="position: absolute; left: 600px; top: 320px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace4" value="REPLACE" style="position: absolute; left: 520px; top: 320px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag5" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag5" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 350px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 520px; top: 350px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 440px; top: 350px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 600px; top: 350px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 520px; top: 350px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag6" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag6" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 380px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete6" value="DELETE" style="position: absolute; left: 520px; top: 380px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete6" value="DELETE" style="position: absolute; left: 440px; top: 380px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace6" value="REPLACE" style="position: absolute; left: 600px; top: 380px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace6" value="REPLACE" style="position: absolute; left: 520px; top: 380px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag7" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag7" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 410px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete7" value="DELETE" style="position: absolute; left: 520px; top: 410px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete7" value="DELETE" style="position: absolute; left: 440px; top: 410px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace7" value="REPLACE" style="position: absolute; left: 600px; top: 410px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace7" value="REPLACE" style="position: absolute; left: 520px; top: 410px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag8" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag8" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 440px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete8" value="DELETE" style="position: absolute; left: 520px; top: 440px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete8" value="DELETE" style="position: absolute; left: 440px; top: 440px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace8" value="REPLACE" style="position: absolute; left: 600px; top: 440px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace8" value="REPLACE" style="position: absolute; left: 520px; top: 440px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag9" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag9" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 470px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete9" value="DELETE" style="position: absolute; left: 520px; top: 470px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete9" value="DELETE" style="position: absolute; left: 440px; top: 470px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace9" value="REPLACE" style="position: absolute; left: 600px; top: 470px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace9" value="REPLACE" style="position: absolute; left: 520px; top: 470px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 <DIV id="divTag10" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag10" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 500px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete10" value="DELETE" style="position: absolute; left: 520px; top: 500px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete10" value="DELETE" style="position: absolute; left: 440px; top: 500px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace10" value="REPLACE" style="position: absolute; left: 600px; top: 500px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace10" value="REPLACE" style="position: absolute; left: 520px; top: 500px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 <DIV id="divTag11" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag11" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 530px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete11" value="DELETE" style="position: absolute; left: 520px; top: 530px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete11" value="DELETE" style="position: absolute; left: 440px; top: 530px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace11" value="REPLACE" style="position: absolute; left: 600px; top: 530px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace11" value="REPLACE" style="position: absolute; left: 520px; top: 530px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 <DIV id="divTag12" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag12" rows="1" columns="100" style="position: absolute; width: 500px;
 																							left: 10px; top: 560px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete12" value="DELETE" style="position: absolute; left: 520px; top: 560px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete12" value="DELETE" style="position: absolute; left: 440px; top: 560px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace12" value="REPLACE" style="position: absolute; left: 600px; top: 560px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace12" value="REPLACE" style="position: absolute; left: 520px; top: 560px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 </DIV>

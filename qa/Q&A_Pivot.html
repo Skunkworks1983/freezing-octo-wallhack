@@ -71,12 +71,17 @@ function Initialize()
 				chrs = document.getElementById('tablet-number').innerHTML;
 				chrs = chrs.concat(tabletNo);
 				document.getElementById('tablet-number').innerHTML = chrs;
-				console.log(URL);									// Test
-		  		issueRequestHTTP("GET", URL, function(result)
+				teamNo = getURLParameter('teamNo');
+				if (teamNo.length < 1)
 				{
-					scheduleHasBeenDownloaded(result);
-				});
-				readDatabase();
+					issueError('URL string has no "teamNo=" parameter.', false);
+				} else {
+			  		issueRequestHTTP("GET", URL, function(result)
+					{
+						scheduleHasBeenDownloaded(result);
+					});
+					readDatabase();
+				}
 			}
 		}
 	}
@@ -145,7 +150,7 @@ function readDatabase()
 	sql = sql.concat(tabletNo);
 	sql = sql.concat('&event_id=');
 	sql = sql.concat(eventName);
-	console.log(sql);												// Test
+//	console.log(sql);												// Test
 	issueRequestHTTP("GET", sql, function(result)
 	{
 		requestHasBeenIssued(result);
@@ -164,7 +169,7 @@ function requestHasBeenIssued(content)
 	{
 		var act, vlue, x, y, chrs;
 		var parsed = JSON.parse(content);							// Parse the JSON data into array of JSON objects
-		console.log(parsed.length);									// Test
+//		console.log(parsed.length);									// Test
 		if (parsed.length > 0)
 		{
 			for (var i=0; i < 9; i++)
@@ -172,15 +177,6 @@ function requestHasBeenIssued(content)
 				if (i < parsed.length)
 				{
 					chrs = i + ' ';
-					chrs = chrs.concat('action:');						// Test
-					chrs = chrs.concat(parsed[i].action);				// Test
-					chrs = chrs.concat(', value:');						// Test
-					chrs = chrs.concat(parsed[i].value);				// Test
-					chrs = chrs.concat(', x=');							// Test
-					chrs = chrs.concat(parsed[i].x);					// Test
-					chrs = chrs.concat(', y=');							// Test
-					chrs = chrs.concat(parsed[i].y);					// Test
-					console.log(chrs);									// Test
 					if (i == 0)
 					{
 						var team = document.getElementById('team_number');
@@ -273,11 +269,11 @@ function requestHasBeenIssued(content)
 			}
 		} else {
 			issueError('Nothing parsed.', false);
-			console.log('Nothing parsed.');								// Test
+//			console.log('Nothing parsed.');								// Test
 		}
 	} else {
 		issueError('No response from database.', false);
-		console.log('No response from database.');							// Test
+//		console.log('No response from database.');							// Test
 	}
 }
 function msToString(millisecs)
@@ -627,7 +623,7 @@ function replaceAction(idObj)
 	chrs = chrs.concat(id);
 	url = url.concat(document.getElementById(chrs).innerHTML);
 	console.log(url);													// Test
-	issueRequestHTTP("PUT", url, function()								// Insert a record to the database
+	issueRequestHTTP("POST", url, function()								// Insert a record to the database
 	{
 		assignContent(chrs);
 	});
@@ -723,8 +719,9 @@ function issueError(theMsg, cleer)
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV id="id0" block="none"></DIV>
 	<DIV style="position: absolute; left: 210px; top: 180px;"><INPUT type="text" id="value0" size="2"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 180px;"><INPUT type="text" id="x0" size="10"> </INPUT></DIV>
@@ -738,15 +735,16 @@ function issueError(theMsg, cleer)
 	<DIV id="scout_name" style="position: absolute; left: 1030px; top: 160px; display: inline">Name: </DIV>
 	<DIV style="position: absolute; left: 15px; top: 200px;"><SELECT id="action1" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 200px;"><INPUT type="text" id="value1" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 200px;"><INPUT type="text" id="x1" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 200px;"><INPUT type="text" id="y1" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -756,15 +754,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add1" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 220px;"><SELECT id="action2" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 220px;"><INPUT type="text" id="value2" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 220px;"><INPUT type="text" id="x2" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 220px;"><INPUT type="text" id="y2" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -774,15 +773,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add2" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 240px;"><SELECT id="action3" style="visibility: hidden"><OPTION value="startPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 240px;"><INPUT type="text" id="value3" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 240px;"><INPUT type="text" id="x3" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 240px;"><INPUT type="text" id="y3" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -792,15 +792,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add3" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 260px;"><SELECT id="action4" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 260px;"><INPUT type="text" id="value4" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 260px;"><INPUT type="text" id="x4" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 260px;"><INPUT type="text" id="y4" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -810,15 +811,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add4" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 280px;"><SELECT id="action5" style="visibility: hidden"><OPTION value="startPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 280px;"><INPUT type="text" id="value5" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 280px;"><INPUT type="text" id="x5" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 280px;"><INPUT type="text" id="y5" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -828,15 +830,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add5" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 300px;"><SELECT id="action6" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 300px;"><INPUT type="text" id="value6" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 300px;"><INPUT type="text" id="x6" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 300px;"><INPUT type="text" id="y6" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -846,15 +849,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add6" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 320px;"><SELECT id="action7" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+			givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 320px;"><INPUT type="text" id="value7" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 320px;"><INPUT type="text" id="x7" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 320px;"><INPUT type="text" id="y7" size="10" style="visibility: hidden"> </INPUT></DIV>
@@ -864,15 +868,16 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="add7" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
 	<DIV style="position: absolute; left: 15px; top: 340px;"><SELECT id="action8" style="visibility: hidden"><OPTION value="autoStartPosition"
 		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
-		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION><OPTION value=
-																										"autoFinalPosition">autoFinalPosition</OPTION>
+		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
+		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION>
 		<OPTION value="missed">missed</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
 		<OPTION value="collectedBall">collectedBall</OPTION><OPTION value="caughtBall">caughtBall</OPTION>
 		<OPTION value="droppedBall">droppedBall</OPTION><OPTION value="scoredHigh">scoredHigh</OPTION><OPTION value="passedBall">passedBall</OPTION>
 		<OPTION value="scoredLow">scoredLow</OPTION><OPTION value="threwTruss">threwTruss</OPTION><OPTION value="knockedOut">knockedOut</OPTION>
 		<OPTION value="ballBouncedOutOfGoal">ballBoundedOutOfGoal</OPTION><OPTION value="deadBot">deadBot</OPTION>
-		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
-			givingDefence</OPTION></SELECT></DIV>
+		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
+		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
+		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION></SELECT></DIV>
 	<DIV style="position: absolute; left: 210px; top: 340px;"><INPUT type="text" id="value8" size="2" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 270px; top: 340px;"><INPUT type="text" id="x8" size="10" style="visibility: hidden"> </INPUT></DIV>
 	<DIV style="position: absolute; left: 345px; top: 340px;"><INPUT type="text" id="y8" size="10" style="visibility: hidden"> </INPUT></DIV>

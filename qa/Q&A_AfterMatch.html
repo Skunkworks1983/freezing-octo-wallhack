@@ -33,6 +33,7 @@ function Initialize()
 		chrs = chrs.concat(eventName);
 		document.getElementById('title').innerHTML = chrs;
 		chrs = blueAllianceURL.concat(eventName);
+//		console.log(chrs);													// Test
 		issueRequestHTTP("GET", chrs, function(result)
 		{
 			scheduleHasBeenDownloaded(result);
@@ -99,7 +100,7 @@ function issueRequestHTTP(request, URL, callback)
       if (xmlHTTP.readyState == 4)
       {
           callback(xmlHTTP.responseText);
-          assignContent(xmlHTTP.responseText);
+          assignContents(xmlHTTP.responseText);
       }
    }
 	xmlHTTP.open(request, URL, true);
@@ -156,6 +157,7 @@ function parseHTML(html)
 {
 	var teams;
 	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
+//	console.log('maxMatches=' + maxMatches);							// Test
 	teamR1 = new Int16Array(maxMatches);
 	teamR2 = new Int16Array(maxMatches);
 	teamR3 = new Int16Array(maxMatches);
@@ -164,13 +166,19 @@ function parseHTML(html)
 	teamB3 = new Int16Array(maxMatches);
 	var lines = html.split('\n');										// Line feeds
 	var i = 0;
-	var j = 1;
+	var j, k, l;
+	var chrs;
+	var elem;
 	while (i < lines.length)
 	{
 		if (lines[i].indexOf('Quals') < 0)
 		{
 			i++;
 		} else {
+			k = lines[i].indexOf('Quals');
+			chrs = lines[i].substr(k + 6, 5);
+			l = chrs.indexOf('<') + k + 5;
+			if (l < lines[i].length) j = Number(lines[i].substr(k + 6, l - k - 5));
 			if (lines[i].substring(2, 6) == '<td>')
 			{
 				teams = lines[i + 2].split('/');
@@ -185,8 +193,14 @@ function parseHTML(html)
 				if (teams.length > 1) teamB2[j] = Number(teams[2]);
 				teams = lines[i + 7].split('/');
 				if (teams.length > 1) teamB3[j] = Number(teams[2]);
-				j++;
 				i = i + 8;
+				elem = document.getElementById('match-number');
+				if (j > elem.length)
+				{
+					var newOpt = document.createElement("option");
+					newOpt.text = j + '';
+					elem.add(newOpt, elem[j]);
+				}
 			} else i++;
 		}
 	}
@@ -270,7 +284,7 @@ function scheduleHasBeenDownloaded(content)
 		parseHTML(content);
 	}
 }
-function assignContent(str)
+function assignContents(str)
 ////////////////////
 //                //
 // Assign Content //
@@ -336,13 +350,13 @@ function confirmAllActions(record)
 	var parsed = JSON.parse(record);
 	if (parsed.length > 0)
 	{
-		var chrs, dummy;
+		var chrs;
 		for (var i=0; i < parsed.length; i++)
 		{
 			chrs = procLink.concat('?id=');
 			chrs = chrs.concat(parsed[i].id);
 			chrs = chrs.concat('&qa_checked=true');
-			issueRequestHTTP("UPDATE", chrs, assignContent(dummy));
+			issueRequestHTTP("POST", chrs, assignContents);
 		}
 	} else {
 		issueError("No actions", false);
@@ -393,7 +407,23 @@ function viewData(robot)
 	URL = URL.concat('&match=');
 	var elem = document.getElementById('match-number');
 	URL = URL.concat(elem.value);
-	console.log(URL);							// Test
+	URL = URL.concat('&teamNo=');
+	var j = Number(elem.value);
+	switch (i)
+	{
+		case '1': URL = URL.concat(teamR1[j]);
+			break;
+		case '2': URL = URL.concat(teamR2[j]);
+			break;
+		case '3': URL = URL.concat(teamR3[j]);
+			break;
+		case '4': URL = URL.concat(teamB1[j]);
+			break;
+		case '5': URL = URL.concat(teamB2[j]);
+			break;
+		case '6': URL = URL.concat(teamB3[j]);
+	}
+//	console.log(URL);							// Test
 	window.open(URL, "Q&A_AfterMatch");
 }
 </SCRIPT>
@@ -415,11 +445,11 @@ function viewData(robot)
 </STYLE>
 </HEAD>
 <BODY onLoad="Initialize()">
-<H4><CENTER><A id="title">1983 Skunk Works Q&A After Match</A></CENTER></H4>
-<DIV style="position: absolute; left: 585px; top: 305px; display: inline"><FONT style="font-family: Helvitica; font-size: 16pt;">Match #:</FONT></DIV>
-<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 150px;">
+<H4><CENTER><A id="title">1983 Skunk Works Q&A After Match&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</A></CENTER></H4>
+<DIV style="position: absolute; left: 455px; top: 305px; display: inline"><FONT style="font-family: Helvitica; font-size: 16pt;">Match #:</FONT></DIV>
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 200px; width: 1100px">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
-	<DIV id="match-time" style="position: absolute; left: 1090px; top: 10px;">Time: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 990px; top: 10px;">Time: </DIV>
 	<DIV style="position: absolute; left: 80px; top: 40px;"><FONT color="RED"><H3><U>RED</U></H3></FONT></DIV>
 	<DIV style="position: absolute; left: 750px; top: 40px"><FONT color="BLUE"><H3><U>BLUE</U></H3></FONT></DIV></H3>
 	<DIV style="position: absolute; left: 250px; top: 70px;">Confirm</DIV><DIV style="position: absolute; left: 930px; top: 70px;">Confirm</DIV>
@@ -427,25 +457,25 @@ function viewData(robot)
 		class="redFont"><A id="robot1">1  : 0000&nbsp;&nbsp;</A><INPUT id="view1" type="button" value="VIEW DATA" onclick="viewData(this)"
 		style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check1" type="checkbox" disabled="false" onClick="confirmQA(this)">
 																																		</INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 130px; display: inline" class="redFont"><A id="robot2">2  : 0000&nbsp;&nbsp;</A><INPUT id="view2"
+	<DIV style="position: absolute; left: 15px; top: 155px; display: inline" class="redFont"><A id="robot2">2  : 0000&nbsp;&nbsp;</A><INPUT id="view2"
 		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check2"
 																				type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 170px; display: inline" class="redFont"><A id="robot3">3  : 0000&nbsp;&nbsp;</A><INPUT id="view3" 
+	<DIV style="position: absolute; left: 15px; top: 220px; display: inline" class="redFont"><A id="robot3">3  : 0000&nbsp;&nbsp;</A><INPUT id="view3" 
 		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check3"
 																				type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
 	</FONT>
-	<DIV style="position: absolute; left: 655px; top: 40px;"><HR noshade size="3" width="1" style="height: 150"></HR></DIV>
-	<FONT style="font-family: Helvetica; font-size: 16pt;"><DIV style="position: absolute; left: 700px; top: 90px; display: inline"
+	<DIV style="position: absolute; left: 550px; top: 40px;"><HR noshade size="3" width="1" style="height: 200"></HR></DIV>
+	<FONT style="font-family: Helvetica; font-size: 16pt;"><DIV style="position: absolute; left: 580px; top: 90px; display: inline"
 		class="blueFont"><A id="robot4">4  : 0000&nbsp;&nbsp;</A><INPUT id="view4" type="button" value="VIEW DATA" style="width:100px;height:50px"
 		onclick="viewData(this)" class="blackFont"></INPUT>_____<INPUT id="check4" type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT>
 																																					</DIV>
-	<DIV style="position: absolute; left: 700px; top: 130px; display: inline" class="blueFont"><A id="robot5">5  : 0000&nbsp;&nbsp;</A><INPUT id="view5"
+	<DIV style="position: absolute; left: 580px; top: 155px; display: inline" class="blueFont"><A id="robot5">5  : 0000&nbsp;&nbsp;</A><INPUT id="view5"
 		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check5"
 																			type="checkbox" disabled="false" onClick="confirmQA(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 700px; top: 170px; display: inline" class="blueFont"><A id="robot6">6  : 0000&nbsp;&nbsp;</A><INPUT id="view6" 
+	<DIV style="position: absolute; left: 580px; top: 220px; display: inline" class="blueFont"><A id="robot6">6  : 0000&nbsp;&nbsp;</A><INPUT id="view6" 
 		type="button" value="VIEW DATA" onclick="viewData(this)" style="width:100px;height:50px" class="blackFont"></INPUT>_____<INPUT id="check6"
 																			type="checkbox" disabled="false" onclick="confirmQA(this)"></INPUT></DIV>
-	<SELECT id="match-number" style="position: absolute; left: 660px; top: 305px;" onchange="assignRobots(this)"><OPTION value=" " SELECTED> </OPTION>
+	<SELECT id="match-number" style="position: absolute; left: 550px; top: 305px;" onchange="assignRobots(this)"><OPTION value=" " SELECTED> </OPTION>
 		<OPTION value="1">1</OPTION><OPTION value="2">2</OPTION><OPTION value="3">3</OPTION><OPTION value="4">4</OPTION><OPTION value="5">5</OPTION>
 		<OPTION value="6">6</OPTION><OPTION value="7">7</OPTION><OPTION value="8">8</OPTION><OPTION value="9">9</OPTION><OPTION value="10">10</OPTION>
 		<OPTION value="11">11</OPTION><OPTION value="12">12</OPTION><OPTION value="13">13</OPTION><OPTION value="14">14</OPTION>

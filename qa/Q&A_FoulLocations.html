@@ -221,6 +221,10 @@ function issueError(theMsg, cleer)
 }
 </SCRIPT>
 <STYLE TYPE="text/css">
+	.roudedWithBorder{
+		border: 2px solid;
+		border-radius: 5px;
+	}
 	.backGround{
 		z-index: 0;
 	}
@@ -246,17 +250,17 @@ function issueError(theMsg, cleer)
 </HEAD>
 <TITLE style="CENTER"><H2>Q&A Foul Locations</H2></Title>
 <BODY onload="Initialize()">
-<H4><CENTER><A id="title">1983 Skunk Works Q&A Foul Location</A></CENTER></H4>
-<DIV id="container" style="height: 650px;">
-	<DIV id="match-number" style="position: absolute; left: 900px; top: 5px;" class="regFont">Match #: </DIV>
-	<DIV id="tablet-number" style="position: absolute; left: 1000px; top: 5px;" class="regFont">Tablet #: </DIV>
+<DIV><H4><A id="title" style="position: absolute; left: 140px">1983 Skunk Works Q&A Foul Location</A></H4></DIV>
+<DIV id="container" style="height: 650px; width: 700px" class="roundedWtihBorder">
+	<DIV id="match-number" style="position: absolute; left: 580px; top: 5px;" class="regFont">Match #: </DIV>
+	<DIV id="tablet-number" style="position: absolute; left: 670px; top: 5px;" class="regFont">Tablet #: </DIV>
 	<DIV style="position: absolute; left: 20px; top: 40px;">
 	<IMG src="file:///Users/davidweeks/Skunks/freezing-octo-wallhack/img/field.png" id="field" class="backGround"></IMG>
 	<IMG id="ltSquare" src="file:///Users/davidweeks/Skunks/freezing-octo-wallhack/img/robot.gif" style="position: absolute; left: 0px;
 																			top: 0px; opacity=0.25; visibility: hidden;" class="foreGround"></IMG>
 	</DIV>
-	<DIV style="position: absolute; left: 750px; top: 20px;"><SPAN style="position: absolute; left:260px; top:80px; display:inline">Select&nbsp;Foul</SPAN>
-		<SELECT id="foul" style="position: absolute; left: 40px; top: 120px;" onchange="foulAssigned(this)"><OPTION value=" " SELECTED> </OPTION>
+	<DIV style="position: absolute; left: 20px; top: 300px;"><SPAN style="position: absolute; left: 300px; top:85px; display:inline">Select&nbsp;Foul</SPAN>
+		<SELECT id="foul" style="position: absolute; left: 80px; top: 110px;" onchange="foulAssigned(this)"><OPTION value=" " SELECTED> </OPTION>
 		<OPTION value="G1 -Human entered field before green 'all clear' signaled">G1 -Human entered field before green 'all clear' signaled</OPTION>
 		<OPTION value="G10 -Robot damaged field">G10 -Robot damaged field</OPTION>
 		<OPTION value="G11 -Ball intentionally removed from play">G11 -Ball intentionally removed from play</OPTION>
@@ -298,7 +302,7 @@ function issueError(theMsg, cleer)
 		<OPTION value="G5 -Ball not in touch with robot at start or not where alliance claimed">G5 -Ball not in touch with robot at start or not where alliance claimed</OPTION>
 		<OPTION value="G6 -Team deliberately or consistently delays match start">G6 -Team deliberately or consistently delays match start</OPTION>
 		</SELECT></DIV>
-	<INPUT type="button" value="RETURN" style="position: absolute; left:1100px; top:560px;" class="hugeRedFont" size="4" onClick="closeForm()"></INPUT>
+	<INPUT type="button" value="RETURN" style="position: absolute; left:620px; top:560px;" class="hugeRedFont" size="4" onClick="closeForm()"></INPUT>
 	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
 </DIV>
 </BODY>

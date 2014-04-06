@@ -773,16 +773,16 @@ function issueError(theMsg, cleer)
 </HEAD>
 <TITLE style="CENTER"><H2>Q&A</H2></Title>
 <BODY onLoad="Initialize()">
-<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 160px; width: 1000px">
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height: 160px; width: 900px">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
-	<DIV id="match-time" style="position: absolute; left: 900px; top: 10px;">Time: </DIV>
-	<DIV id="title" style="position: absolute; left: 310px; top: 10px;" display="inline">Match Q&A Comments Skunkworks Robotics 1983</DIV><H3>
+	<DIV id="match-time" style="position: absolute; left: 810px; top: 10px;">Time: </DIV>
+	<DIV id="title" style="position: absolute; left: 270px; top: 10px;" display="inline">Match Q&A Comments Skunkworks Robotics 1983</DIV><H3>
 	<DIV style="position: absolute; left: 450px; top: 0px;"><HR noshade size="3" width="1" style="height: 160"></HR></DIV>
 	<DIV style="position: absolute; left: 80px; top: 30px;"><FONT color="RED"><U>RED</U></FONT></DIV>
 	<DIV style="position: absolute; left: 635px; top: 30px"><FONT color="BLUE"><U>BLUE</U></FONT></DIV></H3>
-	<DIV style="position: absolute; left: 870px; top: 35px;">Match #</DIV>
+	<DIV style="position: absolute; left: 700px; top: 35px;">Match #</DIV>
 	<FONT style="font-family: Helvetica; font-size: 16pt;">
-	<SELECT id="match-number" style="position: absolute; left: 935px; top: 30px" onchange="assignTeams(this)">
+	<SELECT id="match-number" style="position: absolute; left: 760px; top: 30px" onchange="assignTeams(this)">
 		<OPTION SELECTED VALUE=""> </OPTION><OPTION VALUE="1">1</OPTION><OPTION VALUE="2">2</OPTION>
 		<OPTION VALUE="3">3</OPTION><OPTION VALUE="4">4</OPTION><OPTION VALUE="5">5</OPTION><OPTION VALUE="6">6</OPTION>
 		<OPTION VALUE="7">7</OPTION><OPTION VALUE="8">8</OPTION><OPTION VALUE="9">9</OPTION><OPTION VALUE="10">10</OPTION>
@@ -815,96 +815,96 @@ function issueError(theMsg, cleer)
 	</DIV>
 </DIV>
 <TEXTAREA id="comment" rows="1" columns="270" style="position: absolute; left: 10px; top: 180px; width: 650px" class="mediumFont"></TEXTAREA>
-<INPUT type="button" value="RESET TAGS" class="bigFont" style="position: absolute; left: 730px; top: 185px;" onclick="resetTags()"></INPUT>
-<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 930px; top: 185px;" onclick="clearComment()"></INPUT>
+<INPUT type="button" value="RESET TAGS" class="bigFont" style="position: absolute; left: 680px; top: 180px;" onclick="resetTags()"></INPUT>
+<INPUT type="button" value="CLEAR" class="bigFont" style="position: absolute; left: 850px; top: 180px;" onclick="clearComment()"></INPUT>
 
-<DIV id="divTag1" class="mediumFont"><TEXTAREA id="tag1" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag1" class="mediumFont"><TEXTAREA id="tag1" rows="1" columns="100" style="position: absolute; width: 380px;
 																					left: 10px; top: 230px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="replace1" value="REPLACE" style="position: absolute; left: 505px; top: 230px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace1" value="REPLACE" style="position: absolute; left: 465px; top: 230px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT id="addTag" type="button" value="ADD" style="position: absolute; left: 580px; top: 230px;" onclick="addTag()" class="mediumFont"></INPUT>
-	<SELECT id="category" style="position: absolute; left: 630px; top: 230px;" onchange="subCategory()" class="bigFont"><OPTION value=" " SELECTED>
+	<INPUT id="addTag" type="button" value="ADD" style="position: absolute; left: 545px; top: 230px;" onclick="addTag()" class="mediumFont"></INPUT>
+	<SELECT id="category" style="position: absolute; left: 610px; top: 230px;" onchange="subCategory()" class="mediumFont"><OPTION value=" " SELECTED>
 																																				</OPTION>
 		<OPTION value="Collector">Collector</OPTION><OPTION value="Ball Containment">Ball Containment</OPTION><OPTION value="Truss">Truss</OPTION>
 		<OPTION value="Sketchiness">Sketchiness</OPTION><OPTION value="Defense">Defense</OPTION><OPTION value="Fouls">Fouls</OPTION>
 		<OPTION value="Pass">Pass</OPTION><OPTION value="Drive Base">Drive Base</OPTION><OPTION value="Shooter">Shooter</OPTION>
 		<OPTION value="Scoring">Scoring</OPTION></SELECT>
-	<SELECT id="subTag" style="position: absolute; left: 770px; top: 230px;" class="mediumFont"><OPTION value=" " SELECTED> </OPTION></SELECT>
-	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 965px; top: 230px" onclick="fillTag()" class="mediumFont">
+	<SELECT id="subTag" style="position: absolute; left: 760px; top: 230px;" class="mediumFont"><OPTION value=" " SELECTED> </OPTION></SELECT>
+	<INPUT id="fillMyTag" type="button" value="SELECT" style="position: absolute; left: 848px; top: 230px" onclick="fillTag()" class="mediumFont">
 																																			</INPUT>
 </DIV>
-<DIV id="divTag2" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag2" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag2" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag2" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 260px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete2" value="DELETE" style="position: absolute; left: 435px; top: 260px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete2" value="DELETE" style="position: absolute; left: 395px; top: 260px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace2" value="REPLACE" style="position: absolute; left: 505px; top: 260px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace2" value="REPLACE" style="position: absolute; left: 465px; top: 260px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
-<DIV id="divTag3" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag3" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag3" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag3" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 290px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 435px; top: 290px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 395px; top: 290px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 505px; top: 290px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 465px; top: 290px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
-<DIV id="divTag4" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag4" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag4" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag4" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 320px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete4" value="DELETE" style="position: absolute; left: 435px; top: 320px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete4" value="DELETE" style="position: absolute; left: 395px; top: 320px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace4" value="REPLACE" style="position: absolute; left: 505px; top: 320px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace4" value="REPLACE" style="position: absolute; left: 465px; top: 320px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag5" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag5" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag5" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag5" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 350px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 435px; top: 350px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete3" value="DELETE" style="position: absolute; left: 395px; top: 350px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 505px; top: 350px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace3" value="REPLACE" style="position: absolute; left: 465px; top: 350px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag6" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag6" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag6" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag6" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 380px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete6" value="DELETE" style="position: absolute; left: 435px; top: 380px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete6" value="DELETE" style="position: absolute; left: 395px; top: 380px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace6" value="REPLACE" style="position: absolute; left: 505px; top: 380px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace6" value="REPLACE" style="position: absolute; left: 465px; top: 380px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag7" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag7" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag7" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag7" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 410px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete7" value="DELETE" style="position: absolute; left: 435px; top: 410px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete7" value="DELETE" style="position: absolute; left: 395px; top: 410px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace7" value="REPLACE" style="position: absolute; left: 505px; top: 410px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace7" value="REPLACE" style="position: absolute; left: 465px; top: 410px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag8" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag8" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag8" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag8" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 440px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete8" value="DELETE" style="position: absolute; left: 435px; top: 440px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete8" value="DELETE" style="position: absolute; left: 395px; top: 440px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace8" value="REPLACE" style="position: absolute; left: 505px; top: 440px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace8" value="REPLACE" style="position: absolute; left: 465px; top: 440px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag9" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag9" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag9" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag9" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 470px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete9" value="DELETE" style="position: absolute; left: 435px; top: 470px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete9" value="DELETE" style="position: absolute; left: 395px; top: 470px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace9" value="REPLACE" style="position: absolute; left: 505px; top: 470px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace9" value="REPLACE" style="position: absolute; left: 465px; top: 470px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
-<DIV id="divTag10" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag10" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag10" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag10" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 500px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete10" value="DELETE" style="position: absolute; left: 435px; top: 500px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete10" value="DELETE" style="position: absolute; left: 395px; top: 500px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace10" value="REPLACE" style="position: absolute; left: 505px; top: 500px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace10" value="REPLACE" style="position: absolute; left: 465px; top: 500px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
-<DIV id="divTag11" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag11" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag11" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag11" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 530px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete11" value="DELETE" style="position: absolute; left: 435px; top: 530px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete11" value="DELETE" style="position: absolute; left: 395px; top: 530px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace11" value="REPLACE" style="position: absolute; left: 505px; top: 530px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace11" value="REPLACE" style="position: absolute; left: 465px; top: 530px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
-<DIV id="divTag12" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag12" rows="1" columns="100" style="position: absolute; width: 420px;
+<DIV id="divTag12" style="visibility: hidden" class="mediumFont"><TEXTAREA id="tag12" rows="1" columns="100" style="position: absolute; width: 380px;
 																							left: 10px; top: 560px" class="mediumFont"></TEXTAREA>
-	<INPUT type="button" id="delete12" value="DELETE" style="position: absolute; left: 435px; top: 560px;" onclick="deleteTag(this)"
+	<INPUT type="button" id="delete12" value="DELETE" style="position: absolute; left: 395px; top: 560px;" onclick="deleteTag(this)"
 																															class="mediumFont"></INPUT>
-	<INPUT type="button" id="replace12" value="REPLACE" style="position: absolute; left: 505px; top: 560px" onclick="replaceTag(this)"
+	<INPUT type="button" id="replace12" value="REPLACE" style="position: absolute; left: 465px; top: 560px" onclick="replaceTag(this)"
 																															class="mediumFont"></INPUT>
 </DIV>
 </DIV>
- <DIV id="ErrMsg" style="position: absolute; left: 15px; top: 600px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
+ <DIV id="ErrMsg" style="position: absolute; left: 15px; top: 590px; visibility: hidden"><FONT class="redFont">Error: </FONT></DIV>
 </BODY>
 </HTML>

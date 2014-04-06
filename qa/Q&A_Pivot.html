@@ -698,21 +698,22 @@ function issueError(theMsg, cleer)
 </HEAD>
 <TITLE style="CENTER"><H2>Q&A</H2></TITLE>
 <BODY onLoad="Initialize()">
-<DIV id="container" CLASS="yoloSwagWithBorder" style="height=500px; width=960px;">
+<DIV id="container" CLASS="yoloSwagWithBorder" style="height=500px; width=900px;">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 15px;">Date: </DIV>
-	<DIV id="match-time" style="position: absolute; left: 890px; top: 15px;">Time: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 810px; top: 15px;">Time: </DIV>
 	<DIV id="title" style="position: absolute; left: 360px; top: 15px; display: inline">Match Scouting Sheet Skunkworks Robotics 1983</DIV>
 	<DIV id="match-number" style="position: absolute; left: 10px; top: 33px;">Match&nbsp;#:&nbsp;</DIV>
 	<DIV id="tablet-number" style="position: absolute; left: 120px; top: 33px; display: inline">Tablet #: </DIV>
 	<DIV style="position: absolute; left: 10px; top: 50px; display: inline">Pivot&nbsp;Record:</DIV>
 	<DIV style="position: absolute; left: 10px; top: 70px"><FONT size = "3"; face="Helvetica"><FORM method="post">
-					<TEXTAREA id="pivotSQL" cols="165" rows="5" style="border: solid 2px; width: 1000px" disabled></TEXTAREA></FORM></FONT></DIV>
+					<TEXTAREA id="pivotSQL" cols="165" rows="5" style="border: solid 2px; width: 900px" disabled></TEXTAREA></FORM></FONT></DIV>
 	<DIV style="position: absolute; left: 25px; top: 160px; display: inline">Action:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		X:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		Y:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time: </DIV>
-	<DIV style="position: absolute; left: 15px; top: 180px;"><SELECT id="action0"><OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 180px;" class="regFont"><SELECT id="action0">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION>
 		<OPTION value="upperGoal">upperGoal</OPTION><OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedGoal">missedGoal</OPTION>
 		<OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION><OPTION value="collectedBall">collectedBall</OPTION>
@@ -730,11 +731,11 @@ function issueError(theMsg, cleer)
 						<INPUT type="button" id="replace0" class="bigFont" value="REPLACE" onclick="replaceAction(this)"></INPUT>
 						<INPUT type="button" id="delete0" class="bigFont" value="DELETE" onclick="deleteAction(this)"></INPUT>
 						<INPUT type="button" id="add0" class="bigFont" value="+RECORD" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV id="team_number" style="position: absolute; left: 660px; top: 160px; display: inline">Team #: </DIV>
-	<DIV id="scout_number" style="position: absolute; left: 755px; top: 160px; display: inline">Scout #: </DIV>
-	<DIV id="scout_name" style="position: absolute; left: 830px; top: 160px; display: inline">Name: </DIV>
-	<DIV style="position: absolute; left: 15px; top: 205px;"><SELECT id="action1" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV id="team_number" style="position: absolute; left: 560px; top: 160px; display: inline">Team #: </DIV>
+	<DIV id="scout_number" style="position: absolute; left: 655px; top: 160px; display: inline">Scout #: </DIV>
+	<DIV id="scout_name" style="position: absolute; left: 730px; top: 160px; display: inline">Name: </DIV>
+	<DIV style="position: absolute; left: 15px; top: 205px;" class="regFont"><SELECT id="action1" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -752,8 +753,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace1" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete1" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add1" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 230px;"><SELECT id="action2" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 230px;" class="regFont"><SELECT id="action2" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -771,8 +772,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace2" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete2" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add2" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 255px;"><SELECT id="action3" style="visibility: hidden"><OPTION value="startPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 255px;" class="regFont"><SELECT id="action3" style="visibility: hidden">
+		<OPTION value="startPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -790,8 +791,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace3" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete3" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add3" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 280px;"><SELECT id="action4" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 280px;" class="regFont"><SELECT id="action4" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -809,8 +810,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace4" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete4" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add4" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 305px;"><SELECT id="action5" style="visibility: hidden"><OPTION value="startPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 305px;" class="regFont"><SELECT id="action5" style="visibility: hidden">
+		<OPTION value="startPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -828,8 +829,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace5" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete5" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add5" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 330px;"><SELECT id="action6" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 330px;" class="regFont"><SELECT id="action6" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -847,8 +848,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace6" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete6" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add6" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 355px;"><SELECT id="action7" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 355px;" class="regFont"><SELECT id="action7" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -866,8 +867,8 @@ function issueError(theMsg, cleer)
 					<INPUT type="button" id="replace7" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete7" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add7" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 380px;"><SELECT id="action8" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 380px;" class="regFont"><SELECT id="action8" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -885,8 +886,8 @@ function issueError(theMsg, cleer)
 				<INPUT type="button" id="replace8" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete8" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add8" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 405px;"><SELECT id="action9" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 405px;" class="regFont"><SELECT id="action9" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -904,8 +905,8 @@ function issueError(theMsg, cleer)
 				<INPUT type="button" id="replace9" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete9" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add9" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 430px;"><SELECT id="action10" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 430px;" class="regFont"><SELECT id="action10" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -923,8 +924,8 @@ function issueError(theMsg, cleer)
 				<INPUT type="button" id="replace10" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete10" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add10" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 455px;"><SELECT id="action11" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 455px;" class="regFont"><SELECT id="action11" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -942,8 +943,8 @@ function issueError(theMsg, cleer)
 				<INPUT type="button" id="replace11" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete11" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add11" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 480px;"><SELECT id="action12" style="visibility: hidden"><OPTION value="autoStartPosition"
-		SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
+	<DIV style="position: absolute; left: 15px; top: 480px;" class="regFont"><SELECT id="action12" style="visibility: hidden">
+		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="missedGoal">missedGoal</OPTION><OPTION value="hotGoal">hotGoal</OPTION><OPTION value="jammed">jammed</OPTION>
@@ -961,7 +962,7 @@ function issueError(theMsg, cleer)
 				<INPUT type="button" id="replace12" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete12" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add12" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<INPUT type="button" style="position: absolute; left:910px; top:560px;" class="hugeRedFont" value="CLOSE" size="4" onClick="closeForm()"></INPUT>
+	<INPUT type="button" style="position: absolute; left:810px; top:560px;" class="hugeRedFont" value="CLOSE" size="4" onClick="closeForm()"></INPUT>
 	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 560px; visibility: hidden">Error: </DIV>
 </DIV>
 </BODY>

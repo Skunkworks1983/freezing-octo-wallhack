@@ -5,11 +5,11 @@
 <SCRIPT LANGUAGE='JavaScript'>
 
 // *** Gobal Constants *** //
-blueAllianceURL = 'http://www.thebluealliance.com/event/';
+blueAllianceURL = 'http://www.thebluealliance.com/api/v2/event/';
 procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
 RED = '#FF0000';
 // *** Global Variables *** //
-var matchNo, eventName;
+var matchNo, eventName, maxMatches;
 var teamR1, teamR2, teamR3;
 var teamB1, teamB2, teamB3;
 function Initialize()
@@ -24,6 +24,7 @@ function Initialize()
 	postDate();
 	updateClock();
 	eventName = getURLParameter('Event');
+	maxMatches = document.getElementById('match-number').length;
 	if (eventName.length < 1)
 	{																		// Parameter missing
 		issueError('URL string has no "?Event=" parameter.', false);
@@ -33,6 +34,7 @@ function Initialize()
 		chrs = chrs.concat(eventName);
 		document.getElementById('title').innerHTML = chrs;
 		chrs = blueAllianceURL.concat(eventName);
+		chrs = chrs.concat('/matches');
 //		console.log(chrs);													// Test
 		issueRequestHTTP("GET", chrs, function(result)
 		{
@@ -155,56 +157,47 @@ function parseHTML(html)
 //
 //  Parse the HTML contents
 {
-	var teams;
-	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
-//	console.log('maxMatches=' + maxMatches);							// Test
-	teamR1 = new Int16Array(maxMatches);
-	teamR2 = new Int16Array(maxMatches);
-	teamR3 = new Int16Array(maxMatches);
-	teamB1 = new Int16Array(maxMatches);
-	teamB2 = new Int16Array(maxMatches);
-	teamB3 = new Int16Array(maxMatches);
-	var lines = html.split('\n');										// Line feeds
-	var i = 0;
-	var j, k, l;
-	var chrs;
-	var elem;
-	while (i < lines.length)
+	var l; var j;
+	var parsed = JSON.parse(html);
+	var alliance;
+	teamR1 = new Int16Array(parsed.length);
+	teamR2 = new Int16Array(parsed.length);
+	teamR3 = new Int16Array(parsed.length);
+	teamB1 = new Int16Array(parsed.length);
+	teamB2 = new Int16Array(parsed.length);
+	teamB3 = new Int16Array(parsed.length);
+	elem = document.getElementById('match-number');
+	for (var i= 1; i<parsed.length; i++)
 	{
-		if (lines[i].indexOf('Quals') < 0)
+		if (parsed[i].comp_level == "qm")
 		{
-			i++;
-		} else {
-			k = lines[i].indexOf('Quals');
-			chrs = lines[i].substr(k + 6, 5);
-			l = chrs.indexOf('<') + k + 5;
-			if (l < lines[i].length) j = Number(lines[i].substr(k + 6, l - k - 5));
-			if (lines[i].substring(2, 6) == '<td>')
-			{
-				teams = lines[i + 2].split('/');
-				if (teams.length > 1) teamR1[j] = Number(teams[2]);
-				teams = lines[i + 3].split('/');
-				if (teams.length > 1) teamR2[j] = Number(teams[2]);
-				teams = lines[i + 4].split('/');
-				if (teams.length > 1) teamR3[j] = Number(teams[2]);
-				teams = lines[i + 5].split('/');
-				if (teams.length > 1) teamB1[j] = Number(teams[2]);
-				teams = lines[i + 6].split('/');
-				if (teams.length > 1) teamB2[j] = Number(teams[2]);
-				teams = lines[i + 7].split('/');
-				if (teams.length > 1) teamB3[j] = Number(teams[2]);
-				i = i + 8;
-				elem = document.getElementById('match-number');
-				if (j > elem.length)
-				{
-					var newOpt = document.createElement("option");
-					newOpt.text = j + '';
-					elem.add(newOpt, elem[j]);
-				}
-			} else i++;
+			alliance = parsed[i].alliances.red;
+			j = Number(parsed[i].match_number);
+			if (j > maxMatches) maxMatches = j;
+			l = alliance.teams[0].length;
+			teamR1[j] = alliance.teams[0].substring(3,l);
+			l = alliance.teams[1].length;
+			teamR2[j] = alliance.teams[1].substring(3,l);
+			l = alliance.teams[2].length;
+			teamR3[j] = alliance.teams[2].substring(3,l);
+			alliance = parsed[i].alliances.blue;
+			l = alliance.teams[0].length;
+			teamB1[j] = alliance.teams[0].substring(3,l);
+			l = alliance.teams[1].length;
+			teamB2[j] = alliance.teams[1].substring(3,l);
+			l = alliance.teams[2].length;
+			teamB3[j] = alliance.teams[2].substring(3,l);
 		}
 	}
-}
+//	console.log(teamR1[1] + ' ' + teamR2[1] + ' ' + teamR3[1]);				// Test
+// Extend the match list
+	j = elem.length + 1;
+	for (i=j; i<= maxMatches; i++)
+	{
+		var newMatch = document.createElement('option');
+		newMatch.text = i + '';
+		elem.add(newMatch, elem[i]);
+	}}
 function assignRobots(match)
 ///////////////////
 //               //
@@ -213,62 +206,30 @@ function assignRobots(match)
 ///////////////////
 {
 	matchNo = match.value;
-	if (isNumeric(matchNo) && (matchNo != ' '))
+	var j; var chrs; var str; var elem;
+	for (j=1; j<7; j++)
 	{
-		var chrs = '1   : ';
-		chrs = chrs.concat(teamR1[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot1').innerHTML = chrs;
-		document.getElementById('check1').value = false;
-		chrs = '2   : ';
-		chrs = chrs.concat(teamR2[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot2').innerHTML = chrs;
-		document.getElementById('check2').value = false;
-		chrs = '3   : ';
-		chrs = chrs.concat(teamR3[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot3').innerHTML = chrs;
-		document.getElementById('check3').value = false;
-		chrs = '4   : ';
-		chrs = chrs.concat(teamB1[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot4').innerHTML = chrs;
-		document.getElementById('check4').value = false;
-		chrs = '5   : ';
-		chrs = chrs.concat(teamB2[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot5').innerHTML = chrs;
-		document.getElementById('check5').value = false;
-		chrs = '6   : ';
-		chrs = chrs.concat(teamB3[matchNo]);
-		chrs = chrs.concat(Spaces(chrs.length, 11));
-		document.getElementById('robot6').innerHTML = chrs;
-		document.getElementById('check6').value = false;
+		chrs = 'robot';
+		chrs = chrs.concat(j);
+		elem = document.getElementById(chrs);
+		str = j + '';
+		str = str.concat(' : ');
+		switch (j)
+		{
+			case 1: str = str.concat(teamR1[matchNo]);
+			break;
+			case 2: str = str.concat(teamR2[matchNo]);
+			break;
+			case 3: str = str.concat(teamR3[matchNo]);
+			break;
+			case 4: str = str.concat(teamB1[matchNo]);
+			break;
+			case 5: str = str.concat(teamB2[matchNo]);
+			break;
+			case 6: str = str.concat(teamB3[matchNo]);
+		}
+		elem.innerHTML = str.concat(Spaces(str.length, 12));
 	}
-}
-function countIndicesOf(searchStr, str, caseSensitive)
-//////////////////////
-//                  //
-// Count Indices Of //
-//                  //
-//////////////////////
-{
-    var startIndex = 0;
-    var idxCount = 0;
-    var searchStrLen = searchStr.length;
-    var indx;
-    if (!caseSensitive)
-    {
-        str = str.toLowerCase();
-        searchStr = searchStr.toLowerCase();
-    }
-    while ((indx = str.indexOf(searchStr, startIndex)) > -1)
-    {
-    	idxCount++;
-        startIndex = indx + searchStrLen;
-    }
-    return idxCount;
 }
 function scheduleHasBeenDownloaded(content)
 //////////////////////////////////
@@ -449,7 +410,7 @@ function viewData(robot)
 <DIV style="position: absolute; left: 425px; top: 305px; display: inline"><FONT style="font-family: Helvitica; font-size: 16pt;">Match #:</FONT></DIV>
 <DIV id="container" CLASS="yoloSwagWithBorder" style="height: 260px; width: 900px">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 10px;">Date: </DIV>
-	<DIV id="match-time" style="position: absolute; left: 810px; top: 10px;">Time: </DIV>
+	<DIV id="match-time" style="position: absolute; left: 805px; top: 10px;">Time: </DIV>
 	<DIV style="position: absolute; left: 80px; top: 40px;"><FONT color="RED"><H3><U>RED</U></H3></FONT></DIV>
 	<DIV style="position: absolute; left: 620px; top: 40px"><FONT color="BLUE"><H3><U>BLUE</U></H3></FONT></DIV></H3>
 	<DIV style="position: absolute; left: 250px; top: 70px;">Confirm</DIV><DIV style="position: absolute; left: 740px; top: 70px;">Confirm</DIV>

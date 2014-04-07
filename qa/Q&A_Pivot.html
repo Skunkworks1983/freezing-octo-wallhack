@@ -5,8 +5,7 @@
 <SCRIPT LANGUAGE='JavaScript'>
 
 // *** Gobal Constants *** //
-blueAllianceURL = 'http://www.thebluealliance.com/event/';
-procLink = "https://scout-o-matic-2014.herokuapp.com/api/";	// Mark's procs
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/matches?match_number=";	// Mark's procs
 RED = '#FF0000';
 GREEN = '#00FF00';
 BLACK = '#000000';
@@ -15,6 +14,7 @@ BLACK = '#000000';
 var eventName;
 var matchNo;
 var tabletNo;
+var teamNo;
 
 function MakeArray(n)
 /////////////////
@@ -45,8 +45,6 @@ function Initialize()
 	{																		// Parameter missing
 		issueError('URL string has no "?Event=" parameter.', false);
 	} else {
-		var URL = blueAllianceURL;
-		URL = URL.concat(eventName);
 		var chrs = document.getElementById('title').innerHTML;
 		chrs = chrs.concat(' ');
 		chrs = chrs.concat(eventName);
@@ -56,8 +54,6 @@ function Initialize()
 		{
 			issueError('URL string has no "&match=" parameter.', false);
 		} else {
-			URL = URL.concat('&match_number=');
-			URL = URL.concat(matchNo);
 			chrs = document.getElementById('match-number').innerHTML;
 			chrs = chrs.concat(matchNo);
 			document.getElementById('match-number').innerHTML = chrs;
@@ -66,20 +62,14 @@ function Initialize()
 			{
 				issueError('URL string has no "&tablet=" parameter.', false);
 			} else {
-				URL = URL.concat('&tablet_number=');
-				URL = URL.concat(tabletNo);
 				chrs = document.getElementById('tablet-number').innerHTML;
 				chrs = chrs.concat(tabletNo);
 				document.getElementById('tablet-number').innerHTML = chrs;
 				teamNo = getURLParameter('teamNo');
 				if (teamNo.length < 1)
 				{
-					issueError('URL string has no "teamNo=" parameter.', false);
+					issueError('URL string has no "&teamNo=" parameter.', false);
 				} else {
-			  		issueRequestHTTP("GET", URL, function(result)
-					{
-						scheduleHasBeenDownloaded(result);
-					});
 					readDatabase();
 				}
 			}
@@ -144,12 +134,14 @@ function readDatabase()
 //                 //
 /////////////////////
 {
-	var sql = procLink.concat('match?match_number=');
-	sql = sql.concat(matchNo);
+
+	var sql = procLink.concat(matchNo);
 	sql = sql.concat('&scout_number=');
 	sql = sql.concat(tabletNo);
 	sql = sql.concat('&event_id=');
 	sql = sql.concat(eventName);
+	sql = sql.concat('&team_number=');
+	sql = sql.concat(teamNo);
 //	console.log(sql);												// Test
 	issueRequestHTTP("GET", sql, function(result)
 	{
@@ -292,31 +284,6 @@ function msToString(millisecs)
     var seconds = Math.ceil(divisor_for_seconds);
     return hours + ":" + minutes + ":" + seconds; 
 }
-function countIndicesOf(searchStr, str, caseSensitive)
-//////////////////////
-//                  //
-// Count Indices Of //
-//                  //
-//////////////////////
-//
-// This will count the number of instances of "str" within "searchStr".  "caseSensitive", if false, will ignore case.
-{
-    var startIndex = 0;
-    var idxCount = 0;
-    var searchStrLen = searchStr.length;
-    var indx;
-    if (!caseSensitive)
-    {
-        str = str.toLowerCase();
-        searchStr = searchStr.toLowerCase();
-    }
-    while ((indx = str.indexOf(searchStr, startIndex)) > -1)
-    {
-    	idxCount++;
-        startIndex = indx + searchStrLen;
-    }
-    return idxCount;
-}
 function scheduleHasBeenDownloaded(content)
 //////////////////////////////////
 //                              //
@@ -385,23 +352,6 @@ function getXmlHttp()
 	console.log('XMLHTTP not supported.')							// Test
    }
    return xmlHTTP;
-}
-function parseHTML(html)
-////////////////
-//            //
-// Parse HTML //
-//            //
-////////////////
-//  Parse the HTML contents
-{
-	maxMatches = Math.floor(countIndicesOf('Quals', html, true) / 2);
-	var elem = document.getElementById('match-number');
-	for (var i=elem.length + 1; i <= maxMatches; i++)
-	{
-	   	var newMatch = document.createElement("option");
-	   	newMatch.text = i + '';
-	   	elem.add(newMatch, elem[i]);
-	}
 }
 function deleteAction(idObj)
 ///////////////////

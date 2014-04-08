@@ -34,7 +34,7 @@ function Initialize()
 		chrs = chrs.concat(eventName);
 		document.getElementById('title').innerHTML = chrs;
 		chrs = blueAllianceURL.concat(eventName);
-		chrs = chrs.concat('/matches');
+		chrs = chrs.concat('/match');
 //		console.log(chrs);													// Test
 		issueRequestHTTP("GET", chrs, function(result)
 		{

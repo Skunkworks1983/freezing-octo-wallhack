@@ -5,7 +5,7 @@
 <SCRIPT LANGUAGE='JavaScript'>
 
 // *** Gobal Constants *** //
-procLink = "https://scout-o-matic-2014.herokuapp.com/api/matches?match_number=";	// Mark's procs
+procLink = "https://scout-o-matic-2014.herokuapp.com/api/match?match_number=";	// Mark's procs
 RED = '#FF0000';
 GREEN = '#00FF00';
 BLACK = '#000000';
@@ -140,8 +140,6 @@ function readDatabase()
 	sql = sql.concat(tabletNo);
 	sql = sql.concat('&event_id=');
 	sql = sql.concat(eventName);
-	sql = sql.concat('&team_number=');
-	sql = sql.concat(teamNo);
 //	console.log(sql);												// Test
 	issueRequestHTTP("GET", sql, function(result)
 	{

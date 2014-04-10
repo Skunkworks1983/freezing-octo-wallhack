@@ -143,6 +143,11 @@ var cleanup = function() {
     $("#field-container").appendChild(littleRobot);
     activateSelector("#field-container", false);
     activateSelector("#scout-buttons", true);
+    // reset startPositionButton
+    var movedTo = $("#autoMovedTo");
+    movedTo.dataset.name = "autoStartPosition";
+    movedTo.dataset.value = "Start Position";
+    movedTo.value = "Start Position";
     // reset auto/teleop
     activateSelector("#auto", true);
     activateSelector("#teleop", false);

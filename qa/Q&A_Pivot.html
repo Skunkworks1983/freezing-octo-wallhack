@@ -649,18 +649,15 @@ function issueError(theMsg, cleer)
 <DIV id="container" CLASS="yoloSwagWithBorder" style="height=500px; width=900px;">
 	<DIV id="match-date" style="position: absolute; left: 10px; top: 15px;">Date: </DIV>
 	<DIV id="match-time" style="position: absolute; left: 810px; top: 15px;">Time: </DIV>
-	<DIV id="title" style="position: absolute; left: 360px; top: 15px; display: inline">Match Scouting Sheet Skunkworks Robotics 1983</DIV>
+	<DIV id="title" style="position: absolute; left: 310px; top: 15px; display: inline">Match Scouting Sheet Skunkworks Robotics 1983</DIV>
 	<DIV id="match-number" style="position: absolute; left: 10px; top: 33px;">Match&nbsp;#:&nbsp;</DIV>
 	<DIV id="tablet-number" style="position: absolute; left: 120px; top: 33px; display: inline">Tablet #: </DIV>
-	<DIV style="position: absolute; left: 10px; top: 50px; display: inline">Pivot&nbsp;Record:</DIV>
-	<DIV style="position: absolute; left: 10px; top: 70px"><FONT size = "3"; face="Helvetica"><FORM method="post">
-					<TEXTAREA id="pivotSQL" cols="165" rows="5" style="border: solid 2px; width: 900px" disabled></TEXTAREA></FORM></FONT></DIV>
-	<DIV style="position: absolute; left: 25px; top: 160px; display: inline">Action:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<DIV style="position: absolute; left: 25px; top: 60px; display: inline">Action:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		Value:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		X:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		Y:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time: </DIV>
-	<DIV style="position: absolute; left: 15px; top: 180px;" class="regFont"><SELECT id="action0">
+	<DIV style="position: absolute; left: 15px; top: 80px;" class="regFont"><SELECT id="action0">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION>
 		<OPTION value="upperGoal">upperGoal</OPTION><OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedGoal">missedGoal</OPTION>
@@ -672,17 +669,17 @@ function issueError(theMsg, cleer)
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
 	<DIV id="id0" block="none"></DIV>
-	<DIV style="position: absolute; left: 210px; top: 180px;"><INPUT type="text" id="value0" size="2"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 180px;"><INPUT type="text" id="x0" size="10"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 180px;"><INPUT type="text" id="y0" size="10"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 180px;"><INPUT type="text" id="time0" size="35"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 80px;"><INPUT type="text" id="value0" size="2"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 80px;"><INPUT type="text" id="x0" size="10"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 80px;"><INPUT type="text" id="y0" size="10"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 80px;"><INPUT type="text" id="time0" size="35"> </INPUT>
 						<INPUT type="button" id="replace0" class="bigFont" value="REPLACE" onclick="replaceAction(this)"></INPUT>
 						<INPUT type="button" id="delete0" class="bigFont" value="DELETE" onclick="deleteAction(this)"></INPUT>
 						<INPUT type="button" id="add0" class="bigFont" value="+RECORD" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV id="team_number" style="position: absolute; left: 560px; top: 160px; display: inline">Team #: </DIV>
-	<DIV id="scout_number" style="position: absolute; left: 655px; top: 160px; display: inline">Scout #: </DIV>
-	<DIV id="scout_name" style="position: absolute; left: 730px; top: 160px; display: inline">Name: </DIV>
-	<DIV style="position: absolute; left: 15px; top: 205px;" class="regFont"><SELECT id="action1" style="visibility: hidden">
+	<DIV id="team_number" style="position: absolute; left: 560px; top: 60px; display: inline">Team #: </DIV>
+	<DIV id="scout_number" style="position: absolute; left: 655px; top: 60px; display: inline">Scout #: </DIV>
+	<DIV id="scout_name" style="position: absolute; left: 730px; top: 60px; display: inline">Name: </DIV>
+	<DIV style="position: absolute; left: 15px; top: 105px;" class="regFont"><SELECT id="action1" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -694,14 +691,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 205px;"><INPUT type="text" id="value1" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 205px;"><INPUT type="text" id="x1" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 205px;"><INPUT type="text" id="y1" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 205px;"><INPUT type="text" id="time1" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 105px;"><INPUT type="text" id="value1" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 105px;"><INPUT type="text" id="x1" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 105px;"><INPUT type="text" id="y1" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 105px;"><INPUT type="text" id="time1" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace1" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete1" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add1" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 230px;" class="regFont"><SELECT id="action2" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 130px;" class="regFont"><SELECT id="action2" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -713,14 +710,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 230px;"><INPUT type="text" id="value2" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 230px;"><INPUT type="text" id="x2" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 230px;"><INPUT type="text" id="y2" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 230px;"><INPUT type="text" id="time2" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 130px;"><INPUT type="text" id="value2" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 130px;"><INPUT type="text" id="x2" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 130px;"><INPUT type="text" id="y2" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 130px;"><INPUT type="text" id="time2" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace2" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete2" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add2" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 255px;" class="regFont"><SELECT id="action3" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 155px;" class="regFont"><SELECT id="action3" style="visibility: hidden">
 		<OPTION value="startPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -732,14 +729,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 255px;"><INPUT type="text" id="value3" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 255px;"><INPUT type="text" id="x3" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 255px;"><INPUT type="text" id="y3" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 255px;"><INPUT type="text" id="time3" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 155px;"><INPUT type="text" id="value3" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 155px;"><INPUT type="text" id="x3" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 155px;"><INPUT type="text" id="y3" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 155px;"><INPUT type="text" id="time3" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace3" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete3" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add3" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 280px;" class="regFont"><SELECT id="action4" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 180px;" class="regFont"><SELECT id="action4" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -751,14 +748,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 280px;"><INPUT type="text" id="value4" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 280px;"><INPUT type="text" id="x4" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 280px;"><INPUT type="text" id="y4" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 280px;"><INPUT type="text" id="time4" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 180px;"><INPUT type="text" id="value4" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 180px;"><INPUT type="text" id="x4" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 180px;"><INPUT type="text" id="y4" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 180px;"><INPUT type="text" id="time4" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace4" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete4" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add4" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 305px;" class="regFont"><SELECT id="action5" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 205px;" class="regFont"><SELECT id="action5" style="visibility: hidden">
 		<OPTION value="startPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -770,14 +767,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 305px;"><INPUT type="text" id="value5" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 305px;"><INPUT type="text" id="x5" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 305px;"><INPUT type="text" id="y5" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 305px;"><INPUT type="text" id="time5" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 205px;"><INPUT type="text" id="value5" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 205px;"><INPUT type="text" id="x5" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 205px;"><INPUT type="text" id="y5" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 205px;"><INPUT type="text" id="time5" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace5" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete5" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add5" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 330px;" class="regFont"><SELECT id="action6" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 230px;" class="regFont"><SELECT id="action6" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -789,14 +786,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 330px;"><INPUT type="text" id="value6" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 330px;"><INPUT type="text" id="x6" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 330px;"><INPUT type="text" id="y6" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 330px;"><INPUT type="text" id="time6" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 230px;"><INPUT type="text" id="value6" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 230px;"><INPUT type="text" id="x6" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 230px;"><INPUT type="text" id="y6" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 230px;"><INPUT type="text" id="time6" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace6" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete6" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add6" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 355px;" class="regFont"><SELECT id="action7" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 255px;" class="regFont"><SELECT id="action7" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -808,14 +805,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION><OPTION value="givingDefence">
 			givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 355px;"><INPUT type="text" id="value7" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 355px;"><INPUT type="text" id="x7" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 355px;"><INPUT type="text" id="y7" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 355px;"><INPUT type="text" id="time7" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 255px;"><INPUT type="text" id="value7" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 255px;"><INPUT type="text" id="x7" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 255px;"><INPUT type="text" id="y7" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 255px;"><INPUT type="text" id="time7" size="35" style="visibility: hidden"> </INPUT>
 					<INPUT type="button" id="replace7" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 					<INPUT type="button" id="delete7" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 					<INPUT type="button" id="add7" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 380px;" class="regFont"><SELECT id="action8" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 280px;" class="regFont"><SELECT id="action8" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -827,14 +824,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 380px;"><INPUT type="text" id="value8" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 380px;"><INPUT type="text" id="x8" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 380px;"><INPUT type="text" id="y8" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 380px;"><INPUT type="text" id="time8" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 280px;"><INPUT type="text" id="value8" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 280px;"><INPUT type="text" id="x8" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 280px;"><INPUT type="text" id="y8" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 280px;"><INPUT type="text" id="time8" size="35" style="visibility: hidden"> </INPUT>
 				<INPUT type="button" id="replace8" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete8" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add8" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 405px;" class="regFont"><SELECT id="action9" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 305px;" class="regFont"><SELECT id="action9" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -846,14 +843,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 405px;"><INPUT type="text" id="value9" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 405px;"><INPUT type="text" id="x9" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 405px;"><INPUT type="text" id="y9" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 405px;"><INPUT type="text" id="time9" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 305px;"><INPUT type="text" id="value9" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 305px;"><INPUT type="text" id="x9" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 305px;"><INPUT type="text" id="y9" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 305px;"><INPUT type="text" id="time9" size="35" style="visibility: hidden"> </INPUT>
 				<INPUT type="button" id="replace9" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete9" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add9" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 430px;" class="regFont"><SELECT id="action10" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 330px;" class="regFont"><SELECT id="action10" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -865,14 +862,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 430px;"><INPUT type="text" id="value10" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 430px;"><INPUT type="text" id="x10" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 430px;"><INPUT type="text" id="y10" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 430px;"><INPUT type="text" id="time10" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 330px;"><INPUT type="text" id="value10" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 330px;"><INPUT type="text" id="x10" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 330px;"><INPUT type="text" id="y10" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 330px;"><INPUT type="text" id="time10" size="35" style="visibility: hidden"> </INPUT>
 				<INPUT type="button" id="replace10" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete10" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add10" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 455px;" class="regFont"><SELECT id="action11" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 355px;" class="regFont"><SELECT id="action11" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -884,14 +881,14 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 455px;"><INPUT type="text" id="value11" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 455px;"><INPUT type="text" id="x11" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 455px;"><INPUT type="text" id="y11" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 455px;"><INPUT type="text" id="time11" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 355px;"><INPUT type="text" id="value11" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 355px;"><INPUT type="text" id="x11" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 355px;"><INPUT type="text" id="y11" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 355px;"><INPUT type="text" id="time11" size="35" style="visibility: hidden"> </INPUT>
 				<INPUT type="button" id="replace11" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete11" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add11" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<DIV style="position: absolute; left: 15px; top: 480px;" class="regFont"><SELECT id="action12" style="visibility: hidden">
+	<DIV style="position: absolute; left: 15px; top: 380px;" class="regFont"><SELECT id="action12" style="visibility: hidden">
 		<OPTION value="autoStartPosition" SELECTED>autoStartPosition</OPTION><OPTION value="upperGoal">upperGoal</OPTION>
 		<OPTION value="shootPosition">shootPosition</OPTION><OPTION value="lowerGoal">lowerGoal</OPTION>
 		<OPTION value="autoFinalPosition">autoFinalPosition</OPTION><OPTION value="missedTruss">missedTruss</OPTION>
@@ -903,15 +900,15 @@ function issueError(theMsg, cleer)
 		<OPTION value="resurrected">resurrected</OPTION><OPTION value="gettingDefence">gettingDefence</OPTION>
 		<OPTION value="givingDefence">givingDefence</OPTION><OPTION value="autoMovedTo">autoMovedTo</OPTION>
 		<OPTION value="autoUpperGoal">autoUpperGoal</OPTION><OPTION value="autoLowerGoal">autoLowerGoal</OPTION></SELECT></DIV>
-	<DIV style="position: absolute; left: 210px; top: 480px;"><INPUT type="text" id="value12" size="2" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 270px; top: 480px;"><INPUT type="text" id="x12" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 345px; top: 480px;"><INPUT type="text" id="y12" size="10" style="visibility: hidden"> </INPUT></DIV>
-	<DIV style="position: absolute; left: 425px; top: 480px;"><INPUT type="text" id="time12" size="35" style="visibility: hidden"> </INPUT>
+	<DIV style="position: absolute; left: 210px; top: 380px;"><INPUT type="text" id="value12" size="2" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 270px; top: 380px;"><INPUT type="text" id="x12" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 345px; top: 380px;"><INPUT type="text" id="y12" size="10" style="visibility: hidden"> </INPUT></DIV>
+	<DIV style="position: absolute; left: 425px; top: 380px;"><INPUT type="text" id="time12" size="35" style="visibility: hidden"> </INPUT>
 				<INPUT type="button" id="replace12" class="bigFont" value="REPLACE" style="visibility: hidden" onclick="replaceAction(this)"></INPUT>
 				<INPUT type="button" id="delete12" class="bigFont" value="DELETE" style="visibility: hidden" onclick="deleteAction(this)"></INPUT>
 				<INPUT type="button" id="add12" class="bigFont" value="+RECORD" style="visibility: hidden" onclick="addRecord(this)"></INPUT></DIV>
-	<INPUT type="button" style="position: absolute; left:810px; top:560px;" class="hugeRedFont" value="CLOSE" size="4" onClick="closeForm()"></INPUT>
-	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 560px; visibility: hidden">Error: </DIV>
+	<INPUT type="button" style="position: absolute; left:810px; top:460px;" class="hugeRedFont" value="CLOSE" size="4" onClick="closeForm()"></INPUT>
+	<DIV id="ErrMsg" style="position: absolute; left: 15px; top: 460px; visibility: hidden">Error: </DIV>
 </DIV>
 </BODY>
 </HTML>

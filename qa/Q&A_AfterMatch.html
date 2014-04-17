@@ -6,6 +6,7 @@
 
 // *** Gobal Constants *** //
 blueAllianceURL = 'http://www.thebluealliance.com/api/v2/event/';
+xbtAPP_ID = "?X-TBA-App-Id=1983:QA_Scouting:1";
 procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
 RED = '#FF0000';
 // *** Global Variables *** //
@@ -34,8 +35,9 @@ function Initialize()
 		chrs = chrs.concat(eventName);
 		document.getElementById('title').innerHTML = chrs;
 		chrs = blueAllianceURL.concat(eventName);
-		chrs = chrs.concat('/match');
-//		console.log(chrs);													// Test
+		chrs = chrs.concat('/matches');
+		chrs = chrs.concat(xbtAPP_ID);
+		console.log(chrs);													// Test
 		issueRequestHTTP("GET", chrs, function(result)
 		{
 			scheduleHasBeenDownloaded(result);
@@ -103,9 +105,12 @@ function issueRequestHTTP(request, URL, callback)
       {
           callback(xmlHTTP.responseText);
           assignContents(xmlHTTP.responseText);
+      } else if (xmlHTTP.readyState == 0) {
+	      issueError(' Request incomplete.', false);
       }
    }
 	xmlHTTP.open(request, URL, true);
+//	xmlHTTP.setRequestHeader('X-TBA-App-Id', '1983:QA_Scouting:1');
     xmlHTTP.send(null);
 }
 //

@@ -6,6 +6,7 @@
 
 // *** Gobal Constants *** //
 procLink = "https://scout-o-matic-2014.herokuapp.com/api/match?match_number=";	// Mark's procs
+champEventID = "2014new";
 RED = '#FF0000';
 GREEN = '#00FF00';
 BLACK = '#000000';
@@ -40,7 +41,8 @@ function Initialize()
 {
 	postDate();
 	updateClock();
-	eventName = getURLParameter('Event');
+//	eventName = getURLParameter('Event');
+	eventName = champEventID;
 	if (eventName.length < 1)
 	{																		// Parameter missing
 		issueError('URL string has no "?Event=" parameter.', false);

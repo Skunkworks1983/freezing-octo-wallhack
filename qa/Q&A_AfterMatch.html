@@ -6,6 +6,7 @@
 
 // *** Gobal Constants *** //
 blueAllianceURL = 'http://www.thebluealliance.com/api/v2/event/';
+champEventID = "2014new";
 xbtAPP_ID = "?X-TBA-App-Id=1983:QA_Scouting:1";
 procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
 RED = '#FF0000';
@@ -24,7 +25,8 @@ function Initialize()
 {
 	postDate();
 	updateClock();
-	eventName = getURLParameter('Event');
+//	eventName = getURLParameter('Event');
+	eventName = champEventID;
 	maxMatches = document.getElementById('match-number').length;
 	if (eventName.length < 1)
 	{																		// Parameter missing

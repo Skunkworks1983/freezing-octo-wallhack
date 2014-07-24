@@ -127,58 +127,39 @@ function foulAssigned(foul)
 		foulSelected = true;
 	} else foulSelected = false;
 }
-function issueRequestHTTP(request, URL, callback)
-////////////////////////////
-//                        //
-// Issue via HTTP Request //
-//                        //
-////////////////////////////
-//
-// Parameters:	request		= Type of request {GET or SET}
-//				URL			= URL to send request
-//				callback	= function to call when issued
-//
+function issueRequestHTTP(reqType, URL, callback)
+///////////////////////////////////
+//                               //
+// Issue Request via HTTP Request //
+//                               //
+///////////////////////////////////
 {
-   var xmlHTTP = getXmlHttp();
-   xmlHTTP.onreadystatechange = function()
-   {
-      if (xmlHTTP.readyState == 4)
-      {
-          callback(xmlHTTP.responseText);
-          assignContents(xmlHTTP.responseText);
-      }
-   }
-	xmlHTTP.open(request, URL, true);
-    xmlHTTP.send(null);
-}
-//
-// Return a cross-browser XmlHttp request object
-//
-function getXmlHttp()
-//////////////////
-//              //
-// Get XML HTTP //
-//              //
-//////////////////
-//
-//  Called to see if we can HTTP request things
-{
- var xmlHTTP;
-   if (window.XMLHttpRequest)
-   {
-      xmlHTTP = new XMLHttpRequest();
-   } else if (window.ActiveXObject)
-   {
-      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
-   }
-   
-   if (xmlHTTP == null)												// Not successful
-   {
-//      alert("Your browser does not support XMLHTTP.");
-	issueError(' XMLHTTP not supported.', false);
-	console.log('XMLHTTP not supported.')							// Test
-   }
-   return xmlHTTP;
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function (e)
+	{
+		if (xhr.readyState == 4)
+		{
+			if (xhr.status == 200)
+			{
+				if (xhr.responseText == "Not found")
+				{
+					issueError(' Not found.', false);
+				} else {
+					callback(xhr.responseText);
+				}
+			} else {
+				issueError(' HTTP returns ' + xhr.status, false);
+			}
+		}
+	};
+	xhr.open(reqType, URL, true);
+//	xhr.timeout = timeout;
+	xhr.send(null);
+	xhr.onerror = function (e)
+	{
+		issueError(xhr.statusText, false);
+		console.log(xhr.statusText);
+	};
 }
 function getURLParameter(name)
 ///////////////////////

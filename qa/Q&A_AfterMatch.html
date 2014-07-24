@@ -7,7 +7,7 @@
 // *** Gobal Constants *** //
 blueAllianceURL = 'http://www.thebluealliance.com/api/v2/event/';
 champEventID = "2014new";
-xbtAPP_ID = "?X-TBA-App-Id=1983:QA_Scouting:1";
+xbtAPP_ID = "?X-TBA-App-Id=1983:QA_Scouting:v1";
 procLink = "https://scout-o-matic-2014.herokuapp.com/api/";
 RED = '#FF0000';
 // *** Global Variables *** //
@@ -114,35 +114,6 @@ function issueRequestHTTP(request, URL, callback)
 	xmlHTTP.open(request, URL, true);
 //	xmlHTTP.setRequestHeader('X-TBA-App-Id', '1983:QA_Scouting:1');
     xmlHTTP.send(null);
-}
-//
-// Return a cross-browser XmlHttp request object
-//
-function getXmlHttp()
-//////////////////
-//              //
-// Get XML HTTP //
-//              //
-//////////////////
-//
-//  Called to see if we can HTTP request things
-{
- var xmlHTTP;
-   if (window.XMLHttpRequest)
-   {
-      xmlHTTP = new XMLHttpRequest();
-   } else if (window.ActiveXObject)
-   {
-      xmlHTTP = new ActiveXObject("Microsoft.XMLHTTP");
-   }
-   
-   if (xmlHTTP == null)												// Not successful
-   {
-//      alert("Your browser does not support XMLHTTP.");
-	issueError(' XMLHTTP not supported.', false);
-	console.log('XMLHTTP not supported.')							// Test
-   }
-   return xmlHTTP;
 }
 function getURLParameter(name)
 ///////////////////////
@@ -306,6 +277,7 @@ function confirmQA(check)
 		check.disabled = true;
 	}
 }
+
 function confirmAllActions(record)
 /////////////////////////
 //                     //
@@ -329,6 +301,40 @@ function confirmAllActions(record)
 	} else {
 		issueError("No actions", false);
 	}
+}
+function issueRequestHTTP(reqType, URL, callback)
+///////////////////////////////////
+//                               //
+// Issue Request via HTTP Request //
+//                               //
+///////////////////////////////////
+{
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function (e)
+	{
+		if (xhr.readyState == 4)
+		{
+			if (xhr.status == 200)
+			{
+				if (xhr.responseText == "Not found")
+				{
+					issueError(' Not found.', false);
+				} else {
+					callback(xhr.responseText);
+				}
+			} else {
+				issueError(' HTTP returns ' + xhr.status, false);
+			}
+		}
+	};
+	xhr.open(reqType, URL, true);
+//	xhr.timeout = timeout;
+	xhr.send(null);
+	xhr.onerror = function (e)
+	{
+		issueError(xhr.statusText, false);
+		console.log(xhr.statusText);
+	};
 }
 function issueError(theMsg, cleer)
 ////////////////////

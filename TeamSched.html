@@ -52,7 +52,19 @@ var thisDay = new Date();
 	document.getElementById('theDate').innerHTML = chrs;
 	chrs = thisDay.getFullYear();
 	document.getElementById('theYear').value = chrs;
+	document.getElementById('eventName').value = localStorage.getItem("lastEvent");
+	if(localStorage.getItem("lastEvent").length > 0){
+	
+		getTeams(localStorage.getItem("lastEvent"));
+	
+	
+	
+	}
+	
+	// getTeams(teamVal)
+
 }
+
 function updateClock()
 //////////////////
 //              //
@@ -81,6 +93,7 @@ function updateClock()
     	clockedIt = true;
     }
 }
+
 function extractSchedule()
 //////////////////////
 //                  //
@@ -91,7 +104,9 @@ function extractSchedule()
 	included = 0;												// Initialize # of matches the team is in
 	var elem = document.getElementById('teams');
 	teamNo = elem.options[elem.selectedIndex].text;				// Get the team number we want to look for
-//	eventName = document.getElementById('eventName').value;		// For what event key
+localStorage.setItem("lastSetTeam", elem.options[elem.selectedIndex].value); //set last selected index
+
+	//	eventName = document.getElementById('eventName').value;		// For what event key
 	if ((teamNo == null) || (teamNo.length < 1))
 		{issueError("No team number");}
 	else if ((eventName == null) || (eventName.length < 1))
@@ -284,6 +299,7 @@ function getTeams(teamVal)
 	var myEvent;
 	thisYear = document.getElementById('theYear').value;
 	myEvent = document.getElementById('eventName').value;
+	localStorage.setItem("lastEvent", myEvent);
 	if ((thisYear == null) || (thisYear.length < 1))
 		{issueError("No year");}
 	else if ((myEvent == null) || (myEvent.length < 1))
@@ -302,7 +318,7 @@ function getTeams(teamVal)
 			teamsHasBeenDownloaded(result);
 		});
 	}
-	
+
 }
 
 function teamsHasBeenDownloaded(contents)
@@ -324,6 +340,12 @@ function teamsHasBeenDownloaded(contents)
 		opt.innerHTML = parsed[i].team_number;
 		sel.appendChild(opt);
 	}
+	sel.selectedIndex = localStorage.getItem("lastSetTeam");	
+	if(localStorage.getItem("lastSetTeam").length > 0){
+		sel.selectedIndex = localStorage.getItem("lastSetTeam");		
+		extractSchedule()
+	}
+
 }
 function assignContents(str)
 ////////////////////

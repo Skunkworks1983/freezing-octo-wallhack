@@ -1,0 +1,730 @@
+<!doctype html5>
+<HTML>
+<HEAD>
+<TITLE>Team Schedule</TITLE>
+<SCRIPT LANGUAGE='JavaScript'>
+
+// *** Gobal Constants *** //
+BlueAllianceURL = 'http://www.thebluealliance.com/api/v2/event/';
+xbtAPP_ID = "?X-TBA-App-Id=1983:Scouting:v1";
+YELLOW = "#AAAA00";										// Lt. yellow color
+BLACK = "#000000";										// Black
+RED = "#FF0000";										// Red
+TAB = '\t';												// 'tab' character
+// *** Global Variables *** //
+var teamNo;												// Team # being searched
+var eventName;											// Blue alliance event key
+var maxMatches;											// # of matches in Event;
+var included;											// # of matches matched team is in
+var clockedIt;											// Clock updated flag
+
+function Initialize()
+////////////////
+//            //
+// Initialize //
+//            //
+////////////////
+//
+//  Come here when the body loads
+{
+	postDate();
+	clockedIt = false;
+	maxMatches = 0;
+	updateClock();
+}
+function postDate()
+///////////////
+//           //
+// Post Date //
+//           //
+///////////////
+//  This will place the date in the "theDate" field
+{
+var chrs = new String(); 
+var thisDay = new Date();
+    chrs = document.getElementById('theDate').innerHTML; 
+	var weekday = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday");
+	var monthname = new Array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+    chrs = chrs.concat(weekday[thisDay.getDay()] + " "); 
+    chrs = chrs.concat(thisDay.getDate() + ", "); 
+    chrs = chrs.concat(monthname[thisDay.getMonth()] + " "); 
+    chrs = chrs.concat(thisDay.getFullYear());
+	document.getElementById('theDate').innerHTML = chrs;
+	chrs = thisDay.getFullYear();
+	document.getElementById('theYear').value = chrs;
+}
+function updateClock()
+//////////////////
+//              //
+// Update Clock //
+//              //
+//////////////////
+// This will update the tablet's time every minute and put it into "theTime" field
+{
+    var now = new Date();							 				// current time
+    var chrs = 'Time: ';
+    if (now.getHours() > 12)
+	{
+		chrs = chrs.concat(parseInt(now.getHours()) - 12 + ':');
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + ' PM';
+	} else {
+		chrs = chrs.concat(now.getHours() + ':');
+		if (now.getMinutes() < 10) chrs = chrs.concat('0');
+		chrs = chrs.concat(now.getMinutes()) + ' AM';
+	}
+    document.getElementById('theTime').innerHTML = chrs;
+    // call this function again in 1000ms
+    if (!clockedIt)
+    {
+    	setTimeout(updateClock, 60000);								// Every minute
+    	clockedIt = true;
+    }
+}
+function extractSchedule()
+//////////////////////
+//                  //
+// Extract Schedule //
+//                  //
+//////////////////////
+{
+	included = 0;												// Initialize # of matches the team is in
+	var elem = document.getElementById('teams');
+	teamNo = elem.options[elem.selectedIndex].text;				// Get the team number we want to look for
+//	eventName = document.getElementById('eventName').value;		// For what event key
+	if ((teamNo == null) || (teamNo.length < 1))
+		{issueError("No team number");}
+	else if ((eventName == null) || (eventName.length < 1))
+		{issueError("No event name");}
+	else
+	{
+		var chrs = BlueAllianceURL.concat(eventName);
+		chrs = chrs.concat('/matches');
+		chrs = chrs.concat(xbtAPP_ID);							// Blue alliance insists on an app ID
+//		xmlHTTP.setRequestHeader('X-TBA-App-Id', '1983:QA_Scouting:v1');		// Test
+		issueRequestHTTP("GET", chrs, function(result)
+		{
+//			HTMLHasBeenRead(result);
+			scheduleHasBeenDownloaded(result);
+		});
+	}
+}
+function scheduleHasBeenDownloaded(contents)
+//////////////////////////////////
+//                              //
+// Schedule Has Been Downloaded //
+//                              //
+//////////////////////////////////
+//  Parse the JSON contents
+{
+	var i; var l; var mtch;
+	var parsed = JSON.parse(contents);
+	var alliance; var i; var member;
+//	var redScore, blueScore;
+	var teamRed = new Int16Array(3);								// Red alliance memebers
+	var teamBlue = new Int16Array(3);								// Blue alliance members
+//	var offScore = parseFloat("0.");								// Offensive total
+//	var defScore = parseFloat("0.");								// Defensive totalvar 
+	if (included > 0)
+	{
+		clearScreen(included);
+		included = 0;
+	}
+	for (i=0; i<parsed.length; i++)
+	{
+		if (parsed[i].comp_level == "qm")
+		{
+			alliance = parsed[i].alliances.red;
+			mtch = Number(parsed[i].match_number);
+			if (mtch > maxMatches) maxMatches = mtch;
+			l = alliance.teams[0].length;
+			teamRed[0] = alliance.teams[0].substring(3,l);
+			l = alliance.teams[1].length;
+			teamRed[1] = alliance.teams[1].substring(3,l);
+			l = alliance.teams[2].length;
+			teamRed[2] = alliance.teams[2].substring(3,l);
+			alliance = parsed[i].alliances.blue;
+			l = alliance.teams[0].length;
+			teamBlue[0] = alliance.teams[0].substring(3,l);
+			l = alliance.teams[1].length;
+			teamBlue[1] = alliance.teams[1].substring(3,l);
+			l = alliance.teams[2].length;
+			teamBlue[2] = alliance.teams[2].substring(3,l);
+			member = false;
+//			redScore = parsed[i].alliances.red.score;
+//			blueScore = parsed[i].alliances.blue.score;
+			for (var k=0; k<3; k++)
+			{
+				if (teamRed[k] == teamNo)
+				{
+					member = true;
+					break;
+				} else if (teamBlue[k] == teamNo)
+				{
+					member = true;
+					break;
+				}
+			}
+			if (member)
+			{
+				included++;
+				if (included < 16)
+				{
+					var chrs = included.toString();
+					if (included < 10) chrs = String("0").concat(chrs);
+					var elem = document.getElementById(String("divMatch").concat(chrs));
+					elem.style.visibility = "visible";
+					elem = document.getElementById(String("match").concat(chrs));
+					elem.innerHTML = mtch;
+					elem = document.getElementById(String("redOne").concat(chrs));
+					elem.innerHTML = teamRed[0];
+					if (teamRed[0] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(blueScore);
+//						offScore = offScore + parseFloat(redScore);
+					}
+					else elem.style.color = BLACK;
+					elem = document.getElementById(String("redTwo").concat(chrs));
+					elem.innerHTML = teamRed[1];
+					if (teamRed[1] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(blueScore);
+//						offScore = offScore + parseFloat(redScore);
+					} else elem.style.color = BLACK;
+					elem = document.getElementById(String("redThree").concat(chrs));
+					elem.innerHTML = teamRed[2];
+					if (teamRed[2] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(blueScore);
+//						offScore = offScore + parseFloat(redScore);
+					} else elem.style.color = BLACK;
+					elem = document.getElementById(String("blueOne").concat(chrs));
+					elem.innerHTML = teamBlue[0];
+					if (teamBlue[0] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(redScore);
+//						offScore = offScore + parseFloat(blueScore);
+					} else elem.style.color = BLACK;
+					elem = document.getElementById(String("blueTwo").concat(chrs));
+					elem.innerHTML = teamBlue[1];
+					if (teamBlue[1] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(redScore);
+//						offScore = offScore + parseFloat(blueScore);
+					} else elem.style.color = BLACK;
+					elem = document.getElementById(String("blueThree").concat(chrs));
+					elem.innerHTML = teamBlue[2];
+					if (teamBlue[2] == teamNo)
+					{
+						elem.style.color = YELLOW;
+//						defScore = defScore + parseFloat(redScore);
+//						offScore = offScore + parseFloat(blueScore);
+					} else elem.style.color = BLACK;
+				}
+			}
+		}
+	}
+	sortScreen();
+	addTabs();
+//	elem = document.getElementById('OPR');
+//	offScore = offScore.toPrecision(4) / (3.0 * included);					// Offensive Power Rating
+//	elem.innerHTML = String('OPR: ').concat(offScore.toPrecision(4));
+//	elem = document.getElementById('DPR');
+//	defScore = defScore.toPrecision(4) / (3.0 * included);					// Defensive Power Rating
+//	elem.innerHTML = String('DPR: ').concat(defScore.toPrecision(4));
+}
+function issueRequestHTTP(reqType, URL, callback)
+///////////////////////////////////
+//                               //
+// Issue Request via HTTP Request //
+//                               //
+///////////////////////////////////
+{
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function (e)
+	{
+		if (xhr.readyState == 4)
+		{
+			if (xhr.status == 200)
+			{
+				if (xhr.responseText == "Not found")
+				{
+					issueError(' Not found.', false);
+				} else {
+					callback(xhr.responseText);
+				}
+			} else {
+				issueError(' HTTP returns ' + xhr.status, false);
+			}
+		}
+	};
+	xhr.open(reqType, URL, true);
+//	xhr.timeout = timeout;
+	xhr.send(null);
+	xhr.onerror = function (e)
+	{
+		issueError(xhr.statusText, false);
+		console.log(xhr.statusText);
+	};
+}
+function getTeams(teamVal)
+///////////////
+//           //
+// Get Teams //
+//           //
+///////////////
+{
+	var elem;
+	var thisYear;
+	var myEvent;
+	thisYear = document.getElementById('theYear').value;
+	myEvent = document.getElementById('eventName').value;
+	if ((thisYear == null) || (thisYear.length < 1))
+		{issueError("No year");}
+	else if ((myEvent == null) || (myEvent.length < 1))
+		{issueError("No event name");}
+	else
+	{
+		eventName = thisYear.concat(myEvent);					// BLue Alliance event key
+		var chrs = BlueAllianceURL.concat(eventName);
+		chrs = chrs.concat('/teams');
+		chrs = chrs.concat(xbtAPP_ID);							// Blue alliance insists on an app ID
+//		console.log(chrs);										// Test
+//		xmlHTTP.setRequestHeader('X-TBA-App-Id', '1983:QA_Scouting:v1');		// Test
+		issueRequestHTTP("GET", chrs, function(result)
+		{
+//			HTMLHasBeenRead(result);
+			teamsHasBeenDownloaded(result);
+		});
+	}
+	
+}
+
+function teamsHasBeenDownloaded(contents)
+////////////////////////////////
+//                            //
+// Teams Have Been Downloaded //
+//                            //
+////////////////////////////////
+{
+	var i, j; var opt;
+	var sel = document.getElementById('teams');
+	var parsed = JSON.parse(contents);
+	removeOptions(sel);
+	j = 0;
+	for (i = 0; i < parsed.length; i++)
+	{
+		opt = document.createElement('option');
+		opt.value = i;
+		opt.innerHTML = parsed[i].team_number;
+		sel.appendChild(opt);
+	}
+}
+function assignContents(str)
+////////////////////
+//                //
+// Assign Content //
+//                //
+////////////////////
+{
+//	content = str;
+}
+function issueError(theMsg, cleer)
+////////////////////
+//                //
+// Issue an Error //
+//                //
+////////////////////
+//
+//  This will print an error message on the screen at the bottom.
+{
+	var msg = document.getElementById('errorMsg');
+	if (cleer)
+	{
+		var chrs = 'Error: ';
+	} else var chrs = msg.innerHTML;
+	chrs = chrs.concat(theMsg);
+	msg.innerHTML = chrs;
+	msg.style.color = RED;
+	msg.style.visibility = 'visible';
+}
+function clearScreen(lines)
+//////////////////
+//              //
+// Clear Screen //
+//              //
+//////////////////
+{
+	var i, j; var elem; var chrs; var num;
+	for (i=0; i<lines; i++)
+	{
+		j = i + 1;
+		num = j.toString();
+		if (j < 10) num = String('0').concat(num);
+		chrs = String('match').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		chrs = String('redOne').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('redTwo').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('redThree').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('blueOne').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('blueTwo').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('blueThree').concat(num);
+		elem = document.getElementById(chrs);
+		elem.innerHTML = ' ';
+		elem.style.color = BLACK;
+		chrs = String('divMatch').concat(num);
+		elem = document.getElementById(chrs);
+		elem.style.visibility = 'hidden';
+	}
+}
+function sortScreen()
+/////////////////
+//             //
+// Sort Screen //
+//             //
+/////////////////
+//
+// This will sort the screen contents using a Bubble sort ...
+{
+	var i, j, k; var numI, numK;
+	var mI, mK; var tValue, tColor; var swapped;
+	swapped = true;
+	j = 0;
+	while (swapped)
+	{
+		swapped = false;
+		j++;
+		for (i = 1; i <= included - j; i++)
+		{
+			numI = i.toString();
+			if (i < 10) numI = String('0').concat(numI);
+			mI = document.getElementById('match' + numI);
+			k = i + 1;
+			numK = k.toString();
+			if (k < 10) numK = String('0').concat(numK);
+			mK = document.getElementById('match' + numK);
+			if (parseInt(mI.innerHTML) > parseInt(mK.innerHTML))
+			{
+				swapped = true;
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML
+				mK.innerHTML = tValue;
+				mI = document.getElementById('redOne' + numI);
+				mK = document.getElementById('redOne' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				mI = document.getElementById('redTwo' + numI);
+				mK = document.getElementById('redTwo' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				mI = document.getElementById('redThree' + numI);
+				mK = document.getElementById('redThree' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				mI = document.getElementById('blueOne' + numI);
+				mK = document.getElementById('blueOne' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				mI = document.getElementById('blueTwo' + numI);
+				mK = document.getElementById('blueTwo' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				mI = document.getElementById('blueThree' + numI);
+				mK = document.getElementById('blueThree' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+			}
+		}
+	}
+}
+function addTabs()
+//////////////
+//          //
+// Add Tabs //
+//          //
+//////////////
+{
+	var elem; var i; var num;
+	for (i = 1; i <= included; i++)
+	{
+		num = i.toString();
+		if (i < 10) num = String('0').concat(num);
+		elem = document.getElementById('match' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('redOne' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('redTwo' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('redThree' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('blueOne' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('blueTwo' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+		elem = document.getElementById('blueThree' + num);
+		elem.innerHTML = elem.innerHTML.concat(TAB);
+	}
+}
+function int2Float(num, places)
+//////////////////////
+//                  //
+// Integer to Float //
+//                  //
+//////////////////////
+//
+//  This will convert the integer (num) to a floating point number with PLACES # of decimal points
+{
+	return num.toFixed(places);
+}
+function removeOptions(opts)
+////////////////////
+//                //
+// Remove Options //
+//                //
+////////////////////
+{
+	if (opts == null) return;
+	if (opts.options == null) return;
+	while (opts.options.length > 0)
+	{
+		opts.remove(0);
+	}
+}
+function javascriptAbort()
+//////////////////////
+//                  //
+// Abort Javascript //
+//                  //
+//////////////////////
+{
+   throw new Error('Aborting javascript');
+}
+</SCRIPT>
+<STYLE TYPE="text/css">
+	.redFont{
+		color: red;
+	}
+	.blueFont{
+		color: blue;
+	}
+	.blackFont{
+		color: black;
+		font-size: 12pt;
+	}
+	.bigFont{
+		font-size: 16pt;
+	}
+</STYLE>
+</HEAD>
+<BODY onLoad="Initialize()">
+<DIV id="theDate" style="position: absolute; left: 0px; top: 0px">Date:&nbsp;</DIV>
+<DIV id="title" style="position: absolute; left: 270px; top:0px" class="bigFont"><FONT color="GREEN">Team Schedule</FONT></DIV>
+<DIV id="theTime" style="position: absolute; left: 890px; top: 0px; display: inline">Time:&nbsp;</DIV>
+<BR><DIV>Year: <DIV style="display: inline">
+	<INPUT id="theYear" type="textbox" style="width: 100px; height: 30px" class="blackFont">
+																		</INPUT> Event: </DIV> 
+	<DIV style="position=absolute; left:75px; top:15px; display: inline"><INPUT id="eventName" type="textbox"
+				style="width: 100px; height: 30px" class="blackFont" onchange="getTeams(this)"></INPUT></DIV>
+	<DIV style="position=absolute; left:275px; top:15px; display: inline">Teams: <SELECT id="teams"
+				width="110" style="width: 110px"><OPTION value="" SELECTED>         </OPTION></DIV>
+	<DIV style="display: inline">  <INPUT type="button" style="width:90px;height:30px" value="EXTRACT"
+				class="bigFont" onclick="extractSchedule()"></INPUT></DIV>
+</DIV>
+<DIV style="position: absolute; left: 60px; top: 90px; dispay: inline">Match #</DIV>
+<DIV style="position: absolute; left: 338px; top: 90px; display: inline" class="redFont">RED</DIV>
+<DIV style="position: absolute; left: 740px; top: 90px; display: inline" class="blueFont">BLUE</DIV>
+<DIV style="position: absolute; left: 5px; top: 105px;"><HR noshade size="3" style="width: 150px"></HR></DIV>
+<DIV style="position: absolute; left: 151px; top: 105px;"><HR noshade size="3" style="width: 410px" color="RED"></HR></DIV>
+<DIV style="position: absolute; left: 561px; top: 105px;"><HR noshade size="3" style="width: 407px" color="BLUE"></HR></DIV>
+<DIV id="leftColumn" style="position: absolute; left: 5px; top: 105px;"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="midColumn" style="position: absolute; left: 150px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="redOne" style="position: absolute; left: 286px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
+<DIV id="redTwo" style="position: absolute; left: 422px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
+<DIV id="redRight" style="position: absolute; left: 558px; top: 105px"><HR noshade= size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="blueOne" style="position: absolute; left: 694px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
+<DIV id="blueTwo" style="position: absolute; left: 830px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
+<DIV id="blueRight" style="position: absolute; left: 966px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="errorMsg" style="position: absolute; left: 5px; top: 650px; visibility: hidden"><FONT class="redFont">Error:</FONT></DIV>
+<DIV id="divMatch01" style="position: absolute: left: 5px; top: 115px; visibility: hidden" class="bigFont">
+	<DIV id="match01" style="position: absolute; left: 57px; top: 115px;  display: inline"> </DIV>
+	<DIV id="redOne01" style="position: absolute; left: 202px; top: 115px; display: inline"> </DIV>
+	<DIV id="redTwo01" style="position: absolute; left: 334px; top: 115px; display: inline"> </DIV>
+	<DIV id="redThree01" style="position: absolute; left: 464px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueOne01" style="position: absolute; left: 600px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueTwo01" style="position: absolute; left: 736px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueThree01" style="position: absolute; left: 867px; top: 115px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch02" style="position: absolute: left: 5px; top: 132px; visibility: hidden" class="bigFont">
+	<DIV id="match02" style="position: absolute; left: 57px; top: 132px; display: inline"> </DIV>
+	<DIV id="redOne02" style="position: absolute; left: 202px; top: 132px; display: inline"> </DIV>
+	<DIV id="redTwo02" style="position: absolute; left: 334px; top: 132px; display: inline"> </DIV>
+	<DIV id="redThree02" style="position: absolute; left: 464px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueOne02" style="position: absolute; left: 600px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueTwo02" style="position: absolute; left: 736px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueThree02" style="position: absolute; left: 867px; top: 132px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch03" style="position: absolute: left: 5px; top: 149px; visibility: hidden" class="bigFont">
+	<DIV id="match03" style="position: absolute; left: 57px; top: 149px; display: inline"> </DIV>
+	<DIV id="redOne03" style="position: absolute; left: 202px; top: 149px; display: inline"> </DIV>
+	<DIV id="redTwo03" style="position: absolute; left: 334px; top: 149px; display: inline"> </DIV>
+	<DIV id="redThree03" style="position: absolute; left: 464px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueOne03" style="position: absolute; left: 600px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueTwo03" style="position: absolute; left: 736px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueThree03" style="position: absolute; left: 867px; top: 149px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch04" style="position: absolute: left: 5px; top: 166px; visibility: hidden" class="bigFont">
+	<DIV id="match04" style="position: absolute; left: 57px; top: 166px; display: inline"> </DIV>
+	<DIV id="redOne04" style="position: absolute; left: 202px; top: 166px; display: inline"> </DIV>
+	<DIV id="redTwo04" style="position: absolute; left: 334px; top: 166px; display: inline"> </DIV>
+	<DIV id="redThree04" style="position: absolute; left: 464px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueOne04" style="position: absolute; left: 600px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueTwo04" style="position: absolute; left: 736px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueThree04" style="position: absolute; left: 867px; top: 166px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch05" style="position: absolute: left: 5px; top: 183px; visibility: hidden" class="bigFont">
+	<DIV id="match05" style="position: absolute; left: 57px; top: 183px; display: inline"> </DIV>
+	<DIV id="redOne05" style="position: absolute; left: 202px; top: 183px; display: inline"> </DIV>
+	<DIV id="redTwo05" style="position: absolute; left: 334px; top: 183px; display: inline"> </DIV>
+	<DIV id="redThree05" style="position: absolute; left: 464px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueOne05" style="position: absolute; left: 600px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueTwo05" style="position: absolute; left: 736px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueThree05" style="position: absolute; left: 867px; top: 183px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch06" style="position: absolute: left: 5px; top: 200px; visibility: hidden" class="bigFont">
+	<DIV id="match06" style="position: absolute; left: 57px; top: 200px; display: inline"> </DIV>
+	<DIV id="redOne06" style="position: absolute; left: 202px; top: 200px; display: inline"> </DIV>
+	<DIV id="redTwo06" style="position: absolute; left: 334px; top: 200px; display: inline"> </DIV>
+	<DIV id="redThree06" style="position: absolute; left: 464px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueOne06" style="position: absolute; left: 600px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueTwo06" style="position: absolute; left: 736px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueThree06" style="position: absolute; left: 867px; top: 200px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch07" style="position: absolute: left: 5px; top: 217px; visibility: hidden" class="bigFont">
+	<DIV id="match07" style="position: absolute; left: 57px; top: 217px; display: inline"> </DIV>
+	<DIV id="redOne07" style="position: absolute; left: 202px; top: 217px; display: inline"> </DIV>
+	<DIV id="redTwo07" style="position: absolute; left: 334px; top: 217px; display: inline"> </DIV>
+	<DIV id="redThree07" style="position: absolute; left: 464px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueOne07" style="position: absolute; left: 600px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueTwo07" style="position: absolute; left: 736px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueThree07" style="position: absolute; left: 867px; top: 217px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch08" style="position: absolute: left: 5px; top: 234px; visibility: hidden" class="bigFont">
+	<DIV id="match08" style="position: absolute; left: 57px; top: 234px; display: inline"> </DIV>
+	<DIV id="redOne08" style="position: absolute; left: 202px; top: 234px; display: inline"> </DIV>
+	<DIV id="redTwo08" style="position: absolute; left: 334px; top: 234px; display: inline"> </DIV>
+	<DIV id="redThree08" style="position: absolute; left: 464px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueOne08" style="position: absolute; left: 600px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueTwo08" style="position: absolute; left: 736px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueThree08" style="position: absolute; left: 867px; top: 234px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch09" style="position: absolute: left: 5px; top: 251px; visibility: hidden" class="bigFont">
+	<DIV id="match09" style="position: absolute; left: 57px; top: 251px; display: inline"> </DIV>
+	<DIV id="redOne09" style="position: absolute; left: 202px; top: 251px; display: inline"> </DIV>
+	<DIV id="redTwo09" style="position: absolute; left: 334px; top: 251px; display: inline"> </DIV>
+	<DIV id="redThree09" style="position: absolute; left: 464px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueOne09" style="position: absolute; left: 600px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueTwo09" style="position: absolute; left: 736px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueThree09" style="position: absolute; left: 867px; top: 251px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch10" style="position: absolute: left: 5px; top: 268px; visibility: hidden" class="bigFont">
+	<DIV id="match10" style="position: absolute; left: 57px; top: 268px; display: inline"> </DIV>
+	<DIV id="redOne10" style="position: absolute; left: 202px; top: 268px; display: inline"> </DIV>
+	<DIV id="redTwo10" style="position: absolute; left: 334px; top: 268px; display: inline"> </DIV>
+	<DIV id="redThree10" style="position: absolute; left: 464px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueOne10" style="position: absolute; left: 600px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueTwo10" style="position: absolute; left: 736px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueThree10" style="position: absolute; left: 867px; top: 268px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch11" style="position: absolute: left: 5px; top: 285px; visibility: hidden" class="bigFont">
+	<DIV id="match11" style="position: absolute; left: 57px; top: 285px; display: inline"> </DIV>
+	<DIV id="redOne11" style="position: absolute; left: 202px; top: 285px; display: inline"> </DIV>
+	<DIV id="redTwo11" style="position: absolute; left: 334px; top: 285px; display: inline"> </DIV>
+	<DIV id="redThree11" style="position: absolute; left: 464px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueOne11" style="position: absolute; left: 600px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueTwo11" style="position: absolute; left: 736px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueThree11" style="position: absolute; left: 867px; top: 285px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch12" style="position: absolute: left: 5px; top: 302px; visibility: hidden" class="bigFont">
+	<DIV id="match12" style="position: absolute; left: 57px; top: 302px; display: inline"> </DIV>
+	<DIV id="redOne12" style="position: absolute; left: 202px; top: 302px; display: inline"> </DIV>
+	<DIV id="redTwo12" style="position: absolute; left: 334px; top: 302px; display: inline"> </DIV>
+	<DIV id="redThree12" style="position: absolute; left: 464px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueOne12" style="position: absolute; left: 600px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueTwo12" style="position: absolute; left: 736px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueThree12" style="position: absolute; left: 867px; top: 302px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch13" style="position: absolute: left: 5px; top: 319px; visibility: hidden" class="bigFont">
+	<DIV id="match13" style="position: absolute; left: 57px; top: 319px; display: inline"> </DIV>
+	<DIV id="redOne13" style="position: absolute; left: 202px; top: 319px; display: inline"> </DIV>
+	<DIV id="redTwo13" style="position: absolute; left: 334px; top: 319px; display: inline"> </DIV>
+	<DIV id="redThree13" style="position: absolute; left: 464px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueOne13" style="position: absolute; left: 600px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueTwo13" style="position: absolute; left: 736px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueThree13" style="position: absolute; left: 867px; top: 319px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch14" style="position: absolute: left: 5px; top: 336px; visibility: hidden" class="bigFont">
+	<DIV id="match14" style="position: absolute; left: 57px; top: 336px; display: inline"> </DIV>
+	<DIV id="redOne14" style="position: absolute; left: 202px; top: 336px; display: inline"> </DIV>
+	<DIV id="redTwo14" style="position: absolute; left: 334px; top: 336px; display: inline"> </DIV>
+	<DIV id="redThree14" style="position: absolute; left: 464px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueOne14" style="position: absolute; left: 600px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueTwo14" style="position: absolute; left: 736px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueThree14" style="position: absolute; left: 867px; top: 336px; display: inline"> </DIV>
+</DIV>
+<DIV id="divMatch15" style="position: absolute: left: 5px; top: 353px; visibility: hidden" class="bigFont">
+	<DIV id="match15" style="position: absolute; left: 57px; top: 353px; display: inline"> </DIV>
+	<DIV id="redOne15" style="position: absolute; left: 202px; top: 353px; display: inline"> </DIV>
+	<DIV id="redTwo15" style="position: absolute; left: 334px; top: 353px; display: inline"> </DIV>
+	<DIV id="redThree15" style="position: absolute; left: 464px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueOne15" style="position: absolute; left: 600px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueTwo15" style="position: absolute; left: 736px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueThree15" style="position: absolute; left: 867px; top: 353px; display: inline"> </DIV>
+</DIV>
+</BODY>
+</HTML>
+

@@ -52,12 +52,14 @@ var thisDay = new Date();
 	document.getElementById('theDate').innerHTML = chrs;
 	chrs = thisDay.getFullYear();
 	document.getElementById('theYear').value = chrs;
-	document.getElementById('eventName').value = localStorage.getItem("lastEvent");
-	if(localStorage.getItem("lastEvent").length > 0){
-	
-		getTeams(localStorage.getItem("lastEvent"));
-	
-	
+	if (localStorage.getItem("lastEvent") != null)
+	{
+		var lastEvent = localStorage.getItem("lastEvent");
+		document.getElementById('eventName').value = lastEvent;
+		if(lastEvent.length > 0)
+		{
+			getTeams(localStorage.getItem("lastEvent"));
+		}
 	
 	}
 	
@@ -328,22 +330,28 @@ function teamsHasBeenDownloaded(contents)
 //                            //
 ////////////////////////////////
 {
-	var i, j; var opt;
+	var i; var opt;
 	var sel = document.getElementById('teams');
 	var parsed = JSON.parse(contents);
+	var teamArray = new Int16Array(parsed.length);
 	removeOptions(sel);
-	j = 0;
+	for (i = 0; i < parsed.length; i++) teamArray[i] = parseInt(parsed[i].team_number);
+	sortTeams(teamArray);
 	for (i = 0; i < parsed.length; i++)
 	{
 		opt = document.createElement('option');
 		opt.value = i;
-		opt.innerHTML = parsed[i].team_number;
+		opt.innerHTML = teamArray[i];
 		sel.appendChild(opt);
 	}
-	sel.selectedIndex = localStorage.getItem("lastSetTeam");	
-	if(localStorage.getItem("lastSetTeam").length > 0){
-		sel.selectedIndex = localStorage.getItem("lastSetTeam");		
-		extractSchedule()
+	if (localStorage.getItem("lastSetTeam") != null)
+	{
+		sel.selectedIndex = localStorage.getItem("lastSetTeam");	
+		if (localStorage.getItem("lastSetTeam").length > 0)
+		{
+			sel.selectedIndex = localStorage.getItem("lastSetTeam");		
+			extractSchedule();
+		}
 	}
 
 }
@@ -503,6 +511,37 @@ function sortScreen()
 			}
 		}
 	}
+}
+}
+function sortTeams(teams)
+////////////////
+//            //
+// Sort Teams //
+//            //
+////////////////
+//
+//  This will bubble sort the integer array, "teams"
+{
+	var i, j, k; var temp; var swapped;
+	swapped = true;
+	j = 0;
+	while (swapped)
+	{
+		swapped = false;
+		j++;
+		for (i = 0; i < teams.length - j; i++)
+		{
+			k = i + 1;
+			if (teams[k] < teams[i])
+			{
+				swapped = true;
+				temp = teams[k];
+				teams[k] = teams[i];
+				teams[i] = temp;
+			}
+		}
+	}
+	
 }
 function addTabs()
 //////////////

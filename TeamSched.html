@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <HTML>
 <HEAD>
 <TITLE>Team Schedule</TITLE>
@@ -10,9 +10,10 @@ xbtAPP_ID = "?X-TBA-App-Id=1983:Scouting:v1";
 YELLOW = "#AAAA00";										// Lt. yellow color
 BLACK = "#000000";										// Black
 RED = "#FF0000";										// Red
-TAB = '\t';												// 'tab' character
+BLUE = "#0000FF";										// Blue
+TAB = '\t';											// 'tab' character
 // *** Global Variables *** //
-var teamNo;												// Team # being searched
+var teamNo;											// Team # being searched
 var eventName;											// Blue alliance event key
 var maxMatches;											// # of matches in Event;
 var included;											// # of matches matched team is in
@@ -56,17 +57,9 @@ var thisDay = new Date();
 	{
 		var lastEvent = localStorage.getItem("lastEvent");
 		document.getElementById('eventName').value = lastEvent;
-		if(lastEvent.length > 0)
-		{
-			getTeams(localStorage.getItem("lastEvent"));
-		}
-	
+		if (lastEvent.length > 0) getTeams(lastEvent);
 	}
-	
-	// getTeams(teamVal)
-
 }
-
 function updateClock()
 //////////////////
 //              //
@@ -75,7 +68,7 @@ function updateClock()
 //////////////////
 // This will update the tablet's time every minute and put it into "theTime" field
 {
-    var now = new Date();							 				// current time
+    var now = new Date();							 		// current time
     var chrs = 'Time: ';
     if (now.getHours() > 12)
 	{
@@ -95,7 +88,6 @@ function updateClock()
     	clockedIt = true;
     }
 }
-
 function extractSchedule()
 //////////////////////
 //                  //
@@ -103,12 +95,11 @@ function extractSchedule()
 //                  //
 //////////////////////
 {
-	included = 0;												// Initialize # of matches the team is in
+	included = 0;										// Initialize # of matches the team is in
 	var elem = document.getElementById('teams');
-	teamNo = elem.options[elem.selectedIndex].text;				// Get the team number we want to look for
-localStorage.setItem("lastSetTeam", elem.options[elem.selectedIndex].value); //set last selected index
-
-	//	eventName = document.getElementById('eventName').value;		// For what event key
+	teamNo = elem.options[elem.selectedIndex].text;					// Get the team number we want to look for
+//	eventName = document.getElementById('eventName').value;				// For what event key
+	localStorage.setItem("lastSetTeam", elem.options[elem.selectedIndex].value); 	// Set last selected index
 	if ((teamNo == null) || (teamNo.length < 1))
 		{issueError("No team number");}
 	else if ((eventName == null) || (eventName.length < 1))
@@ -137,11 +128,15 @@ function scheduleHasBeenDownloaded(contents)
 	var i; var l; var mtch;
 	var parsed = JSON.parse(contents);
 	var alliance; var i; var member;
-//	var redScore, blueScore;
-	var teamRed = new Int16Array(3);								// Red alliance memebers
-	var teamBlue = new Int16Array(3);								// Blue alliance members
-//	var offScore = parseFloat("0.");								// Offensive total
-//	var defScore = parseFloat("0.");								// Defensive totalvar 
+	var redScore, blueScore;
+	var teamRed = new Int16Array(3);							// Red alliance memebers
+	var teamBlue = new Int16Array(3);							// Blue alliance members
+//	var offScore = parseFloat("0.");							// Offensive total
+//	var defScore = parseFloat("0.");							// Defensive totalvar 
+	var won; var lost; var tied;								// Score tabulators
+	won = 0;
+	lost = 0;
+	tied = 0;
 	if (included > 0)
 	{
 		clearScreen(included);
@@ -168,8 +163,11 @@ function scheduleHasBeenDownloaded(contents)
 			l = alliance.teams[2].length;
 			teamBlue[2] = alliance.teams[2].substring(3,l);
 			member = false;
-//			redScore = parsed[i].alliances.red.score;
-//			blueScore = parsed[i].alliances.blue.score;
+			if (parsed[i].alliances.red.score != null)
+			{
+				redScore = parsed[i].alliances.red.score;
+				blueScore = parsed[i].alliances.blue.score;
+			} else redScore = -1;
 			for (var k=0; k<3; k++)
 			{
 				if (teamRed[k] == teamNo)
@@ -200,6 +198,18 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(blueScore);
 //						offScore = offScore + parseFloat(redScore);
+						if (redScore > 0)
+						{
+							if (redScore > blueScore)
+							{
+								won++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "underline";
+							} else if (blueScore > redScore)
+							{
+								lost++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					}
 					else elem.style.color = BLACK;
 					elem = document.getElementById(String("redTwo").concat(chrs));
@@ -209,6 +219,18 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(blueScore);
 //						offScore = offScore + parseFloat(redScore);
+						if (redScore >= 0)
+						{
+							if (redScore > blueScore)
+							{
+								won++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "underline";
+							} else if (blueScore > redScore)
+							{
+								lost++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					} else elem.style.color = BLACK;
 					elem = document.getElementById(String("redThree").concat(chrs));
 					elem.innerHTML = teamRed[2];
@@ -217,6 +239,19 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(blueScore);
 //						offScore = offScore + parseFloat(redScore);
+						if (redScore >= 0)
+						{
+							if (redScore > blueScore)
+							{
+								won++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "underline";
+							}
+							else if (blueScore > redScore)
+							{
+								lost++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					} else elem.style.color = BLACK;
 					elem = document.getElementById(String("blueOne").concat(chrs));
 					elem.innerHTML = teamBlue[0];
@@ -225,6 +260,19 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(redScore);
 //						offScore = offScore + parseFloat(blueScore);
+						if (redScore >= 0)
+						{
+							if (blueScore > redScore)
+							{
+								won++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "underline";
+							}
+							else if (redScore > blueScore)
+							{
+								lost++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					} else elem.style.color = BLACK;
 					elem = document.getElementById(String("blueTwo").concat(chrs));
 					elem.innerHTML = teamBlue[1];
@@ -233,6 +281,19 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(redScore);
 //						offScore = offScore + parseFloat(blueScore);
+						if (redScore >= 0)
+						{
+							if (blueScore > redScore)
+							{
+								won++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "underline";
+							}
+							else if (redScore > blueScore)
+							{
+								lost++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					} else elem.style.color = BLACK;
 					elem = document.getElementById(String("blueThree").concat(chrs));
 					elem.innerHTML = teamBlue[2];
@@ -241,13 +302,38 @@ function scheduleHasBeenDownloaded(contents)
 						elem.style.color = YELLOW;
 //						defScore = defScore + parseFloat(redScore);
 //						offScore = offScore + parseFloat(blueScore);
+						if (redScore >= 0)
+						{
+							if (blueScore > redScore)
+							{
+								won++;
+								document.getElementById(String('blueScore').concat(chrs)).style.textDecoration = "underline";
+							} else if (redScore > blueScore)
+							{
+								lost++;
+								document.getElementById(String('redScore').concat(chrs)).style.textDecoration = "none";
+							} else tied++;
+						}
 					} else elem.style.color = BLACK;
+					if (redScore > 0)
+					{
+						elem = document.getElementById(String("redScore").concat(chrs));
+						elem.innerHTML = redScore;
+						elem.style.color = RED;
+						elem = document.getElementById(String("blueScore").concat(chrs));
+						elem.innerHTML = blueScore;
+						elem.style.color = BLUE;
+					}
 				}
 			}
 		}
 	}
 	sortScreen();
 	addTabs();
+	document.getElementById('won').innerHTML = 'WON: ' + won;
+	document.getElementById('lost').innerHTML = 'LOST: ' + lost;
+	document.getElementById('tied').innerHTML = 'TIED: ' + tied;
+	
 //	elem = document.getElementById('OPR');
 //	offScore = offScore.toPrecision(4) / (3.0 * included);					// Offensive Power Rating
 //	elem.innerHTML = String('OPR: ').concat(offScore.toPrecision(4));
@@ -301,7 +387,7 @@ function getTeams(teamVal)
 	var myEvent;
 	thisYear = document.getElementById('theYear').value;
 	myEvent = document.getElementById('eventName').value;
-	localStorage.setItem("lastEvent", myEvent);
+	localStorage.setItem("lastEvent", myEvent);					// Default event name
 	if ((thisYear == null) || (thisYear.length < 1))
 		{issueError("No year");}
 	else if ((myEvent == null) || (myEvent.length < 1))
@@ -309,10 +395,11 @@ function getTeams(teamVal)
 	else
 	{
 		eventName = thisYear.concat(myEvent);					// BLue Alliance event key
+		localStorage.setItem("BlueAllianceEvent", eventName);
 		var chrs = BlueAllianceURL.concat(eventName);
 		chrs = chrs.concat('/teams');
-		chrs = chrs.concat(xbtAPP_ID);							// Blue alliance insists on an app ID
-//		console.log(chrs);										// Test
+		chrs = chrs.concat(xbtAPP_ID);						// Blue alliance insists on an app ID
+//		console.log(chrs);								// Test
 //		xmlHTTP.setRequestHeader('X-TBA-App-Id', '1983:QA_Scouting:v1');		// Test
 		issueRequestHTTP("GET", chrs, function(result)
 		{
@@ -320,7 +407,6 @@ function getTeams(teamVal)
 			teamsHasBeenDownloaded(result);
 		});
 	}
-
 }
 
 function teamsHasBeenDownloaded(contents)
@@ -333,8 +419,8 @@ function teamsHasBeenDownloaded(contents)
 	var i; var opt;
 	var sel = document.getElementById('teams');
 	var parsed = JSON.parse(contents);
-	var teamArray = new Int16Array(parsed.length);
 	removeOptions(sel);
+	var teamArray = new Int16Array(parsed.length);
 	for (i = 0; i < parsed.length; i++) teamArray[i] = parseInt(parsed[i].team_number);
 	sortTeams(teamArray);
 	for (i = 0; i < parsed.length; i++)
@@ -346,14 +432,13 @@ function teamsHasBeenDownloaded(contents)
 	}
 	if (localStorage.getItem("lastSetTeam") != null)
 	{
-		sel.selectedIndex = localStorage.getItem("lastSetTeam");	
+		sel.selectedIndex = localStorage.getItem("lastSetTeam");
 		if (localStorage.getItem("lastSetTeam").length > 0)
 		{
-			sel.selectedIndex = localStorage.getItem("lastSetTeam");		
+			sel.selectedIndex = localStorage.getItem("lastSetTeam");
 			extractSchedule();
 		}
 	}
-
 }
 function assignContents(str)
 ////////////////////
@@ -439,6 +524,7 @@ function sortScreen()
 {
 	var i, j, k; var numI, numK;
 	var mI, mK; var tValue, tColor; var swapped;
+	var textDecor;
 	swapped = true;
 	j = 0;
 	while (swapped)
@@ -508,10 +594,31 @@ function sortScreen()
 				tColor = mI.style.color;
 				mI.style.color = mK.style.color;
 				mK.style.color = tColor;
+				mI = document.getElementById('redScore' + numI);
+				mK = document.getElementById('redScore' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				textDecor = mI.style.textDecoration;
+				mI.style.textDecoration = mK.style.textDecoration;
+				mK.style.textDecoration = textDecor;
+				mI = document.getElementById('blueScore' + numI);
+				mK = document.getElementById('blueScore' + numK);
+				tValue = mI.innerHTML;
+				mI.innerHTML = mK.innerHTML;
+				mK.innerHTML = tValue;
+				tColor = mI.style.color;
+				mI.style.color = mK.style.color;
+				mK.style.color = tColor;
+				textDecor = mI.style.textDecoration;
+				mI.style.textDecoration = mK.style.textDecoration;
+				mK.style.textDecoration = textDecor;
 			}
 		}
 	}
-}
 }
 function sortTeams(teams)
 ////////////////
@@ -571,17 +678,6 @@ function addTabs()
 		elem.innerHTML = elem.innerHTML.concat(TAB);
 	}
 }
-function int2Float(num, places)
-//////////////////////
-//                  //
-// Integer to Float //
-//                  //
-//////////////////////
-//
-//  This will convert the integer (num) to a floating point number with PLACES # of decimal points
-{
-	return num.toFixed(places);
-}
 function removeOptions(opts)
 ////////////////////
 //                //
@@ -636,155 +732,194 @@ function javascriptAbort()
 	<DIV style="display: inline">  <INPUT type="button" style="width:90px;height:30px" value="EXTRACT"
 				class="bigFont" onclick="extractSchedule()"></INPUT></DIV>
 </DIV>
-<DIV style="position: absolute; left: 60px; top: 90px; dispay: inline">Match #</DIV>
-<DIV style="position: absolute; left: 338px; top: 90px; display: inline" class="redFont">RED</DIV>
-<DIV style="position: absolute; left: 740px; top: 90px; display: inline" class="blueFont">BLUE</DIV>
-<DIV style="position: absolute; left: 5px; top: 105px;"><HR noshade size="3" style="width: 150px"></HR></DIV>
-<DIV style="position: absolute; left: 151px; top: 105px;"><HR noshade size="3" style="width: 410px" color="RED"></HR></DIV>
-<DIV style="position: absolute; left: 561px; top: 105px;"><HR noshade size="3" style="width: 407px" color="BLUE"></HR></DIV>
+<DIV id="won" style="position: absolute; left: 25px; top: 65px; display: inline">WON:&nbsp;</DIV>
+<DIV id="lost" style="position: absolute; left: 225px; top: 65px; display: inline">LOST:&nbsp;</DIV>
+<DIV id="tied" style="position: absolute; left: 425px; top: 65px; display: inline">TIED:&nbsp;</DIV>
+<DIV style="position: absolute; left: 33px; top: 90px; display: inline">Match #</DIV>
+<DIV style="position: absolute; left: 255px; top: 90px; display: inline" class="redFont">RED</DIV>
+<DIV style="position: absolute; left: 570px; top: 90px; display: inline" class="blueFont">BLUE</DIV>
+<DIV style="position: absolute; left: 780px; top: 90px; display: inline" class="redFont">SCORE</DIV>
+<DIV style="position: absolute; left: 892px; top: 90px; display: inline" class="blueFont">SCORE</DIV>
+<DIV style="position: absolute; left: 5px; top: 105px;"><HR noshade size="3" style="width: 112px"></HR></DIV>
+<DIV style="position: absolute; left: 113px; top: 105px;"><HR noshade size="3" style="width: 328px" color="RED"></HR></DIV>
+<DIV style="position: absolute; left: 434px; top: 105px;"><HR noshade size="3" style="width: 321px" color="BLUE"></HR></DIV>
+<DIV style="position: absolute; left: 756px; top: 105px"><HR noshade size="3" style="width: 107px" color="RED"></HR></DIV>
+<DIV style="position: absolute; left: 864px; top: 105px"><HR noshade size="3" style="width: 104px" color="BLUE"></HR></DIV>
 <DIV id="leftColumn" style="position: absolute; left: 5px; top: 105px;"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
-<DIV id="midColumn" style="position: absolute; left: 150px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
-<DIV id="redOne" style="position: absolute; left: 286px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
-<DIV id="redTwo" style="position: absolute; left: 422px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
-<DIV id="redRight" style="position: absolute; left: 558px; top: 105px"><HR noshade= size="3" width="1" style="height: 500px"></HR></DIV>
-<DIV id="blueOne" style="position: absolute; left: 694px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
-<DIV id="blueTwo" style="position: absolute; left: 830px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
-<DIV id="blueRight" style="position: absolute; left: 966px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="midColumn" style="position: absolute; left: 112px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="redOne" style="position: absolute; left: 219px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
+<DIV id="redTwo" style="position: absolute; left: 326px; top: 105px"><HR noshade size="1" style="height: 500px" color="RED"></HR></DIV>
+<DIV id="redRight" style="position: absolute; left: 433px; top: 105px"><HR noshade= size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="blueOne" style="position: absolute; left: 540px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
+<DIV id="blueTwo" style="position: absolute; left: 647px; top: 105px"><HR noshade size="1" style="height: 500px" color="BLUE"></HR></DIV>
+<DIV id="blueRight" style="position: absolute; left: 754px; top: 105px"><HR noshade size="3" width="1" style="height: 500px"></HR></DIV>
+<DIV id="leftRedScore" style="position: absolute; left: 861px; top: 105px"><HR noshade size="3" width="1" style="height: 500px" color="RED"></HR></DIV>
+<DIV id="rightRedScore" style="position: absolute; left: 968px; top: 105px"><HR noshade size="3" width="1" style="height: 500px" color="BLUE"></HR></DIV>
 <DIV id="errorMsg" style="position: absolute; left: 5px; top: 650px; visibility: hidden"><FONT class="redFont">Error:</FONT></DIV>
 <DIV id="divMatch01" style="position: absolute: left: 5px; top: 115px; visibility: hidden" class="bigFont">
-	<DIV id="match01" style="position: absolute; left: 57px; top: 115px;  display: inline"> </DIV>
-	<DIV id="redOne01" style="position: absolute; left: 202px; top: 115px; display: inline"> </DIV>
-	<DIV id="redTwo01" style="position: absolute; left: 334px; top: 115px; display: inline"> </DIV>
-	<DIV id="redThree01" style="position: absolute; left: 464px; top: 115px; display: inline"> </DIV>
-	<DIV id="blueOne01" style="position: absolute; left: 600px; top: 115px; display: inline"> </DIV>
-	<DIV id="blueTwo01" style="position: absolute; left: 736px; top: 115px; display: inline"> </DIV>
-	<DIV id="blueThree01" style="position: absolute; left: 867px; top: 115px; display: inline"> </DIV>
+	<DIV id="match01" style="position: absolute; left: 35px; top: 115px;  display: inline"> </DIV>
+	<DIV id="redOne01" style="position: absolute; left: 142px; top: 115px; display: inline"> </DIV>
+	<DIV id="redTwo01" style="position: absolute; left: 249px; top: 115px; display: inline"> </DIV>
+	<DIV id="redThree01" style="position: absolute; left: 356px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueOne01" style="position: absolute; left: 463px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueTwo01" style="position: absolute; left: 570px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueThree01" style="position: absolute; left: 677px; top: 115px; display: inline"> </DIV>
+	<DIV id="redScore01" style="position: absolute; left: 784px; top: 115px; display: inline"> </DIV>
+	<DIV id="blueScore01" style="position: absolute; left: 897px; top: 115px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch02" style="position: absolute: left: 5px; top: 132px; visibility: hidden" class="bigFont">
-	<DIV id="match02" style="position: absolute; left: 57px; top: 132px; display: inline"> </DIV>
-	<DIV id="redOne02" style="position: absolute; left: 202px; top: 132px; display: inline"> </DIV>
-	<DIV id="redTwo02" style="position: absolute; left: 334px; top: 132px; display: inline"> </DIV>
-	<DIV id="redThree02" style="position: absolute; left: 464px; top: 132px; display: inline"> </DIV>
-	<DIV id="blueOne02" style="position: absolute; left: 600px; top: 132px; display: inline"> </DIV>
-	<DIV id="blueTwo02" style="position: absolute; left: 736px; top: 132px; display: inline"> </DIV>
-	<DIV id="blueThree02" style="position: absolute; left: 867px; top: 132px; display: inline"> </DIV>
+	<DIV id="match02" style="position: absolute; left: 35px; top: 132px;  display: inline"> </DIV>
+	<DIV id="redOne02" style="position: absolute; left: 142px; top: 132px; display: inline"> </DIV>
+	<DIV id="redTwo02" style="position: absolute; left: 249px; top: 132px; display: inline"> </DIV>
+	<DIV id="redThree02" style="position: absolute; left: 356px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueOne02" style="position: absolute; left: 463px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueTwo02" style="position: absolute; left: 570px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueThree02" style="position: absolute; left: 677px; top: 132px; display: inline"> </DIV>
+	<DIV id="redScore02" style="position: absolute; left: 784px; top: 132px; display: inline"> </DIV>
+	<DIV id="blueScore02" style="position: absolute; left: 897px; top: 132px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch03" style="position: absolute: left: 5px; top: 149px; visibility: hidden" class="bigFont">
-	<DIV id="match03" style="position: absolute; left: 57px; top: 149px; display: inline"> </DIV>
-	<DIV id="redOne03" style="position: absolute; left: 202px; top: 149px; display: inline"> </DIV>
-	<DIV id="redTwo03" style="position: absolute; left: 334px; top: 149px; display: inline"> </DIV>
-	<DIV id="redThree03" style="position: absolute; left: 464px; top: 149px; display: inline"> </DIV>
-	<DIV id="blueOne03" style="position: absolute; left: 600px; top: 149px; display: inline"> </DIV>
-	<DIV id="blueTwo03" style="position: absolute; left: 736px; top: 149px; display: inline"> </DIV>
-	<DIV id="blueThree03" style="position: absolute; left: 867px; top: 149px; display: inline"> </DIV>
+	<DIV id="match03" style="position: absolute; left: 35px; top: 149px;  display: inline"> </DIV>
+	<DIV id="redOne03" style="position: absolute; left: 142px; top: 149px; display: inline"> </DIV>
+	<DIV id="redTwo03" style="position: absolute; left: 249px; top: 149px; display: inline"> </DIV>
+	<DIV id="redThree03" style="position: absolute; left: 356px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueOne03" style="position: absolute; left: 463px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueTwo03" style="position: absolute; left: 570px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueThree03" style="position: absolute; left: 677px; top: 149px; display: inline"> </DIV>
+	<DIV id="redScore03" style="position: absolute; left: 784px; top: 149px; display: inline"> </DIV>
+	<DIV id="blueScore03" style="position: absolute; left: 897px; top: 149px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch04" style="position: absolute: left: 5px; top: 166px; visibility: hidden" class="bigFont">
-	<DIV id="match04" style="position: absolute; left: 57px; top: 166px; display: inline"> </DIV>
-	<DIV id="redOne04" style="position: absolute; left: 202px; top: 166px; display: inline"> </DIV>
-	<DIV id="redTwo04" style="position: absolute; left: 334px; top: 166px; display: inline"> </DIV>
-	<DIV id="redThree04" style="position: absolute; left: 464px; top: 166px; display: inline"> </DIV>
-	<DIV id="blueOne04" style="position: absolute; left: 600px; top: 166px; display: inline"> </DIV>
-	<DIV id="blueTwo04" style="position: absolute; left: 736px; top: 166px; display: inline"> </DIV>
-	<DIV id="blueThree04" style="position: absolute; left: 867px; top: 166px; display: inline"> </DIV>
+	<DIV id="match04" style="position: absolute; left: 35px; top: 166px;  display: inline"> </DIV>
+	<DIV id="redOne04" style="position: absolute; left: 142px; top: 166px; display: inline"> </DIV>
+	<DIV id="redTwo04" style="position: absolute; left: 249px; top: 166px; display: inline"> </DIV>
+	<DIV id="redThree04" style="position: absolute; left: 356px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueOne04" style="position: absolute; left: 463px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueTwo04" style="position: absolute; left: 570px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueThree04" style="position: absolute; left: 677px; top: 166px; display: inline"> </DIV>
+	<DIV id="redScore04" style="position: absolute; left: 784px; top: 166px; display: inline"> </DIV>
+	<DIV id="blueScore04" style="position: absolute; left: 897px; top: 166px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch05" style="position: absolute: left: 5px; top: 183px; visibility: hidden" class="bigFont">
-	<DIV id="match05" style="position: absolute; left: 57px; top: 183px; display: inline"> </DIV>
-	<DIV id="redOne05" style="position: absolute; left: 202px; top: 183px; display: inline"> </DIV>
-	<DIV id="redTwo05" style="position: absolute; left: 334px; top: 183px; display: inline"> </DIV>
-	<DIV id="redThree05" style="position: absolute; left: 464px; top: 183px; display: inline"> </DIV>
-	<DIV id="blueOne05" style="position: absolute; left: 600px; top: 183px; display: inline"> </DIV>
-	<DIV id="blueTwo05" style="position: absolute; left: 736px; top: 183px; display: inline"> </DIV>
-	<DIV id="blueThree05" style="position: absolute; left: 867px; top: 183px; display: inline"> </DIV>
+	<DIV id="match05" style="position: absolute; left: 35px; top: 183px;  display: inline"> </DIV>
+	<DIV id="redOne05" style="position: absolute; left: 142px; top: 183px; display: inline"> </DIV>
+	<DIV id="redTwo05" style="position: absolute; left: 249px; top: 183px; display: inline"> </DIV>
+	<DIV id="redThree05" style="position: absolute; left: 356px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueOne05" style="position: absolute; left: 463px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueTwo05" style="position: absolute; left: 570px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueThree05" style="position: absolute; left: 677px; top: 183px; display: inline"> </DIV>
+	<DIV id="redScore05" style="position: absolute; left: 784px; top: 183px; display: inline"> </DIV>
+	<DIV id="blueScore05" style="position: absolute; left: 897px; top: 183px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch06" style="position: absolute: left: 5px; top: 200px; visibility: hidden" class="bigFont">
-	<DIV id="match06" style="position: absolute; left: 57px; top: 200px; display: inline"> </DIV>
-	<DIV id="redOne06" style="position: absolute; left: 202px; top: 200px; display: inline"> </DIV>
-	<DIV id="redTwo06" style="position: absolute; left: 334px; top: 200px; display: inline"> </DIV>
-	<DIV id="redThree06" style="position: absolute; left: 464px; top: 200px; display: inline"> </DIV>
-	<DIV id="blueOne06" style="position: absolute; left: 600px; top: 200px; display: inline"> </DIV>
-	<DIV id="blueTwo06" style="position: absolute; left: 736px; top: 200px; display: inline"> </DIV>
-	<DIV id="blueThree06" style="position: absolute; left: 867px; top: 200px; display: inline"> </DIV>
+	<DIV id="match06" style="position: absolute; left: 35px; top: 200px;  display: inline"> </DIV>
+	<DIV id="redOne06" style="position: absolute; left: 142px; top: 200px; display: inline"> </DIV>
+	<DIV id="redTwo06" style="position: absolute; left: 249px; top: 200px; display: inline"> </DIV>
+	<DIV id="redThree06" style="position: absolute; left: 356px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueOne06" style="position: absolute; left: 463px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueTwo06" style="position: absolute; left: 570px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueThree06" style="position: absolute; left: 677px; top: 200px; display: inline"> </DIV>
+	<DIV id="redScore06" style="position: absolute; left: 784px; top: 200px; display: inline"> </DIV>
+	<DIV id="blueScore06" style="position: absolute; left: 897px; top: 200px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch07" style="position: absolute: left: 5px; top: 217px; visibility: hidden" class="bigFont">
-	<DIV id="match07" style="position: absolute; left: 57px; top: 217px; display: inline"> </DIV>
-	<DIV id="redOne07" style="position: absolute; left: 202px; top: 217px; display: inline"> </DIV>
-	<DIV id="redTwo07" style="position: absolute; left: 334px; top: 217px; display: inline"> </DIV>
-	<DIV id="redThree07" style="position: absolute; left: 464px; top: 217px; display: inline"> </DIV>
-	<DIV id="blueOne07" style="position: absolute; left: 600px; top: 217px; display: inline"> </DIV>
-	<DIV id="blueTwo07" style="position: absolute; left: 736px; top: 217px; display: inline"> </DIV>
-	<DIV id="blueThree07" style="position: absolute; left: 867px; top: 217px; display: inline"> </DIV>
+	<DIV id="match07" style="position: absolute; left: 35px; top: 217px;  display: inline"> </DIV>
+	<DIV id="redOne07" style="position: absolute; left: 142px; top: 217px; display: inline"> </DIV>
+	<DIV id="redTwo07" style="position: absolute; left: 249px; top: 217px; display: inline"> </DIV>
+	<DIV id="redThree07" style="position: absolute; left: 356px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueOne07" style="position: absolute; left: 463px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueTwo07" style="position: absolute; left: 570px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueThree07" style="position: absolute; left: 677px; top: 217px; display: inline"> </DIV>
+	<DIV id="redScore07" style="position: absolute; left: 784px; top: 217px; display: inline"> </DIV>
+	<DIV id="blueScore07" style="position: absolute; left: 897px; top: 217px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch08" style="position: absolute: left: 5px; top: 234px; visibility: hidden" class="bigFont">
-	<DIV id="match08" style="position: absolute; left: 57px; top: 234px; display: inline"> </DIV>
-	<DIV id="redOne08" style="position: absolute; left: 202px; top: 234px; display: inline"> </DIV>
-	<DIV id="redTwo08" style="position: absolute; left: 334px; top: 234px; display: inline"> </DIV>
-	<DIV id="redThree08" style="position: absolute; left: 464px; top: 234px; display: inline"> </DIV>
-	<DIV id="blueOne08" style="position: absolute; left: 600px; top: 234px; display: inline"> </DIV>
-	<DIV id="blueTwo08" style="position: absolute; left: 736px; top: 234px; display: inline"> </DIV>
-	<DIV id="blueThree08" style="position: absolute; left: 867px; top: 234px; display: inline"> </DIV>
+	<DIV id="match08" style="position: absolute; left: 35px; top: 234px;  display: inline"> </DIV>
+	<DIV id="redOne08" style="position: absolute; left: 142px; top: 234px; display: inline"> </DIV>
+	<DIV id="redTwo08" style="position: absolute; left: 249px; top: 234px; display: inline"> </DIV>
+	<DIV id="redThree08" style="position: absolute; left: 356px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueOne08" style="position: absolute; left: 463px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueTwo08" style="position: absolute; left: 570px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueThree08" style="position: absolute; left: 677px; top: 234px; display: inline"> </DIV>
+	<DIV id="redScore08" style="position: absolute; left: 784px; top: 234px; display: inline"> </DIV>
+	<DIV id="blueScore08" style="position: absolute; left: 897px; top: 234px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch09" style="position: absolute: left: 5px; top: 251px; visibility: hidden" class="bigFont">
-	<DIV id="match09" style="position: absolute; left: 57px; top: 251px; display: inline"> </DIV>
-	<DIV id="redOne09" style="position: absolute; left: 202px; top: 251px; display: inline"> </DIV>
-	<DIV id="redTwo09" style="position: absolute; left: 334px; top: 251px; display: inline"> </DIV>
-	<DIV id="redThree09" style="position: absolute; left: 464px; top: 251px; display: inline"> </DIV>
-	<DIV id="blueOne09" style="position: absolute; left: 600px; top: 251px; display: inline"> </DIV>
-	<DIV id="blueTwo09" style="position: absolute; left: 736px; top: 251px; display: inline"> </DIV>
-	<DIV id="blueThree09" style="position: absolute; left: 867px; top: 251px; display: inline"> </DIV>
+	<DIV id="match09" style="position: absolute; left: 35px; top: 251px;  display: inline"> </DIV>
+	<DIV id="redOne09" style="position: absolute; left: 142px; top: 251px; display: inline"> </DIV>
+	<DIV id="redTwo09" style="position: absolute; left: 249px; top: 251px; display: inline"> </DIV>
+	<DIV id="redThree09" style="position: absolute; left: 356px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueOne09" style="position: absolute; left: 463px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueTwo09" style="position: absolute; left: 570px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueThree09" style="position: absolute; left: 677px; top: 251px; display: inline"> </DIV>
+	<DIV id="redScore09" style="position: absolute; left: 784px; top: 251px; display: inline"> </DIV>
+	<DIV id="blueScore09" style="position: absolute; left: 897px; top: 251px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch10" style="position: absolute: left: 5px; top: 268px; visibility: hidden" class="bigFont">
-	<DIV id="match10" style="position: absolute; left: 57px; top: 268px; display: inline"> </DIV>
-	<DIV id="redOne10" style="position: absolute; left: 202px; top: 268px; display: inline"> </DIV>
-	<DIV id="redTwo10" style="position: absolute; left: 334px; top: 268px; display: inline"> </DIV>
-	<DIV id="redThree10" style="position: absolute; left: 464px; top: 268px; display: inline"> </DIV>
-	<DIV id="blueOne10" style="position: absolute; left: 600px; top: 268px; display: inline"> </DIV>
-	<DIV id="blueTwo10" style="position: absolute; left: 736px; top: 268px; display: inline"> </DIV>
-	<DIV id="blueThree10" style="position: absolute; left: 867px; top: 268px; display: inline"> </DIV>
+	<DIV id="match10" style="position: absolute; left: 35px; top: 268px;  display: inline"> </DIV>
+	<DIV id="redOne10" style="position: absolute; left: 142px; top: 268px; display: inline"> </DIV>
+	<DIV id="redTwo10" style="position: absolute; left: 249px; top: 268px; display: inline"> </DIV>
+	<DIV id="redThree10" style="position: absolute; left: 356px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueOne10" style="position: absolute; left: 463px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueTwo10" style="position: absolute; left: 570px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueThree10" style="position: absolute; left: 677px; top: 268px; display: inline"> </DIV>
+	<DIV id="redScore10" style="position: absolute; left: 784px; top: 268px; display: inline"> </DIV>
+	<DIV id="blueScore10" style="position: absolute; left: 897px; top: 268px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch11" style="position: absolute: left: 5px; top: 285px; visibility: hidden" class="bigFont">
-	<DIV id="match11" style="position: absolute; left: 57px; top: 285px; display: inline"> </DIV>
-	<DIV id="redOne11" style="position: absolute; left: 202px; top: 285px; display: inline"> </DIV>
-	<DIV id="redTwo11" style="position: absolute; left: 334px; top: 285px; display: inline"> </DIV>
-	<DIV id="redThree11" style="position: absolute; left: 464px; top: 285px; display: inline"> </DIV>
-	<DIV id="blueOne11" style="position: absolute; left: 600px; top: 285px; display: inline"> </DIV>
-	<DIV id="blueTwo11" style="position: absolute; left: 736px; top: 285px; display: inline"> </DIV>
-	<DIV id="blueThree11" style="position: absolute; left: 867px; top: 285px; display: inline"> </DIV>
+	<DIV id="match11" style="position: absolute; left: 35px; top: 285px;  display: inline"> </DIV>
+	<DIV id="redOne11" style="position: absolute; left: 142px; top: 285px; display: inline"> </DIV>
+	<DIV id="redTwo11" style="position: absolute; left: 249px; top: 285px; display: inline"> </DIV>
+	<DIV id="redThree11" style="position: absolute; left: 356px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueOne11" style="position: absolute; left: 463px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueTwo11" style="position: absolute; left: 570px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueThree11" style="position: absolute; left: 677px; top: 285px; display: inline"> </DIV>
+	<DIV id="redScore11" style="position: absolute; left: 784px; top: 285px; display: inline"> </DIV>
+	<DIV id="blueScore11" style="position: absolute; left: 897px; top: 285px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch12" style="position: absolute: left: 5px; top: 302px; visibility: hidden" class="bigFont">
-	<DIV id="match12" style="position: absolute; left: 57px; top: 302px; display: inline"> </DIV>
-	<DIV id="redOne12" style="position: absolute; left: 202px; top: 302px; display: inline"> </DIV>
-	<DIV id="redTwo12" style="position: absolute; left: 334px; top: 302px; display: inline"> </DIV>
-	<DIV id="redThree12" style="position: absolute; left: 464px; top: 302px; display: inline"> </DIV>
-	<DIV id="blueOne12" style="position: absolute; left: 600px; top: 302px; display: inline"> </DIV>
-	<DIV id="blueTwo12" style="position: absolute; left: 736px; top: 302px; display: inline"> </DIV>
-	<DIV id="blueThree12" style="position: absolute; left: 867px; top: 302px; display: inline"> </DIV>
+	<DIV id="match12" style="position: absolute; left: 35px; top: 302px;  display: inline"> </DIV>
+	<DIV id="redOne12" style="position: absolute; left: 142px; top: 302px; display: inline"> </DIV>
+	<DIV id="redTwo12" style="position: absolute; left: 249px; top: 302px; display: inline"> </DIV>
+	<DIV id="redThree12" style="position: absolute; left: 356px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueOne12" style="position: absolute; left: 463px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueTwo12" style="position: absolute; left: 570px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueThree12" style="position: absolute; left: 677px; top: 302px; display: inline"> </DIV>
+	<DIV id="redScore12" style="position: absolute; left: 784px; top: 302px; display: inline"> </DIV>
+	<DIV id="blueScore12" style="position: absolute; left: 897px; top: 302px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch13" style="position: absolute: left: 5px; top: 319px; visibility: hidden" class="bigFont">
-	<DIV id="match13" style="position: absolute; left: 57px; top: 319px; display: inline"> </DIV>
-	<DIV id="redOne13" style="position: absolute; left: 202px; top: 319px; display: inline"> </DIV>
-	<DIV id="redTwo13" style="position: absolute; left: 334px; top: 319px; display: inline"> </DIV>
-	<DIV id="redThree13" style="position: absolute; left: 464px; top: 319px; display: inline"> </DIV>
-	<DIV id="blueOne13" style="position: absolute; left: 600px; top: 319px; display: inline"> </DIV>
-	<DIV id="blueTwo13" style="position: absolute; left: 736px; top: 319px; display: inline"> </DIV>
-	<DIV id="blueThree13" style="position: absolute; left: 867px; top: 319px; display: inline"> </DIV>
+	<DIV id="match13" style="position: absolute; left: 35px; top: 319px;  display: inline"> </DIV>
+	<DIV id="redOne13" style="position: absolute; left: 142px; top: 319px; display: inline"> </DIV>
+	<DIV id="redTwo13" style="position: absolute; left: 249px; top: 319px; display: inline"> </DIV>
+	<DIV id="redThree13" style="position: absolute; left: 356px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueOne13" style="position: absolute; left: 463px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueTwo13" style="position: absolute; left: 570px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueThree13" style="position: absolute; left: 677px; top: 319px; display: inline"> </DIV>
+	<DIV id="redScore13" style="position: absolute; left: 784px; top: 319px; display: inline"> </DIV>
+	<DIV id="blueScore13" style="position: absolute; left: 897px; top: 319px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch14" style="position: absolute: left: 5px; top: 336px; visibility: hidden" class="bigFont">
-	<DIV id="match14" style="position: absolute; left: 57px; top: 336px; display: inline"> </DIV>
-	<DIV id="redOne14" style="position: absolute; left: 202px; top: 336px; display: inline"> </DIV>
-	<DIV id="redTwo14" style="position: absolute; left: 334px; top: 336px; display: inline"> </DIV>
-	<DIV id="redThree14" style="position: absolute; left: 464px; top: 336px; display: inline"> </DIV>
-	<DIV id="blueOne14" style="position: absolute; left: 600px; top: 336px; display: inline"> </DIV>
-	<DIV id="blueTwo14" style="position: absolute; left: 736px; top: 336px; display: inline"> </DIV>
-	<DIV id="blueThree14" style="position: absolute; left: 867px; top: 336px; display: inline"> </DIV>
+	<DIV id="match14" style="position: absolute; left: 35px; top: 336px;  display: inline"> </DIV>
+	<DIV id="redOne14" style="position: absolute; left: 142px; top: 336px; display: inline"> </DIV>
+	<DIV id="redTwo14" style="position: absolute; left: 249px; top: 336px; display: inline"> </DIV>
+	<DIV id="redThree14" style="position: absolute; left: 356px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueOne14" style="position: absolute; left: 463px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueTwo14" style="position: absolute; left: 570px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueThree14" style="position: absolute; left: 677px; top: 336px; display: inline"> </DIV>
+	<DIV id="redScore14" style="position: absolute; left: 784px; top: 336px; display: inline"> </DIV>
+	<DIV id="blueScore14" style="position: absolute; left: 897px; top: 336px; display: inline"> </DIV>
 </DIV>
 <DIV id="divMatch15" style="position: absolute: left: 5px; top: 353px; visibility: hidden" class="bigFont">
-	<DIV id="match15" style="position: absolute; left: 57px; top: 353px; display: inline"> </DIV>
-	<DIV id="redOne15" style="position: absolute; left: 202px; top: 353px; display: inline"> </DIV>
-	<DIV id="redTwo15" style="position: absolute; left: 334px; top: 353px; display: inline"> </DIV>
-	<DIV id="redThree15" style="position: absolute; left: 464px; top: 353px; display: inline"> </DIV>
-	<DIV id="blueOne15" style="position: absolute; left: 600px; top: 353px; display: inline"> </DIV>
-	<DIV id="blueTwo15" style="position: absolute; left: 736px; top: 353px; display: inline"> </DIV>
-	<DIV id="blueThree15" style="position: absolute; left: 867px; top: 353px; display: inline"> </DIV>
+	<DIV id="match15" style="position: absolute; left: 35px; top: 353px;  display: inline"> </DIV>
+	<DIV id="redOne15" style="position: absolute; left: 142px; top: 353px; display: inline"> </DIV>
+	<DIV id="redTwo15" style="position: absolute; left: 249px; top: 353px; display: inline"> </DIV>
+	<DIV id="redThree15" style="position: absolute; left: 356px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueOne15" style="position: absolute; left: 463px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueTwo15" style="position: absolute; left: 570px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueThree15" style="position: absolute; left: 677px; top: 353px; display: inline"> </DIV>
+	<DIV id="redScore15" style="position: absolute; left: 784px; top: 353px; display: inline"> </DIV>
+	<DIV id="blueScore15" style="position: absolute; left: 897px; top: 353px; display: inline"> </DIV>
 </DIV>
 </BODY>
 </HTML>
